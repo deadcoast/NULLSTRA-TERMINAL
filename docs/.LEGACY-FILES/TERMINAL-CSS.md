@@ -6,7 +6,7 @@
 @tailwind utilities;
 
 /* Import Space Mono font */
-@import url("https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 /* CSS Variables from terminal.css */
 :root {
   --terminal-black: #000000;
@@ -32,7 +32,7 @@
   overflow: hidden;
   background-color: #000;
   /* May be overridden by later rules or variables */
-  font-family: "JetBrains Mono", "Consolas", monospace;
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
   /* Font may be overridden */
   color: #00ff00;
   /* May be overridden by later rules or variables */
@@ -237,7 +237,9 @@ body {
   /* Example: background-color: #050a05; */
   color: #4ade80;
   /* Tailwind lime-400 */
-  text-shadow: #4ade80 0 0 1px, rgba(74, 222, 128, 0.1) -1px 0 1px,
+  text-shadow:
+    #4ade80 0 0 1px,
+    rgba(74, 222, 128, 0.1) -1px 0 1px,
     rgba(74, 222, 128, 0.1) 1px 0 1px;
   position: relative;
   /* Needed for pseudo-elements if fixed */
@@ -258,27 +260,29 @@ body {
 }
 
 .lime-shadow {
-  text-shadow: #4ade80 0 0 1px, rgba(74, 222, 128, 0.15) -1px 0 2px,
+  text-shadow:
+    #4ade80 0 0 1px,
+    rgba(74, 222, 128, 0.15) -1px 0 2px,
     rgba(74, 222, 128, 0.15) 1px 0 2px;
 }
 
 .magenta-shadow {
-  text-shadow: #f0f 0 0 2px, /* Brighter magenta glow */ rgba(
-        255,
-        0,
-        255,
-        0.25
-      ) -1px 0 2px, rgba(255, 0, 255, 0.25) 1px 0 2px;
+  text-shadow:
+    #f0f 0 0 2px,
+    /* Brighter magenta glow */ rgba(255, 0, 255, 0.25) -1px 0 2px,
+    rgba(255, 0, 255, 0.25) 1px 0 2px;
 }
 
 .white-shadow {
-  text-shadow: #fff 0 0 1px, hsla(0, 0%, 100%, 0.2) -2px 0 1px,
+  text-shadow:
+    #fff 0 0 1px,
+    hsla(0, 0%, 100%, 0.2) -2px 0 1px,
     hsla(0, 0%, 100%, 0.2) 2px 0 1px;
 }
 
 /* Scanline Effect (from .terminal.css / align-centre.css) */
 .terminal-container::before {
-  content: " ";
+  content: ' ';
   display: block;
   position: absolute;
   /* Changed to absolute relative to container */
@@ -287,15 +291,22 @@ body {
   bottom: 0;
   right: 0;
   background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
-    linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.04));
+    linear-gradient(
+      90deg,
+      rgba(255, 0, 0, 0.04),
+      rgba(0, 255, 0, 0.02),
+      rgba(0, 0, 255, 0.04)
+    );
   z-index: 2;
-  background-size: 100% 2px, 3px 100%;
+  background-size:
+    100% 2px,
+    3px 100%;
   pointer-events: none;
 }
 
 /* Flicker Effect (from align-centre.css) */
 .terminal-container::after {
-  content: " ";
+  content: ' ';
   display: block;
   position: absolute;
   /* Changed to absolute relative to container */
@@ -361,7 +372,7 @@ body {
 }
 
 .terminal-input input:focus + .caret-pseudo::after {
-  content: "_";
+  content: '_';
   /* Use underscore or block character */
   display: inline-block;
   background-color: #4ade80;
@@ -498,7 +509,7 @@ body {
 }
 
 .status-indicator::after {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: -100%;
@@ -542,7 +553,7 @@ body {
 }
 
 .network-active::before {
-  content: "";
+  content: '';
   position: absolute;
   width: 6px;
   height: 6px;
@@ -586,7 +597,7 @@ body {
 }
 
 .status-indicator::after {
-  content: "";
+  content: '';
   position: absolute;
   top: 0;
   left: -100%;
@@ -752,7 +763,7 @@ body {
   height: 100vh;
   background-color: var(--terminal-black);
   overflow: hidden;
-  font-family: "JetBrains Mono", "Fira Code", "Courier New", monospace;
+  font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
   color: var(--terminal-green);
   font-size: 14px;
   line-height: 1.2;

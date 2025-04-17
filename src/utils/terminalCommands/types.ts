@@ -55,9 +55,12 @@ export interface FileSystem {
  * Function that executes a terminal command
  */
 export type CommandExecutor = (
-  args: string[], 
+  args: string[],
   context: CommandContext
-) => TerminalMessage | TerminalMessage[] | Promise<TerminalMessage | TerminalMessage[]>;
+) =>
+  | TerminalMessage
+  | TerminalMessage[]
+  | Promise<TerminalMessage | TerminalMessage[]>;
 
 /**
  * Command context containing current state and utilities
@@ -65,7 +68,7 @@ export type CommandExecutor = (
 export interface CommandContext {
   // Restore previously removed properties
   commandRegistry: CommandRegistry;
-  commandHistory: string[]; 
+  commandHistory: string[];
   aliases: Record<string, string>; // Assuming aliases are needed, maybe map name->alias or vice versa?
 
   // Essential context properties:
@@ -73,7 +76,7 @@ export interface CommandContext {
   fileSystem: FileSystem;
   environmentVariables: Record<string, string>;
   lastExitCode: number;
-  
+
   // Callbacks for the hook's state setters:
   updatePath: (newPath: string) => void;
   getTimestamp: () => string; // Function to get a formatted timestamp

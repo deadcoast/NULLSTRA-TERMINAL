@@ -8,7 +8,9 @@ import useTypeWriterEffect from './useTypeWriterEffect';
 
 // Export all hooks
 export {
-    useCommandCompletion, useCommandHistory, useSocket, useTerminal,
-    useTypeWriterEffect
+  useCommandCompletion,
+  useCommandHistory,
+  useSocket,
+  useTerminal,
+  useTypeWriterEffect,
 };
-

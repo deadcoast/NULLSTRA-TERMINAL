@@ -16,8 +16,10 @@ const StatusPanel: React.FC<StatusPanelProps> = ({ className = '' }) => {
   const [memoryUsage, setMemoryUsage] = useState<number>(32);
   const [cpuUsage, setCpuUsage] = useState<number>(15);
   const [diskUsage, setDiskUsage] = useState<number>(65);
-  const [networkStatus, setNetworkStatus] = useState<'online' | 'degraded' | 'offline'>('online');
-  
+  const [networkStatus, setNetworkStatus] = useState<
+    'online' | 'degraded' | 'offline'
+  >('online');
+
   // Simulate changing system metrics every few seconds
   useEffect(() => {
     const interval = setInterval(() => {
@@ -25,44 +27,59 @@ const StatusPanel: React.FC<StatusPanelProps> = ({ className = '' }) => {
       setMemoryUsage(Math.floor(Math.random() * 40) + 25); // 25-65%
       setCpuUsage(Math.floor(Math.random() * 30) + 5); // 5-35%
       setDiskUsage(Math.floor(Math.random() * 20) + 60); // 60-80%
-      
+
       // Occasionally change network status
-      if (Math.random() < 0.1) { // 10% chance
-        const statuses: Array<'online' | 'degraded' | 'offline'> = ['online', 'degraded', 'offline'];
+      if (Math.random() < 0.1) {
+        // 10% chance
+        const statuses: Array<'online' | 'degraded' | 'offline'> = [
+          'online',
+          'degraded',
+          'offline',
+        ];
         setNetworkStatus(statuses[Math.floor(Math.random() * statuses.length)]);
       }
     }, 5000);
-    
+
     return () => clearInterval(interval);
   }, []);
-  
+
   // Determine network status type
   const getNetworkStatusType = () => {
     switch (networkStatus) {
-      case 'online': return 'success';
-      case 'degraded': return 'warning';
-      case 'offline': return 'error';
-      default: return 'info';
+      case 'online':
+        return 'success';
+      case 'degraded':
+        return 'warning';
+      case 'offline':
+        return 'error';
+      default:
+        return 'info';
     }
   };
-  
+
   return (
-    <div className={`p-2 border border-terminal-green bg-terminal-black bg-opacity-50 ${className}`}>
+    <div
+      className={`p-2 border border-terminal-green bg-terminal-black bg-opacity-50 ${className}`}
+    >
       <div className="flex flex-wrap gap-2 items-center">
         <span className="text-terminal-green mr-2">System Status:</span>
-        
+
         <StatusTag type="info" autoUpdateInterval={5000}>
           MEM: {memoryUsage}%
         </StatusTag>
-        
+
         <StatusTag type={cpuUsage > 25 ? 'warning' : 'success'}>
           CPU: {cpuUsage}%
         </StatusTag>
-        
-        <StatusTag type={diskUsage > 75 ? 'error' : diskUsage > 60 ? 'warning' : 'success'}>
+
+        <StatusTag
+          type={
+            diskUsage > 75 ? 'error' : diskUsage > 60 ? 'warning' : 'success'
+          }
+        >
           DISK: {diskUsage}%
         </StatusTag>
-        
+
         <StatusTag type={getNetworkStatusType()}>
           NET: {networkStatus.toUpperCase()}
         </StatusTag>
@@ -71,4 +88,4 @@ const StatusPanel: React.FC<StatusPanelProps> = ({ className = '' }) => {
   );
 };
 
-export default StatusPanel; 
+export default StatusPanel;

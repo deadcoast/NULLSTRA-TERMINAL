@@ -32,9 +32,8 @@ const useEnhancedTypewriter = ({
   minSpeed = 50, // Default min speed
   maxSpeed = 150, // Default max speed
   speedMultiplier = 3, // Default speed calculation factor
-  maxRandomPause = 100 // Default max random pause
+  maxRandomPause = 100, // Default max random pause
 }: EnhancedTypewriterOptions) => {
-
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
@@ -70,17 +69,17 @@ const useEnhancedTypewriter = ({
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
     }
-    if (!isComplete) { // Avoid redundant calls if already complete
-        setDisplayedText(text);
-        setIsTyping(false);
-        setIsComplete(true);
-        if (onComplete) {
-           // Use a microtask to ensure state updates before callback
-           queueMicrotask(onComplete);
-        }
+    if (!isComplete) {
+      // Avoid redundant calls if already complete
+      setDisplayedText(text);
+      setIsTyping(false);
+      setIsComplete(true);
+      if (onComplete) {
+        // Use a microtask to ensure state updates before callback
+        queueMicrotask(onComplete);
+      }
     }
   }, [text, onComplete, isComplete]);
-
 
   // --- Core Typing Logic ---
 
@@ -101,33 +100,36 @@ const useEnhancedTypewriter = ({
       const typeNextChunk = () => {
         // Ensure we are still supposed to be typing
         if (!isTyping || isComplete || chunkIndexRef.current >= chunks.length) {
-            // If state changed externally (e.g., completeTyping called), stop.
-            if (!isComplete && chunkIndexRef.current >= chunks.length) {
-                // Normal completion
-                setIsTyping(false);
-                setIsComplete(true);
-                if (onComplete) {
-                    queueMicrotask(onComplete); // Ensure state updates before callback
-                }
+          // If state changed externally (e.g., completeTyping called), stop.
+          if (!isComplete && chunkIndexRef.current >= chunks.length) {
+            // Normal completion
+            setIsTyping(false);
+            setIsComplete(true);
+            if (onComplete) {
+              queueMicrotask(onComplete); // Ensure state updates before callback
             }
-            clearCurrentTimeout();
-            return;
+          }
+          clearCurrentTimeout();
+          return;
         }
 
         const currentChunk = chunks[chunkIndexRef.current];
         // Add the space back unless it's the last chunk or the next chunk starts with space (less common)
         // A more robust way is to capture the delimiter during split if needed, but this works for the default regex
-        const chunkToAdd = currentChunk + (chunkIndexRef.current < chunks.length - 1 ? " " : "");
-
+        const chunkToAdd =
+          currentChunk + (chunkIndexRef.current < chunks.length - 1 ? ' ' : '');
 
         // Calculate variable speed based on chunk length
-        const baseSpeed = Math.max(minSpeed, Math.min(maxSpeed, currentChunk.length * speedMultiplier));
+        const baseSpeed = Math.max(
+          minSpeed,
+          Math.min(maxSpeed, currentChunk.length * speedMultiplier)
+        );
         // Add a random slight pause after punctuation/chunk
         const randomPause = Math.random() * maxRandomPause;
         const totalDelay = baseSpeed + randomPause;
 
         // Update displayed text
-        setDisplayedText(prev => prev + chunkToAdd);
+        setDisplayedText((prev) => prev + chunkToAdd);
         chunkIndexRef.current++;
 
         // If there are more chunks, schedule the next one
@@ -136,21 +138,23 @@ const useEnhancedTypewriter = ({
         } else {
           // Last chunk has been processed
           timeoutRef.current = setTimeout(() => {
-               if (!isComplete) { // Check again in case completeTyping was called meanwhile
-                    setIsTyping(false);
-                    setIsComplete(true);
-                    if (onComplete) {
-                      onComplete();
-                    }
-                }
-                timeoutRef.current = null; // Clear ref
+            if (!isComplete) {
+              // Check again in case completeTyping was called meanwhile
+              setIsTyping(false);
+              setIsComplete(true);
+              if (onComplete) {
+                onComplete();
+              }
+            }
+            timeoutRef.current = null; // Clear ref
           }, totalDelay); // Apply delay even after the last chunk before marking complete
         }
       };
 
       // Start the process after the initial startDelay
       clearCurrentTimeout(); // Clear any previous timeout just in case
-      if (chunks.length > 0 && chunks[0] !== '') { // Handle empty text or splits resulting in empty first chunk
+      if (chunks.length > 0 && chunks[0] !== '') {
+        // Handle empty text or splits resulting in empty first chunk
         timeoutRef.current = setTimeout(typeNextChunk, startDelay);
       } else {
         // If text is empty or results in no typable chunks, complete immediately
@@ -160,7 +164,6 @@ const useEnhancedTypewriter = ({
           onComplete();
         }
       }
-
     } else if (!isTyping && timeoutRef.current) {
       // If typing was stopped externally (isTyping became false), ensure timeout is cleared
       clearCurrentTimeout();
@@ -171,24 +174,24 @@ const useEnhancedTypewriter = ({
       clearCurrentTimeout();
     };
   }, [
-      text,
-      startDelay,
-      isTyping,
-      isComplete, // Added isComplete as dependency
-      onComplete,
-      splitRegex,
-      minSpeed,
-      maxSpeed,
-      speedMultiplier,
-      maxRandomPause
-    ]); // Include all props used in the effect
+    text,
+    startDelay,
+    isTyping,
+    isComplete, // Added isComplete as dependency
+    onComplete,
+    splitRegex,
+    minSpeed,
+    maxSpeed,
+    speedMultiplier,
+    maxRandomPause,
+  ]); // Include all props used in the effect
 
   return {
     displayedText,
     isTyping,
     isComplete,
     startTyping,
-    completeTyping
+    completeTyping,
   };
 };
 

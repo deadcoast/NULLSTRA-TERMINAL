@@ -23,11 +23,11 @@ interface TableRendererProps {
 const TableRenderer: React.FC<TableRendererProps> = ({
   data,
   title,
-  glitchEffect = false
+  glitchEffect = false,
 }) => {
   // Calculate column widths based on content
   const columnWidths = getColumnWidths(data);
-  
+
   // Create the table border characters
   const tableChars = {
     topLeft: '┌',
@@ -40,18 +40,36 @@ const TableRenderer: React.FC<TableRendererProps> = ({
     rightT: '┤',
     topT: '┬',
     bottomT: '┴',
-    cross: '┼'
+    cross: '┼',
   };
-  
+
   // Generate the top border
-  const topBorder = generateBorder(columnWidths, tableChars.topLeft, tableChars.topRight, tableChars.topT, tableChars.horizontal);
-  
+  const topBorder = generateBorder(
+    columnWidths,
+    tableChars.topLeft,
+    tableChars.topRight,
+    tableChars.topT,
+    tableChars.horizontal
+  );
+
   // Generate the header separator
-  const headerSeparator = generateBorder(columnWidths, tableChars.leftT, tableChars.rightT, tableChars.cross, tableChars.horizontal);
-  
+  const headerSeparator = generateBorder(
+    columnWidths,
+    tableChars.leftT,
+    tableChars.rightT,
+    tableChars.cross,
+    tableChars.horizontal
+  );
+
   // Generate the bottom border
-  const bottomBorder = generateBorder(columnWidths, tableChars.bottomLeft, tableChars.bottomRight, tableChars.bottomT, tableChars.horizontal);
-  
+  const bottomBorder = generateBorder(
+    columnWidths,
+    tableChars.bottomLeft,
+    tableChars.bottomRight,
+    tableChars.bottomT,
+    tableChars.horizontal
+  );
+
   return (
     <div className="terminal-table my-2 text-terminal-white font-mono">
       {title && (
@@ -65,34 +83,44 @@ const TableRenderer: React.FC<TableRendererProps> = ({
           )}
         </div>
       )}
-      
+
       {/* Table Top Border */}
       <div className="text-terminal-cyan">{topBorder}</div>
-      
+
       {/* Table Headers */}
       <div className="text-terminal-yellow">
-        {tableChars.vertical} {' '}
-        {data.headers.map((header, index) => {
-          return header.padEnd(columnWidths[index] - 2);
-        }).join(` ${tableChars.vertical} `)}
-        {' '} {tableChars.vertical}
+        {tableChars.vertical}{' '}
+        {data.headers
+          .map((header, index) => {
+            return header.padEnd(columnWidths[index] - 2);
+          })
+          .join(` ${tableChars.vertical} `)}{' '}
+        {tableChars.vertical}
       </div>
-      
+
       {/* Header Separator */}
       <div className="text-terminal-cyan">{headerSeparator}</div>
-      
+
       {/* Table Rows */}
       {data.rows.map((row, rowIndex) => (
-        <div key={rowIndex} className={rowIndex % 2 === 0 ? "text-terminal-white" : "text-terminal-white opacity-80"}>
-          {tableChars.vertical} {' '}
-          {row.map((cell, cellIndex) => {
-            const paddedCell = cell.padEnd(columnWidths[cellIndex] - 2);
-            return paddedCell;
-          }).join(` ${tableChars.vertical} `)}
-          {' '} {tableChars.vertical}
+        <div
+          key={rowIndex}
+          className={
+            rowIndex % 2 === 0
+              ? 'text-terminal-white'
+              : 'text-terminal-white opacity-80'
+          }
+        >
+          {tableChars.vertical}{' '}
+          {row
+            .map((cell, cellIndex) => {
+              return cell.padEnd(columnWidths[cellIndex] - 2);
+            })
+            .join(` ${tableChars.vertical} `)}{' '}
+          {tableChars.vertical}
         </div>
       ))}
-      
+
       {/* Table Bottom Border */}
       <div className="text-terminal-cyan">{bottomBorder}</div>
     </div>
@@ -102,14 +130,14 @@ const TableRenderer: React.FC<TableRendererProps> = ({
 // Helper function to calculate the width needed for each column
 const getColumnWidths = (data: TableData): number[] => {
   const widths: number[] = [];
-  
+
   // Check header widths
   data.headers.forEach((header, index) => {
     widths[index] = header.length + 2; // Add padding
   });
-  
+
   // Check row data widths
-  data.rows.forEach(row => {
+  data.rows.forEach((row) => {
     row.forEach((cell, index) => {
       const cellWidth = cell.length + 2; // Add padding
       if (!widths[index] || cellWidth > widths[index]) {
@@ -117,23 +145,23 @@ const getColumnWidths = (data: TableData): number[] => {
       }
     });
   });
-  
+
   return widths;
 };
 
 // Helper function to generate table borders
 const generateBorder = (
-  widths: number[], 
-  leftChar: string, 
-  rightChar: string, 
-  joinChar: string, 
+  widths: number[],
+  leftChar: string,
+  rightChar: string,
+  joinChar: string,
   horizontalChar: string
 ): string => {
   // Generate segments for each column
-  const segments = widths.map(width => horizontalChar.repeat(width));
-  
+  const segments = widths.map((width) => horizontalChar.repeat(width));
+
   // Join segments with the join character
   return leftChar + segments.join(joinChar) + rightChar;
 };
 
-export default TableRenderer; 
+export default TableRenderer;

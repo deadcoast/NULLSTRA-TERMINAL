@@ -1,8 +1,8 @@
 import {
-    formatIpAddress,
-    formatTimestamp,
-    generateRandomError,
-    glitchText
+  formatIpAddress,
+  formatTimestamp,
+  generateRandomError,
+  glitchText,
 } from '../effectsHelper';
 
 // Mock functions that require browser APIs
@@ -11,7 +11,7 @@ jest.mock('../effectsHelper', () => {
   return {
     ...originalModule,
     generateNoise: jest.fn(() => 'mock-data-url'),
-    simulateConnectionIssue: jest.fn(() => Promise.resolve())
+    simulateConnectionIssue: jest.fn(() => Promise.resolve()),
   };
 });
 
@@ -27,7 +27,7 @@ describe('effectsHelper utilities', () => {
       const input = 'A'.repeat(1000); // Long string to ensure high probability of difference
       const result1 = glitchText(input);
       const result2 = glitchText(input);
-      
+
       // With 1000 characters and 5% glitch chance, the probability of getting
       // the exact same result twice is extremely low
       expect(result1).not.toBe(result2);
@@ -43,7 +43,9 @@ describe('effectsHelper utilities', () => {
 
     test('should return a string that starts with [FAIL] or [WARN]', () => {
       const result = generateRandomError();
-      expect(result.startsWith('[FAIL]') || result.startsWith('[WARN]')).toBe(true);
+      expect(result.startsWith('[FAIL]') || result.startsWith('[WARN]')).toBe(
+        true
+      );
     });
   });
 
@@ -59,9 +61,9 @@ describe('effectsHelper utilities', () => {
       const realDateNow = Date.now;
       // Jan 1, 2023, 14:30:45
       const mockTimestamp = new Date(2023, 0, 1, 14, 30, 45).getTime();
-      
+
       Date.now = jest.fn(() => mockTimestamp);
-      
+
       // Mock new Date() to return fixed date
       const spy = jest.spyOn(global, 'Date').mockImplementation(() => {
         return new Date(mockTimestamp);
@@ -89,4 +91,4 @@ describe('effectsHelper utilities', () => {
       expect(result).toBe('<2001:0db8:85a3:0000:0000:8a2e:0370:7334>');
     });
   });
-}); 
+});

@@ -21,20 +21,28 @@ const TerminalStatusLine: React.FC<TerminalStatusLineProps> = ({
   isExecuting = false,
   timestamp,
   className = '',
-  children
+  children,
 }) => {
   return (
-    <div className={`terminal-status-line text-xs flex justify-between items-center px-2 py-1 border-t border-shocking-pink ${className}`}>
+    <div
+      className={`terminal-status-line text-xs flex justify-between items-center px-2 py-1 border-t border-shocking-pink ${className}`}
+    >
       <div className="flex items-center space-x-2">
         <span className="terminal-status-ip">&lt;{ipAddress}&gt;</span>
-        <span className={`connection-status ${isConnected ? 'text-lime' : 'text-red'}`}>
+        <span
+          className={`connection-status ${isConnected ? 'text-lime' : 'text-red'}`}
+        >
           {isConnected ? '[CONNECTED]' : '[DISCONNECTED]'}
         </span>
         {isExecuting && (
           <span className="processing-status text-yellow">[PROCESSING]</span>
         )}
       </div>
-      {children || <span className="terminal-status-time">{timestamp || new Date().toLocaleTimeString()}</span>}
+      {children || (
+        <span className="terminal-status-time">
+          {timestamp || new Date().toLocaleTimeString()}
+        </span>
+      )}
     </div>
   );
 };

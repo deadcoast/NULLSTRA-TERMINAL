@@ -1,32 +1,42 @@
 // src/utils/terminalCommands/helpers.ts
 // Helper functions for terminal commands
 
-import { FileSystem, FileSystemItem, TerminalMessage, CommandContext } from './types';
+import {
+  FileSystem,
+  FileSystemItem,
+  TerminalMessage,
+  CommandContext,
+} from './types';
 
 /**
  * Parse a command string into command name and arguments
  */
-export const parseCommand = (commandString: string): { command: string, args: string[] } => {
+export const parseCommand = (
+  commandString: string
+): { command: string; args: string[] } => {
   const parts = commandString.trim().split(/\s+/);
   const command = parts[0] || '';
   const args = parts.slice(1);
-  
+
   return { command, args };
 };
 
 /**
  * Resolve a path relative to the current directory
  */
-export const resolvePath = (currentPath: string, targetPath: string): string => {
+export const resolvePath = (
+  currentPath: string,
+  targetPath: string
+): string => {
   // Handle absolute paths
   if (targetPath.startsWith('/')) {
     return normalizePath(targetPath);
   }
-  
+
   // Handle . and ..
   const current = currentPath.split('/').filter(Boolean);
   const target = targetPath.split('/').filter(Boolean);
-  
+
   for (const part of target) {
     if (part === '.') {
       // Current directory, do nothing
@@ -40,7 +50,7 @@ export const resolvePath = (currentPath: string, targetPath: string): string => 
       current.push(part);
     }
   }
-  
+
   return '/' + current.join('/');
 };
 
@@ -50,7 +60,7 @@ export const resolvePath = (currentPath: string, targetPath: string): string => 
 export const normalizePath = (path: string): string => {
   const parts = path.split('/').filter(Boolean);
   const result: string[] = [];
-  
+
   for (const part of parts) {
     if (part === '.') {
       // Skip current directory references
@@ -64,7 +74,7 @@ export const normalizePath = (path: string): string => {
       result.push(part);
     }
   }
-  
+
   return '/' + result.join('/');
 };
 
@@ -72,26 +82,31 @@ export const normalizePath = (path: string): string => {
  * Find a file system item at the specified path
  */
 export const getFileSystemItem = (
-  fileSystem: FileSystem, 
+  fileSystem: FileSystem,
   path: string
 ): FileSystemItem | null => {
   const normalizedPath = normalizePath(path);
   const parts = normalizedPath.split('/').filter(Boolean);
-  
+
   // Root directory
   if (parts.length === 0) {
     return fileSystem[''] || null;
   }
-  
+
   let current = fileSystem[''];
-  
+
   for (const part of parts) {
-    if (!current || current.type !== 'directory' || !current.children || !current.children[part]) {
+    if (
+      !current ||
+      current.type !== 'directory' ||
+      !current.children ||
+      !current.children[part]
+    ) {
       return null;
     }
     current = current.children[part];
   }
-  
+
   return current;
 };
 
@@ -106,14 +121,14 @@ export const formatTimestamp = (): string => {
  * Create a success message
  */
 export const createSuccessMessage = (
-  content: string, 
+  content: string,
   options: Partial<TerminalMessage> = {}
 ): TerminalMessage => {
   return {
     type: 'success',
     content,
     timestamp: formatTimestamp(),
-    ...options
+    ...options,
   };
 };
 
@@ -121,14 +136,14 @@ export const createSuccessMessage = (
  * Create an error message
  */
 export const createErrorMessage = (
-  content: string, 
+  content: string,
   options: Partial<TerminalMessage> = {}
 ): TerminalMessage => {
   return {
     type: 'error',
     content,
     timestamp: formatTimestamp(),
-    ...options
+    ...options,
   };
 };
 
@@ -136,14 +151,14 @@ export const createErrorMessage = (
  * Create an info message
  */
 export const createInfoMessage = (
-  content: string, 
+  content: string,
   options: Partial<TerminalMessage> = {}
 ): TerminalMessage => {
   return {
     type: 'info',
     content,
     timestamp: formatTimestamp(),
-    ...options
+    ...options,
   };
 };
 
@@ -151,14 +166,14 @@ export const createInfoMessage = (
  * Create a warning message
  */
 export const createWarningMessage = (
-  content: string, 
+  content: string,
   options: Partial<TerminalMessage> = {}
 ): TerminalMessage => {
   return {
     type: 'warning',
     content,
     timestamp: formatTimestamp(),
-    ...options
+    ...options,
   };
 };
 
@@ -176,6 +191,6 @@ export const createFileListingMessage = (
     prefix: 'TERMINAL',
     timestamp: formatTimestamp(),
     files,
-    ...options
+    ...options,
   };
 };

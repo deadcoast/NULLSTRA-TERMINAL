@@ -138,15 +138,15 @@ Import Format for the Project:
 
 ```typescript
 // Import specific components
-import { Terminal } from "@/components";
-import { Glitch, TypeWriter } from "@/components/UI";
+import { Terminal } from '@/components';
+import { Glitch, TypeWriter } from '@/components/UI';
 
 // Import hooks
-import { useTerminal, useCommandHistory } from "@/hooks";
+import { useTerminal, useCommandHistory } from '@/hooks';
 
 // Import utility functions
-import { executeCommand, formatTimestamp } from "@/utils";
-import type { TerminalMessage } from "@/utils";
+import { executeCommand, formatTimestamp } from '@/utils';
+import type { TerminalMessage } from '@/utils';
 ```
 
 ## Implementation Notes

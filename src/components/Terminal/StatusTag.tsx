@@ -25,7 +25,7 @@ const StatusTag: React.FC<StatusTagProps> = ({
   // Function to trigger the update animation
   const triggerUpdate = () => {
     setUpdated(true);
-    
+
     // Remove updated class after animation completes
     setTimeout(() => {
       setUpdated(false);
@@ -38,7 +38,7 @@ const StatusTag: React.FC<StatusTagProps> = ({
       const interval = setInterval(() => {
         triggerUpdate();
       }, autoUpdateInterval);
-      
+
       return () => clearInterval(interval);
     }
   }, [autoUpdateInterval]);
@@ -59,7 +59,7 @@ const StatusTag: React.FC<StatusTagProps> = ({
   };
 
   return (
-    <span 
+    <span
       className={`status-tag ${updated ? 'updated' : ''} ${getTypeClasses()} ${className}`}
     >
       {children}
@@ -67,4 +67,4 @@ const StatusTag: React.FC<StatusTagProps> = ({
   );
 };
 
-export default StatusTag; 
+export default StatusTag;

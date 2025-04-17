@@ -4,19 +4,19 @@ import React, { useEffect, useState } from 'react';
 const glitchParams = {
   low: {
     frequency: 5000, // ms
-    duration: 100,   // ms
-    probability: 0.1 // 0-1
+    duration: 100, // ms
+    probability: 0.1, // 0-1
   },
   medium: {
     frequency: 3000,
     duration: 200,
-    probability: 0.3
+    probability: 0.3,
   },
   high: {
     frequency: 1000,
     duration: 300,
-    probability: 0.5
-  }
+    probability: 0.5,
+  },
 };
 
 interface GlitchProps {
@@ -30,49 +30,64 @@ const Glitch: React.FC<GlitchProps> = ({
   children,
   intensity = 'medium',
   active = true,
-  className = ''
+  className = '',
 }) => {
   const [isGlitching, setIsGlitching] = useState(false);
-  
+
   useEffect(() => {
-    if (!active) {return;}
-    
+    if (!active) {
+      return;
+    }
+
     // Access glitchParams from the outer scope
     const { frequency, duration, probability } = glitchParams[intensity];
-    
+
     const glitchInterval = setInterval(() => {
       if (Math.random() < probability) {
         setIsGlitching(true);
-        
-        setTimeout(() => {
-          setIsGlitching(false);
-        }, Math.random() * duration + 50);
+
+        setTimeout(
+          () => {
+            setIsGlitching(false);
+          },
+          Math.random() * duration + 50
+        );
       }
     }, frequency);
-    
+
     return () => clearInterval(glitchInterval);
-  // Remove glitchParams from dependencies as it's stable now
+    // Remove glitchParams from dependencies as it's stable now
   }, [active, intensity]);
-  
+
   return (
-    <div 
+    <div
       className={`relative inline-block ${isGlitching ? 'animate-glitch' : ''} ${className}`}
-      style={isGlitching ? {
-        textShadow: `
+      style={
+        isGlitching
+          ? {
+              textShadow: `
           ${Math.random() < 0.5 ? '-' : ''}${Math.random() * 3}px 0 rgba(255, 0, 0, 0.5),
           ${Math.random() < 0.5 ? '-' : ''}${Math.random() * 3}px 0 rgba(0, 255, 0, 0.5),
           ${Math.random() < 0.5 ? '-' : ''}${Math.random() * 3}px 0 rgba(0, 0, 255, 0.5)
-        `
-      } : {}}
+        `,
+            }
+          : {}
+      }
     >
       {children}
-      
+
       {isGlitching && (
         <>
-          <div className="absolute inset-0 text-terminal-red opacity-50" style={{ transform: `translate(${Math.random() * 4 - 2}px, 0)` }}>
+          <div
+            className="absolute inset-0 text-terminal-red opacity-50"
+            style={{ transform: `translate(${Math.random() * 4 - 2}px, 0)` }}
+          >
             {children}
           </div>
-          <div className="absolute inset-0 text-terminal-cyan opacity-50" style={{ transform: `translate(${Math.random() * -4 + 2}px, 0)` }}>
+          <div
+            className="absolute inset-0 text-terminal-cyan opacity-50"
+            style={{ transform: `translate(${Math.random() * -4 + 2}px, 0)` }}
+          >
             {children}
           </div>
         </>

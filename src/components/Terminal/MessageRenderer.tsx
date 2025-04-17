@@ -1,9 +1,9 @@
 /**
  * Renders a message component based on the type and content of the provided message object.
  * It handles various message types including progress, table data, file listings, and standard messages.
- * 1. Add TypeScript interfaces for `message` and `onExecuteCommand` to ensure type safety and improve code readability.  
- * 2. Implement a default case in the switch statement to handle unexpected message types gracefully.  
- * 3. Consider using a mapping object for message types to their corresponding components to simplify the switch statement.  
+ * 1. Add TypeScript interfaces for `message` and `onExecuteCommand` to ensure type safety and improve code readability.
+ * 2. Implement a default case in the switch statement to handle unexpected message types gracefully.
+ * 3. Consider using a mapping object for message types to their corresponding components to simplify the switch statement.
  * @param {Object} message - The message object containing data to be rendered.
  * @param {Function} onExecuteCommand - Callback function to execute commands related to the message.
  */
@@ -32,18 +32,25 @@ interface MessageProps {
 }
 
 // Normalize message to ensure consistent properties regardless of source
-const normalizeMessage = (message: CombinedMessage): ExtendedTerminalMessage => {
+const normalizeMessage = (
+  message: CombinedMessage
+): ExtendedTerminalMessage => {
   // Check if it's already a TerminalMessage by checking for specific properties
-  if ('prefix' in message || 'files' in message || 'tableData' in message || 'progress' in message) {
+  if (
+    'prefix' in message ||
+    'files' in message ||
+    'tableData' in message ||
+    'progress' in message
+  ) {
     return message as ExtendedTerminalMessage;
   }
-  
+
   // Convert CommandResult to TerminalMessage format
   return {
     type: message.type,
     content: message.content,
     timestamp: message.timestamp,
-    animated: false
+    animated: false,
   };
 };
 
@@ -54,8 +61,14 @@ const ErrorMessage: React.FC<MessageProps> = ({ message }) => {
     <div className="text-red">
       <Glitch intensity="medium" active={true}>
         <span>
-          {normalizedMsg.prefix && <span className="font-bold mr-1">[{normalizedMsg.prefix}]</span>}
-          {normalizedMsg.timestamp && <span className="text-cyan text-opacity-70 mr-2">{normalizedMsg.timestamp}</span>}
+          {normalizedMsg.prefix && (
+            <span className="font-bold mr-1">[{normalizedMsg.prefix}]</span>
+          )}
+          {normalizedMsg.timestamp && (
+            <span className="text-cyan text-opacity-70 mr-2">
+              {normalizedMsg.timestamp}
+            </span>
+          )}
           {normalizedMsg.animated ? (
             <TypeWriter text={normalizedMsg.content} delay={30} />
           ) : (
@@ -72,8 +85,14 @@ const SuccessMessage: React.FC<MessageProps> = ({ message }) => {
   const normalizedMsg = normalizeMessage(message);
   return (
     <div className="text-lime">
-      {normalizedMsg.prefix && <span className="font-bold mr-1">[{normalizedMsg.prefix}]</span>}
-      {normalizedMsg.timestamp && <span className="text-cyan text-opacity-70 mr-2">{normalizedMsg.timestamp}</span>}
+      {normalizedMsg.prefix && (
+        <span className="font-bold mr-1">[{normalizedMsg.prefix}]</span>
+      )}
+      {normalizedMsg.timestamp && (
+        <span className="text-cyan text-opacity-70 mr-2">
+          {normalizedMsg.timestamp}
+        </span>
+      )}
       {normalizedMsg.animated ? (
         <TypeWriter text={normalizedMsg.content} delay={40} />
       ) : (
@@ -90,8 +109,14 @@ const WarningMessage: React.FC<MessageProps> = ({ message }) => {
     <div className="text-yellow">
       <Glitch intensity="low" active={true}>
         <span>
-          {normalizedMsg.prefix && <span className="font-bold mr-1">[{normalizedMsg.prefix}]</span>}
-          {normalizedMsg.timestamp && <span className="text-cyan text-opacity-70 mr-2">{normalizedMsg.timestamp}</span>}
+          {normalizedMsg.prefix && (
+            <span className="font-bold mr-1">[{normalizedMsg.prefix}]</span>
+          )}
+          {normalizedMsg.timestamp && (
+            <span className="text-cyan text-opacity-70 mr-2">
+              {normalizedMsg.timestamp}
+            </span>
+          )}
           {normalizedMsg.animated ? (
             <TypeWriter text={normalizedMsg.content} delay={35} />
           ) : (
@@ -108,8 +133,14 @@ const InfoMessage: React.FC<MessageProps> = ({ message }) => {
   const normalizedMsg = normalizeMessage(message);
   return (
     <div className="text-blue">
-      {normalizedMsg.prefix && <span className="font-bold mr-1">[{normalizedMsg.prefix}]</span>}
-      {normalizedMsg.timestamp && <span className="text-cyan text-opacity-70 mr-2">{normalizedMsg.timestamp}</span>}
+      {normalizedMsg.prefix && (
+        <span className="font-bold mr-1">[{normalizedMsg.prefix}]</span>
+      )}
+      {normalizedMsg.timestamp && (
+        <span className="text-cyan text-opacity-70 mr-2">
+          {normalizedMsg.timestamp}
+        </span>
+      )}
       {normalizedMsg.animated ? (
         <TypeWriter text={normalizedMsg.content} delay={30} />
       ) : (
@@ -124,8 +155,14 @@ const CommandMessage: React.FC<MessageProps> = ({ message }) => {
   const normalizedMsg = normalizeMessage(message);
   return (
     <div className="text-shocking-pink">
-      {normalizedMsg.prefix && <span className="font-bold mr-1">[{normalizedMsg.prefix}]</span>}
-      {normalizedMsg.timestamp && <span className="text-cyan text-opacity-70 mr-2">{normalizedMsg.timestamp}</span>}
+      {normalizedMsg.prefix && (
+        <span className="font-bold mr-1">[{normalizedMsg.prefix}]</span>
+      )}
+      {normalizedMsg.timestamp && (
+        <span className="text-cyan text-opacity-70 mr-2">
+          {normalizedMsg.timestamp}
+        </span>
+      )}
       {normalizedMsg.animated ? (
         <TypeWriter text={normalizedMsg.content} delay={20} />
       ) : (
@@ -140,8 +177,14 @@ const DefaultMessage: React.FC<MessageProps> = ({ message }) => {
   const normalizedMsg = normalizeMessage(message);
   return (
     <div className="text-white">
-      {normalizedMsg.prefix && <span className="font-bold mr-1">[{normalizedMsg.prefix}]</span>}
-      {normalizedMsg.timestamp && <span className="text-cyan text-opacity-70 mr-2">{normalizedMsg.timestamp}</span>}
+      {normalizedMsg.prefix && (
+        <span className="font-bold mr-1">[{normalizedMsg.prefix}]</span>
+      )}
+      {normalizedMsg.timestamp && (
+        <span className="text-cyan text-opacity-70 mr-2">
+          {normalizedMsg.timestamp}
+        </span>
+      )}
       {normalizedMsg.animated ? (
         <TypeWriter text={normalizedMsg.content} delay={30} />
       ) : (
@@ -152,26 +195,31 @@ const DefaultMessage: React.FC<MessageProps> = ({ message }) => {
 };
 
 // File listing component
-const FileListingMessage: React.FC<MessageProps> = ({ message, onExecuteCommand }) => {
+const FileListingMessage: React.FC<MessageProps> = ({
+  message,
+  onExecuteCommand,
+}) => {
   const normalizedMsg = normalizeMessage(message);
   if (!normalizedMsg.files || normalizedMsg.files.length === 0) {
     return <DefaultMessage message={normalizedMsg} />;
   }
-  
+
   // Get the current path from the message if available
   const currentPath = normalizedMsg.path || '/';
-  
+
   // Handle file click to execute appropriate command
   const handleFileClick = (file: string) => {
-    if (!onExecuteCommand) {return;}
-    
+    if (!onExecuteCommand) {
+      return;
+    }
+
     // Determine if it's a file or directory based on the naming convention
     // For now, assume directories end with '/'
     const isDirectory = file.endsWith('/');
-    
+
     // Remove trailing slash for display and commands if it's a directory
     const cleanName = isDirectory ? file.slice(0, -1) : file;
-    
+
     // Execute appropriate command based on file type
     if (isDirectory) {
       onExecuteCommand(`cd ${cleanName}`);
@@ -179,7 +227,7 @@ const FileListingMessage: React.FC<MessageProps> = ({ message, onExecuteCommand 
       onExecuteCommand(`cat ${cleanName}`);
     }
   };
-  
+
   return (
     <div>
       <InfoMessage message={normalizedMsg} />
@@ -187,10 +235,10 @@ const FileListingMessage: React.FC<MessageProps> = ({ message, onExecuteCommand 
         {normalizedMsg.files.map((file: string, index: number) => {
           // Check if it's a directory (assuming it ends with '/')
           const isDirectory = file.endsWith('/');
-          
+
           return (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className={`
                 cursor-pointer 
                 ${isDirectory ? 'text-blue' : 'text-cyan'} 
@@ -204,9 +252,7 @@ const FileListingMessage: React.FC<MessageProps> = ({ message, onExecuteCommand 
               title={isDirectory ? `Navigate to ${file}` : `View ${file}`}
             >
               {/* Icon for file/directory */}
-              <span className="mr-1">
-                {isDirectory ? '📁' : '📄'}
-              </span>
+              <span className="mr-1">{isDirectory ? '📁' : '📄'}</span>
               {file}
             </div>
           );
@@ -222,11 +268,17 @@ const TableMessage: React.FC<MessageProps> = ({ message }) => {
   if (!normalizedMsg.tableData) {
     return <DefaultMessage message={normalizedMsg} />;
   }
-  
+
   return (
     <div>
-      {normalizedMsg.prefix && <span className="font-bold mr-1">[{normalizedMsg.prefix}]</span>}
-      {normalizedMsg.timestamp && <span className="text-cyan text-opacity-70 mr-2">{normalizedMsg.timestamp}</span>}
+      {normalizedMsg.prefix && (
+        <span className="font-bold mr-1">[{normalizedMsg.prefix}]</span>
+      )}
+      {normalizedMsg.timestamp && (
+        <span className="text-cyan text-opacity-70 mr-2">
+          {normalizedMsg.timestamp}
+        </span>
+      )}
       {normalizedMsg.content && (
         <div className="mb-2">
           {normalizedMsg.animated ? (
@@ -236,9 +288,9 @@ const TableMessage: React.FC<MessageProps> = ({ message }) => {
           )}
         </div>
       )}
-      <TableRenderer 
-        data={normalizedMsg.tableData} 
-        title={normalizedMsg.tableData.title} 
+      <TableRenderer
+        data={normalizedMsg.tableData}
+        title={normalizedMsg.tableData.title}
         glitchEffect={normalizedMsg.type === 'error'}
       />
     </div>
@@ -251,13 +303,19 @@ const ProgressMessage: React.FC<MessageProps> = ({ message }) => {
   if (!normalizedMsg.progress) {
     return <DefaultMessage message={normalizedMsg} />;
   }
-  
+
   const { value, status, isComplete, isError, label } = normalizedMsg.progress;
-  
+
   return (
     <div>
-      {normalizedMsg.prefix && <span className="font-bold mr-1">[{normalizedMsg.prefix}]</span>}
-      {normalizedMsg.timestamp && <span className="text-cyan text-opacity-70 mr-2">{normalizedMsg.timestamp}</span>}
+      {normalizedMsg.prefix && (
+        <span className="font-bold mr-1">[{normalizedMsg.prefix}]</span>
+      )}
+      {normalizedMsg.timestamp && (
+        <span className="text-cyan text-opacity-70 mr-2">
+          {normalizedMsg.timestamp}
+        </span>
+      )}
       {normalizedMsg.content && (
         <div className="mb-2">
           {normalizedMsg.animated ? (
@@ -280,24 +338,32 @@ const ProgressMessage: React.FC<MessageProps> = ({ message }) => {
 };
 
 // Main message renderer component
-const MessageRenderer: React.FC<MessageProps> = ({ message, onExecuteCommand }) => {
+const MessageRenderer: React.FC<MessageProps> = ({
+  message,
+  onExecuteCommand,
+}) => {
   const normalizedMsg = normalizeMessage(message);
-  
+
   // Check if it's a progress message
   if (normalizedMsg.progress) {
     return <ProgressMessage message={normalizedMsg} />;
   }
-  
+
   // Check if it's a table message
   if (normalizedMsg.tableData) {
     return <TableMessage message={normalizedMsg} />;
   }
-  
+
   // Check if it's a file listing
   if (normalizedMsg.files && normalizedMsg.files.length > 0) {
-    return <FileListingMessage message={normalizedMsg} onExecuteCommand={onExecuteCommand} />;
+    return (
+      <FileListingMessage
+        message={normalizedMsg}
+        onExecuteCommand={onExecuteCommand}
+      />
+    );
   }
-  
+
   // Render based on message type
   switch (normalizedMsg.type) {
     case 'error':
@@ -315,4 +381,4 @@ const MessageRenderer: React.FC<MessageProps> = ({ message, onExecuteCommand }) 
   }
 };
 
-export default MessageRenderer; 
+export default MessageRenderer;

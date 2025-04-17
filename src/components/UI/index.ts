@@ -1,10 +1,7 @@
 // src/components/UI/index.ts
-import Glitch from './Glitch';
-import TypeWriter from './TypeWriter';
 import CRTEffect from './CRTEffect';
+import Glitch from './Glitch';
+import OverlayEffects from './OverlayEffects';
+import TypeWriter from './TypeWriter';
 
-export {
-  Glitch,
-  TypeWriter,
-  CRTEffect
-};
+export { CRTEffect, Glitch, OverlayEffects, TypeWriter };

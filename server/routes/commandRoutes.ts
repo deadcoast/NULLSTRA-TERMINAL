@@ -11,33 +11,37 @@ export const setupCommandRoutes = (app: Application): void => {
    * @desc Execute a terminal command
    * @access Private (if authentication is enabled)
    */
-  app.post('/api/command', authenticate, async (req: Request, res: Response) => {
-    try {
-      const { command, args = [], sessionId } = req.body;
-      
-      if (!command) {
-        return res.status(400).json({ 
-          success: false, 
-          message: 'Command is required' 
+  app.post(
+    '/api/command',
+    authenticate,
+    async (req: Request, res: Response) => {
+      try {
+        const { command, args = [], sessionId } = req.body;
+
+        if (!command) {
+          return res.status(400).json({
+            success: false,
+            message: 'Command is required',
+          });
+        }
+
+        const result = await executeCommand(command, args, sessionId);
+
+        return res.json({
+          success: true,
+          result,
+        });
+      } catch (error) {
+        console.error('Command execution error:', error);
+        return res.status(500).json({
+          success: false,
+          message: 'Error executing command',
+          error: (error as Error).message,
         });
       }
-      
-      const result = await executeCommand(command, args, sessionId);
-      
-      return res.json({
-        success: true,
-        result
-      });
-    } catch (error) {
-      console.error('Command execution error:', error);
-      return res.status(500).json({
-        success: false,
-        message: 'Error executing command',
-        error: (error as Error).message
-      });
     }
-  });
-  
+  );
+
   /**
    * @route GET /api/commands
    * @desc Get list of available commands
@@ -54,15 +58,15 @@ export const setupCommandRoutes = (app: Application): void => {
       { name: 'connect', description: 'Connect to a remote server' },
       { name: 'disconnect', description: 'Disconnect from current session' },
       { name: 'netstat', description: 'Display network connections' },
-      { name: 'traceroute', description: 'Trace route to host' }
+      { name: 'traceroute', description: 'Trace route to host' },
     ];
-    
+
     return res.json({
       success: true,
-      commands: availableCommands
+      commands: availableCommands,
     });
   });
-  
+
   /**
    * Health check endpoint
    */

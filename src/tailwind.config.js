@@ -51,7 +51,7 @@ module.exports = {
         typing: {
           from: { width: '0' },
           to: { width: '100%' },
-        }
+        },
       },
       animation: {
         blink: 'blink 1s step-end infinite',
@@ -63,4 +63,4 @@ module.exports = {
     },
   },
   plugins: [],
-}
+};

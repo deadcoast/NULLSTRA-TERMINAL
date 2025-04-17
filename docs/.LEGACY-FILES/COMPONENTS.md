@@ -12,63 +12,63 @@ This document provides a comprehensive implementation guide for building a futur
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./src/app/**/*.{js,ts,jsx,tsx}",
-    "./src/components/**/*.{js,ts,jsx,tsx}",
+    './src/app/**/*.{js,ts,jsx,tsx}',
+    './src/components/**/*.{js,ts,jsx,tsx}',
   ],
   theme: {
     extend: {
       colors: {
         terminal: {
-          black: "#000000",
-          darkBg: "#0A0A0A",
-          green: "#00FF00",
-          brightGreen: "#90EE90",
-          magenta: "#FF00FF",
-          cyan: "#00FFFF",
-          yellow: "#FFBF00",
-          red: "#FF0000",
-          white: "#FFFFFF",
+          black: '#000000',
+          darkBg: '#0A0A0A',
+          green: '#00FF00',
+          brightGreen: '#90EE90',
+          magenta: '#FF00FF',
+          cyan: '#00FFFF',
+          yellow: '#FFBF00',
+          red: '#FF0000',
+          white: '#FFFFFF',
         },
       },
       fontFamily: {
-        mono: ['"JetBrains Mono"', '"Fira Code"', "Consolas", "monospace"],
+        mono: ['"JetBrains Mono"', '"Fira Code"', 'Consolas', 'monospace'],
       },
       boxShadow: {
-        "terminal-green": "0 0 5px rgba(0, 255, 0, 0.7)",
-        "terminal-magenta": "0 0 5px rgba(255, 0, 255, 0.7)",
-        "terminal-red": "0 0 5px rgba(255, 0, 0, 0.7)",
-        "terminal-cyan": "0 0 5px rgba(0, 255, 255, 0.7)",
+        'terminal-green': '0 0 5px rgba(0, 255, 0, 0.7)',
+        'terminal-magenta': '0 0 5px rgba(255, 0, 255, 0.7)',
+        'terminal-red': '0 0 5px rgba(255, 0, 0, 0.7)',
+        'terminal-cyan': '0 0 5px rgba(0, 255, 255, 0.7)',
       },
       keyframes: {
         blink: {
-          "0%, 100%": { opacity: 1 },
-          "50%": { opacity: 0 },
+          '0%, 100%': { opacity: 1 },
+          '50%': { opacity: 0 },
         },
         scanline: {
-          "0%": { transform: "translateY(-100%)" },
-          "100%": { transform: "translateY(100%)" },
+          '0%': { transform: 'translateY(-100%)' },
+          '100%': { transform: 'translateY(100%)' },
         },
         glitch: {
-          "0%, 100%": { transform: "translate(0)" },
-          "33%": { transform: "translate(-5px, 2px)" },
-          "66%": { transform: "translate(5px, -2px)" },
+          '0%, 100%': { transform: 'translate(0)' },
+          '33%': { transform: 'translate(-5px, 2px)' },
+          '66%': { transform: 'translate(5px, -2px)' },
         },
         flicker: {
-          "0%, 100%": { opacity: 1 },
-          "33%": { opacity: 0.95 },
-          "66%": { opacity: 0.98 },
+          '0%, 100%': { opacity: 1 },
+          '33%': { opacity: 0.95 },
+          '66%': { opacity: 0.98 },
         },
         typing: {
-          from: { width: "0" },
-          to: { width: "100%" },
+          from: { width: '0' },
+          to: { width: '100%' },
         },
       },
       animation: {
-        blink: "blink 1s step-end infinite",
-        scanline: "scanline 8s linear infinite",
-        glitch: "glitch 0.3s ease-in-out infinite",
-        flicker: "flicker 5s linear infinite",
-        typing: "typing 3.5s steps(40, end)",
+        blink: 'blink 1s step-end infinite',
+        scanline: 'scanline 8s linear infinite',
+        glitch: 'glitch 0.3s ease-in-out infinite',
+        flicker: 'flicker 5s linear infinite',
+        typing: 'typing 3.5s steps(40, end)',
       },
     },
   },
@@ -83,7 +83,7 @@ module.exports = {
 @tailwind components;
 @tailwind utilities;
 
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap');
 
 @layer base {
   body {
@@ -162,7 +162,7 @@ module.exports = {
 
   /* CRT Effect */
   .crt-overlay::before {
-    content: "";
+    content: '';
     @apply absolute top-0 left-0 right-0 bottom-0 pointer-events-none;
     background: linear-gradient(
       rgba(18, 16, 16, 0.1) 50%,
@@ -1032,15 +1032,15 @@ export default CRTEffect;
 ### `hooks/useTerminal.ts`
 
 ```typescript
-import { useState, useCallback } from "react";
+import { useState, useCallback } from 'react';
 import {
   TerminalMessage,
   executeCommand as processCommand,
-} from "../utils/terminalCommands";
+} from '../utils/terminalCommands';
 
 const useTerminal = (initialMessages: TerminalMessage[] = []) => {
   const [messages, setMessages] = useState<TerminalMessage[]>(initialMessages);
-  const [currentPath, setCurrentPath] = useState("");
+  const [currentPath, setCurrentPath] = useState('');
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
 
@@ -1058,9 +1058,9 @@ const useTerminal = (initialMessages: TerminalMessage[] = []) => {
       setMessages((prev) => [
         ...prev,
         {
-          type: "command",
+          type: 'command',
           content: command,
-          prefix: "USER",
+          prefix: 'USER',
           path: currentPath,
           timestamp,
         },
@@ -1081,7 +1081,7 @@ const useTerminal = (initialMessages: TerminalMessage[] = []) => {
       const result = processCommand(command, currentPath);
 
       // Update path if command was cd
-      if (command.trim().startsWith("cd ") && result.type === "success") {
+      if (command.trim().startsWith('cd ') && result.type === 'success') {
         const newPath = command.trim().substring(3);
         setCurrentPath(currentPath ? `${currentPath}/${newPath}` : newPath);
       }
@@ -1096,8 +1096,8 @@ const useTerminal = (initialMessages: TerminalMessage[] = []) => {
 
   // Navigate command history
   const navigateHistory = useCallback(
-    (direction: "up" | "down") => {
-      if (direction === "up") {
+    (direction: 'up' | 'down') => {
+      if (direction === 'up') {
         // Move back in history
         if (historyIndex < commandHistory.length - 1) {
           setHistoryIndex(historyIndex + 1);
@@ -1129,7 +1129,7 @@ export default useTerminal;
 ### `hooks/useCommandHistory.ts`
 
 ```typescript
-import { useState, useCallback } from "react";
+import { useState, useCallback } from 'react';
 
 const useCommandHistory = () => {
   const [history, setHistory] = useState<string[]>([]);
@@ -1143,8 +1143,8 @@ const useCommandHistory = () => {
 
   // Navigate through history
   const navigateHistory = useCallback(
-    (direction: "up" | "down") => {
-      if (direction === "up") {
+    (direction: 'up' | 'down') => {
+      if (direction === 'up') {
         // Move back in history
         if (historyIndex < history.length - 1) {
           setHistoryIndex((prev) => prev + 1);
@@ -1164,7 +1164,7 @@ const useCommandHistory = () => {
     if (historyIndex >= 0 && historyIndex < history.length) {
       return history[historyIndex];
     }
-    return "";
+    return '';
   }, [history, historyIndex]);
 
   return {
@@ -1182,7 +1182,7 @@ export default useCommandHistory;
 ### `hooks/useTypewriterEffect.ts`
 
 ```typescript
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from 'react';
 
 interface TypewriterOptions {
   text: string;
@@ -1197,13 +1197,13 @@ const useTypewriterEffect = ({
   startDelay = 0,
   onComplete,
 }: TypewriterOptions) => {
-  const [displayedText, setDisplayedText] = useState("");
+  const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
 
   // Start typing animation
   const startTyping = useCallback(() => {
-    setDisplayedText("");
+    setDisplayedText('');
     setIsTyping(true);
     setIsComplete(false);
   }, []);
@@ -1222,7 +1222,7 @@ const useTypewriterEffect = ({
 
     if (isTyping) {
       // Reset state
-      setDisplayedText("");
+      setDisplayedText('');
       setIsComplete(false);
 
       // Start typing after startDelay
@@ -1267,7 +1267,7 @@ export default useTypewriterEffect;
 
 ```typescript
 export interface TerminalMessage {
-  type: "error" | "warning" | "success" | "info" | "command";
+  type: 'error' | 'warning' | 'success' | 'info' | 'command';
   content: string;
   prefix?: string;
   timestamp?: string;
@@ -1278,48 +1278,48 @@ export interface TerminalMessage {
 
 // Mock file system structure
 const fileSystem = {
-  "": {
-    type: "directory",
+  '': {
+    type: 'directory',
     children: {
-      Command_History: { type: "directory" },
-      Commerce: { type: "directory" },
-      Diagnostics: { type: "directory" },
-      Education: { type: "directory" },
-      Ethics: { type: "directory" },
-      Innovation: { type: "directory" },
-      Interplanetary: { type: "directory" },
+      Command_History: { type: 'directory' },
+      Commerce: { type: 'directory' },
+      Diagnostics: { type: 'directory' },
+      Education: { type: 'directory' },
+      Ethics: { type: 'directory' },
+      Innovation: { type: 'directory' },
+      Interplanetary: { type: 'directory' },
       Legislation: {
-        type: "directory",
+        type: 'directory',
         children: {
-          Diplomacy: { type: "directory" },
-          Governance: { type: "directory" },
+          Diplomacy: { type: 'directory' },
+          Governance: { type: 'directory' },
           Security: {
-            type: "directory",
+            type: 'directory',
             children: {
-              Asset_Protection: { type: "directory" },
-              "Counter-Intelligence": { type: "directory" },
+              Asset_Protection: { type: 'directory' },
+              'Counter-Intelligence': { type: 'directory' },
               Cybersecurity: {
-                type: "directory",
+                type: 'directory',
                 children: {
-                  "decrypt.sh": {
-                    type: "file",
+                  'decrypt.sh': {
+                    type: 'file',
                     content:
                       '#!/bin/bash\n# Decryption utility\necho "Decrypting data..."',
                   },
-                  Diplomatic_Security: { type: "directory" },
-                  "Security_Research_&_Development": { type: "directory" },
-                  Security_Training: { type: "directory" },
-                  Surveillance: { type: "directory" },
+                  Diplomatic_Security: { type: 'directory' },
+                  'Security_Research_&_Development': { type: 'directory' },
+                  Security_Training: { type: 'directory' },
+                  Surveillance: { type: 'directory' },
                   Threat_Assessment: {
-                    type: "directory",
+                    type: 'directory',
                     children: {
                       STARTING_LINE: {
-                        type: "directory",
+                        type: 'directory',
                         children: {
-                          "starting_line.txt": {
-                            type: "file",
+                          'starting_line.txt': {
+                            type: 'file',
                             content:
-                              "CLASSIFIED REPORT: [CLEARANCE REQUIRED]\nCODENAME: STARTING LINE\n\nCASE FILE: [SECURITY CLASSIFIED]\nTYPE: Multi-target Threat Assessment\nSTATUS: [SECURITY CLASSIFIED]\n\nSUMMARY:\nExternal infosec breach compromised vital intelligence related to system-wide security.\nHighly classified details related to PRO:GO and its target were discovered by non-NULLSTRA operatives with intent to disseminate for currently undefined purposes including, but not limited to, anti-NULLSTRA activities, recruitment of public, private, and governmental parties into the ranks of known and suspected anti-NULLSTRA groups, including, but not limited to MIDA, Traxus OffWorld Industries, and Sekiguchi Genetics.\n\nNOTES:\nIncident response to secure systems breach via cross-party manipulation by third party operative(s).\n\nParties:\n- MIDA, primary\n- Traxus OffWorld Industries, secondary\n- Sekiguchi Genetics, secondary",
+                              'CLASSIFIED REPORT: [CLEARANCE REQUIRED]\nCODENAME: STARTING LINE\n\nCASE FILE: [SECURITY CLASSIFIED]\nTYPE: Multi-target Threat Assessment\nSTATUS: [SECURITY CLASSIFIED]\n\nSUMMARY:\nExternal infosec breach compromised vital intelligence related to system-wide security.\nHighly classified details related to PRO:GO and its target were discovered by non-NULLSTRA operatives with intent to disseminate for currently undefined purposes including, but not limited to, anti-NULLSTRA activities, recruitment of public, private, and governmental parties into the ranks of known and suspected anti-NULLSTRA groups, including, but not limited to MIDA, Traxus OffWorld Industries, and Sekiguchi Genetics.\n\nNOTES:\nIncident response to secure systems breach via cross-party manipulation by third party operative(s).\n\nParties:\n- MIDA, primary\n- Traxus OffWorld Industries, secondary\n- Sekiguchi Genetics, secondary',
                           },
                         },
                       },
@@ -1327,34 +1327,34 @@ const fileSystem = {
                   },
                 },
               },
-              Defense: { type: "directory" },
-              Surveillance: { type: "directory" },
-              Tactical_Operations: { type: "directory" },
+              Defense: { type: 'directory' },
+              Surveillance: { type: 'directory' },
+              Tactical_Operations: { type: 'directory' },
             },
           },
         },
       },
-      Operational_Protocols: { type: "directory" },
-      Outreach: { type: "directory" },
-      Research: { type: "directory" },
-      Sustainability: { type: "directory" },
-      System_Configurations: { type: "directory" },
-      NULLSTRA_Departments: { type: "directory" },
-      "User_Notes_[Batch]": { type: "directory" },
+      Operational_Protocols: { type: 'directory' },
+      Outreach: { type: 'directory' },
+      Research: { type: 'directory' },
+      Sustainability: { type: 'directory' },
+      System_Configurations: { type: 'directory' },
+      NULLSTRA_Departments: { type: 'directory' },
+      'User_Notes_[Batch]': { type: 'directory' },
     },
   },
 };
 
 // Helper function to navigate file system
 const getFileSystemItem = (path: string): any => {
-  if (!path) return fileSystem[""];
+  if (!path) return fileSystem[''];
 
-  const pathParts = path.split("/").filter(Boolean);
-  let current = fileSystem[""];
+  const pathParts = path.split('/').filter(Boolean);
+  let current = fileSystem[''];
 
   for (const part of pathParts) {
     if (
-      current.type !== "directory" ||
+      current.type !== 'directory' ||
       !current.children ||
       !current.children[part]
     ) {
@@ -1381,19 +1381,19 @@ export const executeCommand = (
 
   // Handle commands
   switch (command.toLowerCase()) {
-    case "help":
+    case 'help':
       return {
-        type: "info",
-        content: "Available commands: ls, cd, help, sysinfo, read, exec, clear",
+        type: 'info',
+        content: 'Available commands: ls, cd, help, sysinfo, read, exec, clear',
         timestamp,
         animated: true,
       };
 
-    case "ls":
+    case 'ls':
       const item = getFileSystemItem(currentPath);
-      if (!item || item.type !== "directory") {
+      if (!item || item.type !== 'directory') {
         return {
-          type: "error",
+          type: 'error',
           content: `Directory not found: ${currentPath}`,
           timestamp,
         };
@@ -1404,27 +1404,27 @@ export const executeCommand = (
 
       return [
         {
-          type: "info",
+          type: 'info',
           content: `The folder ${
-            currentPath || "root"
+            currentPath || 'root'
           } contains the following files:`,
-          prefix: "TERMINAL",
+          prefix: 'TERMINAL',
           timestamp,
           files,
         },
       ];
 
-    case "cd":
-      const directory = args[0] || "";
+    case 'cd':
+      const directory = args[0] || '';
 
       // Handle special cases
-      if (directory === "..") {
+      if (directory === '..') {
         // Go up one level
-        const pathParts = currentPath.split("/").filter(Boolean);
+        const pathParts = currentPath.split('/').filter(Boolean);
         pathParts.pop();
         return {
-          type: "success",
-          content: "Directory changed.",
+          type: 'success',
+          content: 'Directory changed.',
           timestamp,
         };
       }
@@ -1438,58 +1438,58 @@ export const executeCommand = (
       }
 
       const target = getFileSystemItem(newPath);
-      if (!target || target.type !== "directory") {
+      if (!target || target.type !== 'directory') {
         return {
-          type: "error",
+          type: 'error',
           content: `Directory not found: ${newPath}`,
           timestamp,
         };
       }
 
       return {
-        type: "success",
-        content: "Directory changed.",
+        type: 'success',
+        content: 'Directory changed.',
         timestamp,
       };
 
-    case "read":
-      const filePath = args[0] || "";
+    case 'read':
+      const filePath = args[0] || '';
 
       // Determine full path
       let fullPath = filePath;
-      if (!filePath.startsWith("/") && currentPath) {
+      if (!filePath.startsWith('/') && currentPath) {
         fullPath = `${currentPath}/${filePath}`;
       }
 
       const file = getFileSystemItem(fullPath);
-      if (!file || file.type !== "file") {
+      if (!file || file.type !== 'file') {
         return {
-          type: "error",
+          type: 'error',
           content: `File not found: ${filePath}`,
           timestamp,
         };
       }
 
       return {
-        type: "info",
+        type: 'info',
         content: file.content,
-        prefix: "TERMINAL",
+        prefix: 'TERMINAL',
         timestamp,
       };
 
-    case "exec":
-      const scriptPath = args[0] || "";
+    case 'exec':
+      const scriptPath = args[0] || '';
 
       // Determine full script path
       let fullScriptPath = scriptPath;
-      if (!scriptPath.startsWith("/") && currentPath) {
+      if (!scriptPath.startsWith('/') && currentPath) {
         fullScriptPath = `${currentPath}/${scriptPath}`;
       }
 
       const script = getFileSystemItem(fullScriptPath);
-      if (!script || script.type !== "file") {
+      if (!script || script.type !== 'file') {
         return {
-          type: "error",
+          type: 'error',
           content: `Script not found: ${scriptPath}`,
           timestamp,
         };
@@ -1498,125 +1498,125 @@ export const executeCommand = (
       // Execute the script (simulate)
       return [
         {
-          type: "info",
+          type: 'info',
           content: `Executing ${scriptPath}`,
-          prefix: "TERMINAL",
+          prefix: 'TERMINAL',
           timestamp,
         },
         {
-          type: "info",
-          content: "#!/bin/bash\n# Decryption utility",
+          type: 'info',
+          content: '#!/bin/bash\n# Decryption utility',
           timestamp,
         },
         {
-          type: "info",
-          content: "Decrypting data...",
+          type: 'info',
+          content: 'Decrypting data...',
           timestamp,
           animated: true,
         },
         {
-          type: "info",
-          content: "[OK] Execution completed successfully.",
+          type: 'info',
+          content: '[OK] Execution completed successfully.',
           timestamp,
         },
       ];
 
-    case "sysinfo":
+    case 'sysinfo':
       return [
         {
-          type: "info",
-          prefix: "TERMINAL",
-          content: "CYAQUEBC.local",
+          type: 'info',
+          prefix: 'TERMINAL',
+          content: 'CYAQUEBC.local',
           timestamp,
         },
         {
-          type: "info",
-          content: "OS: NULLSTRA-UNIX 2803.04.1 LTS",
+          type: 'info',
+          content: 'OS: NULLSTRA-UNIX 2803.04.1 LTS',
           timestamp,
         },
         {
-          type: "info",
-          content: "Host: CyberAcme Systems Model CV-4788",
+          type: 'info',
+          content: 'Host: CyberAcme Systems Model CV-4788',
           timestamp,
         },
         {
-          type: "info",
-          content: "Kernel: 15.92.0-NULLSTRA-secure",
+          type: 'info',
+          content: 'Kernel: 15.92.0-NULLSTRA-secure',
           timestamp,
         },
         {
-          type: "info",
-          content: "Uptime: 45088d 17h 19m",
+          type: 'info',
+          content: 'Uptime: 45088d 17h 19m',
           timestamp,
         },
         {
-          type: "info",
-          content: "Packages: 23,471 (quantum-apt)",
+          type: 'info',
+          content: 'Packages: 23,471 (quantum-apt)',
           timestamp,
         },
         {
-          type: "info",
-          content: "Shell: neutron-shell 12.7.3",
+          type: 'info',
+          content: 'Shell: neutron-shell 12.7.3',
           timestamp,
         },
         {
-          type: "info",
-          content: "Resolver: 18K-Hole",
+          type: 'info',
+          content: 'Resolver: 18K-Hole',
           timestamp,
         },
         {
-          type: "info",
-          content: "DE: NeuroAqua 42.4.1",
+          type: 'info',
+          content: 'DE: NeuroAqua 42.4.1',
           timestamp,
         },
         {
-          type: "info",
-          content: "WM: Quantum Compositor 30.7.3",
+          type: 'info',
+          content: 'WM: Quantum Compositor 30.7.3',
           timestamp,
         },
         {
-          type: "info",
-          content: "WM Theme: Grafix (DARK)",
+          type: 'info',
+          content: 'WM Theme: Grafix (DARK)',
           timestamp,
         },
         {
-          type: "info",
-          content: "Terminal: phantom-term 8.3.4",
+          type: 'info',
+          content: 'Terminal: phantom-term 8.3.4',
           timestamp,
         },
         {
-          type: "info",
-          content: "CPU: Quantum Vector 2298 (128) @ 12.88THz",
+          type: 'info',
+          content: 'CPU: Quantum Vector 2298 (128) @ 12.88THz',
           timestamp,
         },
         {
-          type: "info",
-          content: "Memory: 1.28TB Quantum-RAM",
+          type: 'info',
+          content: 'Memory: 1.28TB Quantum-RAM',
           timestamp,
         },
         {
-          type: "info",
-          content: "Storage: 180TB Molecular Storage (Neural-Encrypted)",
+          type: 'info',
+          content: 'Storage: 180TB Molecular Storage (Neural-Encrypted)',
           timestamp,
         },
         {
-          type: "info",
-          content: "Security: NeuralNetDefense Encryption Active",
+          type: 'info',
+          content: 'Security: NeuralNetDefense Encryption Active',
           timestamp,
         },
       ];
 
-    case "clear":
+    case 'clear':
       return {
-        type: "command",
-        content: "Terminal cleared",
+        type: 'command',
+        content: 'Terminal cleared',
         timestamp,
         clearTerminal: true,
       };
 
     default:
       return {
-        type: "error",
+        type: 'error',
         content: `Command not found: ${command}`,
         timestamp,
       };
@@ -1633,12 +1633,12 @@ export const generateNoise = (
   height: number,
   opacity: number = 0.1
 ): string => {
-  const canvas = document.createElement("canvas");
+  const canvas = document.createElement('canvas');
   canvas.width = width;
   canvas.height = height;
 
-  const ctx = canvas.getContext("2d");
-  if (!ctx) return "";
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return '';
 
   const imageData = ctx.createImageData(width, height);
   const data = imageData.data;
@@ -1659,18 +1659,18 @@ export const generateNoise = (
 // Helper function to apply glitch effect to text
 export const glitchText = (text: string): string => {
   // Characters to randomly replace with
-  const glitchChars = "!@#$%^&*()_+-=[]{}|;:,.<>?/\\";
+  const glitchChars = '!@#$%^&*()_+-=[]{}|;:,.<>?/\\';
 
   // Apply glitch to random positions
   const result = text
-    .split("")
+    .split('')
     .map((char) => {
       if (Math.random() < 0.05) {
         return glitchChars[Math.floor(Math.random() * glitchChars.length)];
       }
       return char;
     })
-    .join("");
+    .join('');
 
   return result;
 };
@@ -1678,22 +1678,25 @@ export const glitchText = (text: string): string => {
 // Helper to simulate connection issues
 export const simulateConnectionIssue = (): Promise<void> => {
   return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve();
-    }, Math.random() * 1000 + 500);
+    setTimeout(
+      () => {
+        resolve();
+      },
+      Math.random() * 1000 + 500
+    );
   });
 };
 
 // Generate random error message
 export const generateRandomError = (): string => {
   const errors = [
-    "[FAIL] Remote node unresponsive.",
-    "[WARN] Link failure detected at node 4A-7D.",
-    "[FAIL] Decryption failed.",
-    "[WARN] Power fluctuation detected.",
-    "[WARN] High fragmentation detected.",
-    "[FAIL] Module 7E-1D misalignment detected.",
-    "[WARN] Unrecognized transmission detected on secured channel.",
+    '[FAIL] Remote node unresponsive.',
+    '[WARN] Link failure detected at node 4A-7D.',
+    '[FAIL] Decryption failed.',
+    '[WARN] Power fluctuation detected.',
+    '[WARN] High fragmentation detected.',
+    '[FAIL] Module 7E-1D misalignment detected.',
+    '[WARN] Unrecognized transmission detected on secured channel.',
   ];
 
   return errors[Math.floor(Math.random() * errors.length)];
@@ -1702,9 +1705,9 @@ export const generateRandomError = (): string => {
 // Format timestamp for terminal display
 export const formatTimestamp = (): string => {
   const now = new Date();
-  return `${String(now.getHours()).padStart(2, "0")}:${String(
+  return `${String(now.getHours()).padStart(2, '0')}:${String(
     now.getMinutes()
-  ).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}`;
+  ).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
 };
 
 // Format IP address

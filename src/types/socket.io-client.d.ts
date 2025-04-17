@@ -29,4 +29,4 @@ declare module 'axios' {
 
   const axios: AxiosInstance;
   export default axios;
-} 
+}

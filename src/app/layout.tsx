@@ -9,7 +9,7 @@ import '../globals.css';
 const fraktionMono = localFont({
   src: '../fonts/PPFraktionMono-Regular.woff2',
   display: 'swap',
-  variable: '--font-terminal'
+  variable: '--font-terminal',
 });
 
 export const metadata: Metadata = {
@@ -24,9 +24,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${fraktionMono.variable} font-sans h-full`}>
-      <body className="antialiased h-full">
-        {children}
-      </body>
+      <body className="antialiased h-full">{children}</body>
     </html>
   );
 }

@@ -4,8 +4,8 @@
 
 ```tsx
 // src/components/Terminal/TerminalWindow.tsx
-import React, { ReactNode } from "react";
-import "../styles/terminal.css";
+import React, { ReactNode } from 'react';
+import '../styles/terminal.css';
 
 interface TerminalWindowProps {
   children: ReactNode;
@@ -14,7 +14,7 @@ interface TerminalWindowProps {
 
 const TerminalWindow: React.FC<TerminalWindowProps> = ({
   children,
-  className = "",
+  className = '',
 }) => {
   return (
     <div className={`terminal-window ${className}`}>
@@ -33,7 +33,7 @@ export default TerminalWindow;
 
 ```tsx
 // src/components/Terminal/TerminalHeader.tsx
-import React from "react";
+import React from 'react';
 
 interface TerminalHeaderProps {
   title: string;
@@ -42,7 +42,7 @@ interface TerminalHeaderProps {
 
 const TerminalHeader: React.FC<TerminalHeaderProps> = ({
   title,
-  className = "",
+  className = '',
 }) => {
   return (
     <div className={`terminal-header ${className}`}>
@@ -59,7 +59,7 @@ export default TerminalHeader;
 
 ```tsx
 // src/components/Terminal/TerminalOutput.tsx
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect } from 'react';
 
 interface TerminalOutputProps {
   children: React.ReactNode;
@@ -69,7 +69,7 @@ interface TerminalOutputProps {
 
 const TerminalOutput: React.FC<TerminalOutputProps> = ({
   children,
-  className = "",
+  className = '',
   autoScroll = true,
 }) => {
   const outputRef = useRef<HTMLDivElement>(null);
@@ -94,10 +94,10 @@ export default TerminalOutput;
 
 ```tsx
 // src/components/Terminal/TerminalOutputLine.tsx
-import React from "react";
+import React from 'react';
 
 interface TerminalOutputLineProps {
-  type?: "error" | "warning" | "success" | "info" | "system";
+  type?: 'error' | 'warning' | 'success' | 'info' | 'system';
   prefix?: string;
   timestamp?: string;
   children: React.ReactNode;
@@ -109,12 +109,12 @@ const TerminalOutputLine: React.FC<TerminalOutputLineProps> = ({
   prefix,
   timestamp,
   children,
-  className = "",
+  className = '',
 }) => {
   return (
     <div
       className={`terminal-line ${
-        type ? `terminal-line-${type}` : ""
+        type ? `terminal-line-${type}` : ''
       } ${className}`}
     >
       {prefix && <span className="terminal-line-prefix">{prefix}</span>}
@@ -131,7 +131,7 @@ export default TerminalOutputLine;
 
 ```tsx
 // src/components/Terminal/TerminalPrompt.tsx
-import React, { useState, useRef, KeyboardEvent, useEffect } from "react";
+import React, { useState, useRef, KeyboardEvent, useEffect } from 'react';
 
 interface TerminalPromptProps {
   path: string;
@@ -144,11 +144,11 @@ interface TerminalPromptProps {
 const TerminalPrompt: React.FC<TerminalPromptProps> = ({
   path,
   onCommand,
-  className = "",
+  className = '',
   disabled = false,
-  placeholder = "",
+  placeholder = '',
 }) => {
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -158,11 +158,11 @@ const TerminalPrompt: React.FC<TerminalPromptProps> = ({
   }, [disabled, path]);
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    if (e.key === 'Enter') {
       e.preventDefault();
       if (input.trim()) {
         onCommand(input);
-        setInput("");
+        setInput('');
       }
     }
   };
@@ -188,7 +188,7 @@ const TerminalPrompt: React.FC<TerminalPromptProps> = ({
         />
         <span
           className={`terminal-cursor ${
-            disabled ? "terminal-cursor-hidden" : ""
+            disabled ? 'terminal-cursor-hidden' : ''
           }`}
         ></span>
       </div>
@@ -203,7 +203,7 @@ export default TerminalPrompt;
 
 ```tsx
 // src/components/Terminal/TerminalFileList.tsx
-import React from "react";
+import React from 'react';
 
 interface TerminalFileListProps {
   title: string;
@@ -215,7 +215,7 @@ interface TerminalFileListProps {
 const TerminalFileList: React.FC<TerminalFileListProps> = ({
   title,
   files,
-  className = "",
+  className = '',
   onFileClick,
 }) => {
   return (
@@ -226,7 +226,7 @@ const TerminalFileList: React.FC<TerminalFileListProps> = ({
           <span
             key={index}
             className={`terminal-file-name ${
-              onFileClick ? "terminal-file-clickable" : ""
+              onFileClick ? 'terminal-file-clickable' : ''
             }`}
             onClick={onFileClick ? () => onFileClick(file) : undefined}
           >
@@ -245,7 +245,7 @@ export default TerminalFileList;
 
 ```tsx
 // src/components/Terminal/TerminalDialog.tsx
-import React, { ReactNode } from "react";
+import React, { ReactNode } from 'react';
 
 interface TerminalDialogProps {
   title: string;
@@ -259,7 +259,7 @@ const TerminalDialog: React.FC<TerminalDialogProps> = ({
   title,
   children,
   onClose,
-  className = "",
+  className = '',
   showCloseButton = true,
 }) => {
   return (
@@ -284,7 +284,7 @@ export default TerminalDialog;
 
 ```tsx
 // src/components/Terminal/TerminalButton.tsx
-import React from "react";
+import React from 'react';
 
 interface TerminalButtonProps {
   children: React.ReactNode;
@@ -297,14 +297,14 @@ interface TerminalButtonProps {
 const TerminalButton: React.FC<TerminalButtonProps> = ({
   children,
   onClick,
-  className = "",
+  className = '',
   active = false,
   disabled = false,
 }) => {
   return (
     <button
-      className={`terminal-button ${active ? "terminal-button-active" : ""} ${
-        disabled ? "terminal-button-disabled" : ""
+      className={`terminal-button ${active ? 'terminal-button-active' : ''} ${
+        disabled ? 'terminal-button-disabled' : ''
       } ${className}`}
       onClick={disabled ? undefined : onClick}
       disabled={disabled}
@@ -321,7 +321,7 @@ export default TerminalButton;
 
 ```tsx
 // src/components/Terminal/TerminalStatusLine.tsx
-import React from "react";
+import React from 'react';
 
 interface TerminalStatusLineProps {
   ipAddress: string;
@@ -331,7 +331,7 @@ interface TerminalStatusLineProps {
 
 const TerminalStatusLine: React.FC<TerminalStatusLineProps> = ({
   ipAddress,
-  className = "",
+  className = '',
   children,
 }) => {
   return (
@@ -353,7 +353,7 @@ export default TerminalStatusLine;
 
 ```tsx
 // src/components/UI/CRTEffect.tsx
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef } from 'react';
 
 interface CRTEffectProps {
   intensity?: number;
@@ -364,7 +364,7 @@ interface CRTEffectProps {
 
 const CRTEffect: React.FC<CRTEffectProps> = ({
   intensity = 0.5,
-  className = "",
+  className = '',
   flickerFrequency = 0.03,
   scanlineSpacing = 4,
 }) => {
@@ -374,7 +374,7 @@ const CRTEffect: React.FC<CRTEffectProps> = ({
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
     // Resize to match window
@@ -383,7 +383,7 @@ const CRTEffect: React.FC<CRTEffectProps> = ({
       canvas.height = window.innerHeight;
     };
 
-    window.addEventListener("resize", resize);
+    window.addEventListener('resize', resize);
     resize();
 
     // Variables for animation
@@ -417,7 +417,7 @@ const CRTEffect: React.FC<CRTEffectProps> = ({
         canvas.width
       );
 
-      gradient.addColorStop(0, "rgba(0, 0, 0, 0)");
+      gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
       gradient.addColorStop(1, `rgba(0, 0, 0, ${0.9 * intensity})`);
 
       ctx.fillStyle = gradient;
@@ -429,7 +429,7 @@ const CRTEffect: React.FC<CRTEffectProps> = ({
     render();
 
     return () => {
-      window.removeEventListener("resize", resize);
+      window.removeEventListener('resize', resize);
       cancelAnimationFrame(frameId);
     };
   }, [intensity, flickerFrequency, scanlineSpacing]);
@@ -451,7 +451,7 @@ export default CRTEffect;
   height: 100vh;
   overflow: hidden;
   background-color: #000;
-  font-family: "JetBrains Mono", "Consolas", monospace;
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
   color: #00ff00;
   font-size: 16px;
   line-height: 1.4;

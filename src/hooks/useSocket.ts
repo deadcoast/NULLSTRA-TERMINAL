@@ -21,90 +21,101 @@ export interface CommandResult {
   timestamp: string;
 }
 
+// Command API response interface
+interface CommandsResponse {
+  commands: string[];
+}
+
 /**
  * Socket hook for terminal communication with the backend
  */
 const useSocket = () => {
   // Socket.io client instance
   const socketRef = useRef<Socket | null>(null);
-  
+
   // Socket connection status
   const [isConnected, setIsConnected] = useState(false);
-  
+
   // Command execution status
   const [isExecuting, setIsExecuting] = useState(false);
-  
+
   // Command output
   const [commandResults, setCommandResults] = useState<CommandResult[]>([]);
-  
+
   // Command history
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
-  
+
   // Error message
   const [error, setError] = useState<string | null>(null);
-  
+
   /**
    * Initialize Socket.io connection
    */
   useEffect(() => {
     // Create Socket.io client instance
     socketRef.current = io(SOCKET_URL, socketOptions);
-    
+
     // Connection event handler
     socketRef.current!.on('connect', () => {
       console.log('Socket connected');
       setIsConnected(true);
       setError(null);
     });
-    
+
     // Disconnection event handler
     socketRef.current!.on('disconnect', () => {
       console.log('Socket disconnected');
       setIsConnected(false);
     });
-    
+
     // Connection error event handler
     socketRef.current!.on('connect_error', (err: Error) => {
       console.error('Socket connection error:', err);
       setIsConnected(false);
       setError(`Connection error: ${err.message}`);
     });
-    
+
     // Command start event handler
     socketRef.current!.on('command_start', () => {
       setIsExecuting(true);
     });
-    
+
     // Command output event handler
     socketRef.current!.on('command_output', (result: CommandResult) => {
       setCommandResults((prev) => [...prev, result]);
     });
-    
+
     // Command result event handler
-    socketRef.current!.on('command_result', (data: { success: boolean, error?: string, completed?: boolean }) => {
-      setIsExecuting(false);
-      
-      if (!data.success && data.error) {
-        setCommandResults((prev) => [
-          ...prev,
-          {
-            type: 'error',
-            content: data.error || 'Unknown error',
-            timestamp: new Date().toISOString()
-          }
-        ]);
+    socketRef.current!.on(
+      'command_result',
+      (data: { success: boolean; error?: string; completed?: boolean }) => {
+        setIsExecuting(false);
+
+        if (!data.success && data.error) {
+          setCommandResults((prev) => [
+            ...prev,
+            {
+              type: 'error',
+              content: data.error || 'Unknown error',
+              timestamp: new Date().toISOString(),
+            },
+          ]);
+        }
       }
-    });
-    
+    );
+
     // Command history result event handler
-    socketRef.current!.on('command_history_result', (data: { success: boolean, history?: string[], error?: string }) => {
-      if (data.success && data.history) {
-        setCommandHistory(data.history);
-      } else if (data.error) {
-        setError(data.error);
+    socketRef.current!.on(
+      'command_history_result',
+      (data: { success: boolean; history?: string[]; error?: string }) => {
+        if (data.success && data.history) {
+          setCommandHistory(data.history);
+        } else if (data.error) {
+          setError(data.error);
+        }
       }
-    });
-    
+    );
+
     // Clean up on unmount
     return () => {
       if (socketRef.current) {
@@ -112,72 +123,80 @@ const useSocket = () => {
       }
     };
   }, []);
-  
+
   /**
    * Execute a command via Socket.io
    */
-  const executeCommand = useCallback((command: string, args: string[] = [], sessionId?: string) => {
-    if (!socketRef.current || !isConnected) {
-      setError('Socket not connected');
-      return false;
-    }
-    
-    try {
-      // Clear previous command results
-      setCommandResults([]);
-      
-      // Add command to results
-      setCommandResults([{
-        type: 'command',
-        content: `${command} ${args.join(' ')}`.trim(),
-        timestamp: new Date().toISOString()
-      }]);
-      
-      // Execute command
-      socketRef.current.emit('execute_command', {
-        command,
-        args,
-        sessionId
-      });
-      
-      return true;
-    } catch (err) {
-      setError((err as Error).message);
-      return false;
-    }
-  }, [isConnected]);
-  
+  const executeCommand = useCallback(
+    (command: string, args: string[] = [], sessionId?: string) => {
+      if (!socketRef.current || !isConnected) {
+        setError('Socket not connected');
+        return false;
+      }
+
+      try {
+        // Clear previous command results
+        setCommandResults([]);
+
+        // Add command to results
+        setCommandResults([
+          {
+            type: 'command',
+            content: `${command} ${args.join(' ')}`.trim(),
+            timestamp: new Date().toISOString(),
+          },
+        ]);
+
+        // Execute command
+        socketRef.current.emit('execute_command', {
+          command,
+          args,
+          sessionId,
+        });
+
+        return true;
+      } catch (err) {
+        setError((err as Error).message);
+        return false;
+      }
+    },
+    [isConnected]
+  );
+
   /**
    * Get command history via Socket.io
    */
-  const getCommandHistory = useCallback((sessionId: string) => {
-    if (!socketRef.current || !isConnected) {
-      setError('Socket not connected');
-      return false;
-    }
-    
-    try {
-      socketRef.current.emit('get_command_history', { sessionId });
-      return true;
-    } catch (err) {
-      setError((err as Error).message);
-      return false;
-    }
-  }, [isConnected]);
-  
+  const getCommandHistory = useCallback(
+    (sessionId: string) => {
+      if (!socketRef.current || !isConnected) {
+        setError('Socket not connected');
+        return false;
+      }
+
+      try {
+        socketRef.current.emit('get_command_history', { sessionId });
+        return true;
+      } catch (err) {
+        setError((err as Error).message);
+        return false;
+      }
+    },
+    [isConnected]
+  );
+
   /**
    * Get available commands via REST API
    */
   const getAvailableCommands = useCallback(async () => {
     try {
-      const response = await axios.get(`${REST_API_URL}/api/commands`);
-      return response.data?.commands || [];
+      const response = await axios.get<CommandsResponse>(`${REST_API_URL}/api/commands`);
+      return response.data.commands || [];
     } catch (err) {
       setError((err as Error).message);
       return [];
     }
   }, []);
-  
+
   /**
    * Clear command results
    */
@@ -185,7 +204,7 @@ const useSocket = () => {
     setCommandResults([]);
     setError(null);
   }, []);
-  
+
   return {
     isConnected,
     isExecuting,
@@ -195,8 +214,8 @@ const useSocket = () => {
     executeCommand,
     getCommandHistory,
     getAvailableCommands,
-    clearResults
+    clearResults,
   };
 };
 
-export default useSocket; 
+export default useSocket;

@@ -13,18 +13,18 @@ interface TerminalWindowProps {
   isProcessing?: boolean;
 }
 
-const TerminalWindow: React.FC<TerminalWindowProps> = ({ 
-  children, 
+const TerminalWindow: React.FC<TerminalWindowProps> = ({
+  children,
   className = '',
-  isProcessing = false
+  isProcessing = false,
 }) => {
   return (
     <div className={`terminal-window ${className}`}>
-      <div className={`terminal-background ${isProcessing ? 'processing' : ''}`}>
+      <div
+        className={`terminal-background ${isProcessing ? 'processing' : ''}`}
+      >
         <div className="terminal-scanlines"></div>
-        <div className="terminal-content">
-          {children}
-        </div>
+        <div className="terminal-content">{children}</div>
       </div>
     </div>
   );

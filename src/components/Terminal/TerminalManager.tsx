@@ -22,81 +22,87 @@ interface TerminalManagerProps {
 
 const TerminalManager: React.FC<TerminalManagerProps> = ({
   initialSessions = [],
-  maxSessions = 4
+  maxSessions = 4,
 }) => {
   // Generate a default session if none provided
-  const defaultSessions: TerminalSession[] = initialSessions.length > 0 
-    ? initialSessions 
-    : [
-        {
-          id: `term-${Date.now()}`,
-          name: 'Main Terminal',
-          ipAddress: `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`
-        }
-      ];
-  
+  const defaultSessions: TerminalSession[] =
+    initialSessions.length > 0
+      ? initialSessions
+      : [
+          {
+            id: `term-${Date.now()}`,
+            name: 'Main Terminal',
+            ipAddress: `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
+          },
+        ];
+
   const [sessions, setSessions] = useState<TerminalSession[]>(defaultSessions);
-  const [activeSessionId, setActiveSessionId] = useState<string>(defaultSessions[0].id);
-  
+  const [activeSessionId, setActiveSessionId] = useState<string>(
+    defaultSessions[0].id
+  );
+
   // Create a new terminal session
   const createSession = () => {
     if (sessions.length >= maxSessions) {
       // Maybe show a notification that max sessions reached
       return;
     }
-    
+
     const newSession: TerminalSession = {
       id: `term-${Date.now()}`,
       name: `Terminal ${sessions.length + 1}`,
-      ipAddress: `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`
+      ipAddress: `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
     };
-    
+
     setSessions([...sessions, newSession]);
     setActiveSessionId(newSession.id);
   };
-  
+
   // Close a terminal session
   const closeSession = (id: string) => {
     // Don't allow closing the last session
     if (sessions.length <= 1) {
       return;
     }
-    
-    const newSessions = sessions.filter(session => session.id !== id);
+
+    const newSessions = sessions.filter((session) => session.id !== id);
     setSessions(newSessions);
-    
+
     // If the active session was closed, activate another one
     if (activeSessionId === id) {
       setActiveSessionId(newSessions[0].id);
     }
   };
-  
+
   // Rename a terminal session
   const renameSession = (id: string, newName: string) => {
     setSessions(
-      sessions.map(session => 
+      sessions.map((session) =>
         session.id === id ? { ...session, name: newName } : session
       )
     );
   };
-  
+
   // Get the active session
-  const activeSession = sessions.find(session => session.id === activeSessionId) || sessions[0];
-  
+  const activeSession =
+    sessions.find((session) => session.id === activeSessionId) || sessions[0];
+
   return (
     <ThemeProvider>
       <div className="terminal-manager h-full flex flex-col">
         {/* Terminal Tabs and Controls */}
         <div className="terminal-tabs flex bg-night border-b border-shocking-pink text-xs justify-between">
           <div className="flex">
-            {sessions.map(session => (
-              <div 
+            {sessions.map((session) => (
+              <div
                 key={session.id}
                 className={`
                   terminal-tab cursor-pointer py-1 px-3 mr-1 flex items-center
-                  ${session.id === activeSessionId 
-                    ? 'bg-lime text-night font-bold' 
-                    : 'bg-night border border-lime text-lime'}
+                  ${
+                    session.id === activeSessionId
+                      ? 'bg-lime text-night font-bold'
+                      : 'bg-night border border-lime text-lime'
+                  }
                 `}
                 onClick={() => setActiveSessionId(session.id)}
               >
@@ -117,7 +123,7 @@ const TerminalManager: React.FC<TerminalManagerProps> = ({
                 )}
               </div>
             ))}
-            
+
             {/* Add Tab Button */}
             {sessions.length < maxSessions && (
               <button
@@ -128,13 +134,13 @@ const TerminalManager: React.FC<TerminalManagerProps> = ({
               </button>
             )}
           </div>
-          
+
           {/* Theme Selector */}
           <div className="flex items-center px-2">
             <ThemeSelector minimal />
           </div>
         </div>
-        
+
         {/* Active Terminal Instance */}
         <div className="terminal-container flex-grow">
           <Terminal
@@ -148,4 +154,4 @@ const TerminalManager: React.FC<TerminalManagerProps> = ({
   );
 };
 
-export default TerminalManager; 
+export default TerminalManager;

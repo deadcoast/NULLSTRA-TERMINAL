@@ -3,45 +3,44 @@
 ## Core Terminal UI Components
 
 TerminalWindow: Pure container component
+
 ```tsx
-<TerminalWindow>
-{/_ Your content goes here _/}
-</TerminalWindow>
+<TerminalWindow>{/_ Your content goes here _/}</TerminalWindow>
 ```
 
 TerminalHeader: Header component that takes only a title
+
 ```tsx
 <TerminalHeader title="Your Title Here" />
 ```
 
 TerminalOutput: Generic container for output content
+
 ```tsx
-<TerminalOutput>
-{/_ Your terminal output lines go here _/}
-</TerminalOutput>
+<TerminalOutput>{/_ Your terminal output lines go here _/}</TerminalOutput>
 ```
 
 TerminalOutputLine: Individual line with styling options
+
 ```tsx
 <TerminalOutputLine type="error" prefix="FAIL" timestamp="13:07:45">
-Error message here
+  Error message here
 </TerminalOutputLine>
 ```
 
 TerminalPrompt: Input component that takes a path and callback
+
 ```tsx
-<TerminalPrompt 
-  path="Legislation/Security" 
-  onCommand={handleCommand} 
-/>
+<TerminalPrompt path="Legislation/Security" onCommand={handleCommand} />
 ```
 
 TerminalFileList: Takes only a title and array of files
-```tsx
-<TerminalFileList 
-  title="Directory contents:" 
+
+````tsx
+<TerminalFileList
+  title="Directory contents:"
   files={yourFilesArray}
-  onFileClick={handleFileClick} 
+  onFileClick={handleFileClick}
 />
 
 TerminalDialog: Modal dialog container
@@ -49,11 +48,12 @@ TerminalDialog: Modal dialog container
 <TerminalDialog title="DECRYPT INPUT" onClose={closeDialog}>
 {/_ Dialog content _/}
 </TerminalDialog>
-```
+````
 
 Visual Effect Components
 
 CRTEffect: Configurable screen effect component
+
 ```tsx
 <CRTEffect intensity={0.7} flickerFrequency={0.03} scanlineSpacing={4} />
 ```

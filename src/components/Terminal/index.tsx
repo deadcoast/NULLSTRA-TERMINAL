@@ -1,7 +1,6 @@
 'use client';
 
 import CommandPrompt from './CommandPrompt';
-import OverlayEffects from './OverlayEffects';
 import StatusLine from './StatusLine';
 import StatusPanel from './StatusPanel';
 import StatusTag from './StatusTag';
@@ -21,13 +20,20 @@ export default Terminal;
 
 // Export all the smaller components for use elsewhere
 export {
-    CommandPrompt,
-    OverlayEffects, StatusLine, StatusPanel, StatusTag, TerminalButton,
-    TerminalDialog,
-    TerminalFileList, TerminalHeader, TerminalOutput, TerminalOutputLine,
-    TerminalPrompt, TerminalStatusLine, TerminalWindow
+  CommandPrompt,
+  StatusLine,
+  StatusPanel,
+  StatusTag,
+  TerminalButton,
+  TerminalDialog,
+  TerminalFileList,
+  TerminalHeader,
+  TerminalOutput,
+  TerminalOutputLine,
+  TerminalPrompt,
+  TerminalStatusLine,
+  TerminalWindow,
 };
 
-    export * from './StatusPanel';
-    export * from './StatusTag';
-
+export * from './StatusPanel';
+export * from './StatusTag';

@@ -16,17 +16,17 @@ const SuggestionList: React.FC<SuggestionListProps> = ({
   suggestions,
   activeSuggestion,
   onSelect,
-  isCommand = true
+  isCommand = true,
 }) => {
   if (suggestions.length === 0) {
     return null;
   }
-  
+
   return (
     <div className="suggestion-list absolute left-0 right-0 z-10 mt-1 bg-terminal-black border border-terminal-green rounded overflow-hidden max-h-40 overflow-y-auto">
       <ul className="py-1">
         {suggestions.map((suggestion, index) => (
-          <li 
+          <li
             key={index}
             className={`
               px-3 py-1 text-xs cursor-pointer
@@ -41,7 +41,7 @@ const SuggestionList: React.FC<SuggestionListProps> = ({
               {isCommand ? '▶' : suggestion.endsWith('/') ? '📁' : '📄'}
             </span>
             {suggestion}
-            
+
             {/* Display command description if available */}
             {isCommand && index === activeSuggestion && (
               <span className="ml-2 opacity-70 font-normal">
@@ -55,4 +55,4 @@ const SuggestionList: React.FC<SuggestionListProps> = ({
   );
 };
 
-export default SuggestionList; 
+export default SuggestionList;

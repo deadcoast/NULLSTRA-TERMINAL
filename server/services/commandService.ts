@@ -1,6 +1,5 @@
 import { exec } from 'child_process';
 import util from 'util';
-import path from 'path';
 import { getRedisClient } from '../db/redis';
 
 // Convert exec to Promise-based API
@@ -15,15 +14,25 @@ export interface CommandResult {
 
 // Whitelist of safe commands that can be executed
 const SAFE_COMMANDS = [
-  'echo', 'ls', 'cat', 'find', 'grep', 'pwd', 'date', 'whoami', 
-  'ping', 'traceroute', 'netstat', 'curl'
+  'echo',
+  'ls',
+  'cat',
+  'find',
+  'grep',
+  'pwd',
+  'date',
+  'whoami',
+  'ping',
+  'traceroute',
+  'netstat',
+  'curl',
 ];
 
 /**
  * Execute a terminal command securely
  */
 export const executeCommand = async (
-  command: string, 
+  command: string,
   args: string[] = [],
   sessionId?: string
 ): Promise<CommandResult[] | CommandResult> => {
@@ -34,48 +43,47 @@ export const executeCommand = async (
       return {
         type: 'error',
         content: `Command not allowed: ${baseCommand}`,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     }
-    
+
     // For simulated commands that don't need actual execution
     if (command === 'ping' && args.length > 0) {
       return simulatePing(args[0]);
     }
-    
+
     if (command === 'traceroute' && args.length > 0) {
       return simulateTraceroute(args[0]);
     }
-    
+
     // For actual command execution (be careful with this in production)
     const fullCommand = `${command} ${args.join(' ')}`.trim();
     const { stdout, stderr } = await execPromise(fullCommand);
-    
+
     // Store command in history if Redis is enabled and sessionId is provided
     if (sessionId) {
       storeCommandInHistory(sessionId, fullCommand);
     }
-    
+
     if (stderr) {
       return {
         type: 'error',
         content: stderr,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       };
     }
-    
+
     return {
       type: 'success',
       content: stdout,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
-    
   } catch (error) {
     console.error('Command execution error:', error);
     return {
       type: 'error',
       content: (error as Error).message,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
   }
 };
@@ -83,11 +91,16 @@ export const executeCommand = async (
 /**
  * Store command in user's history using Redis
  */
-const storeCommandInHistory = async (sessionId: string, command: string): Promise<void> => {
+const storeCommandInHistory = async (
+  sessionId: string,
+  command: string
+): Promise<void> => {
   try {
     const redis = getRedisClient();
-    if (!redis) return;
-    
+    if (!redis) {
+      return;
+    }
+
     const historyKey = `terminal:history:${sessionId}`;
     await redis.lPush(historyKey, command);
     await redis.lTrim(historyKey, 0, 99); // Keep last 100 commands
@@ -100,11 +113,33 @@ const storeCommandInHistory = async (sessionId: string, command: string): Promis
 /**
  * Get command history for a session
  */
-export const getCommandHistory = async (sessionId: string): Promise<string[]> => {
+export const getCommandHistory = async (
+  sessionId: string
+): Promise<string[]> => {
   try {
     const redis = getRedisClient();
-    if (!redis) return [];
-    
+    if (!redis) {
+      return [];
+    }
+    if (!sessionId) {
+      return [];
+    }
+    if (!redis.isReady) {
+      return [];
+    }
+    if (!redis.lRange) {
+      return [];
+    }
+    if (!redis.expire) {
+      return [];
+    }
+    if (!redis.lTrim) {
+      return [];
+    }
+    if (!redis.lPush) {
+      return [];
+    }
+
     const historyKey = `terminal:history:${sessionId}`;
     return await redis.lRange(historyKey, 0, -1);
   } catch (error) {
@@ -119,45 +154,45 @@ export const getCommandHistory = async (sessionId: string): Promise<string[]> =>
 const simulatePing = (host: string): CommandResult[] => {
   const results: CommandResult[] = [];
   const timestamp = new Date().toISOString();
-  
+
   results.push({
     type: 'info',
     content: `PING ${host} (${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}): 56 data bytes`,
-    timestamp
+    timestamp,
   });
-  
+
   // Simulate 4 ping responses
   for (let i = 0; i < 4; i++) {
     const time = (Math.random() * 10 + 5).toFixed(3);
     results.push({
       type: 'info',
       content: `64 bytes from ${host}: icmp_seq=${i} ttl=64 time=${time} ms`,
-      timestamp
+      timestamp,
     });
   }
-  
+
   results.push({
     type: 'success',
     content: `--- ${host} ping statistics ---`,
-    timestamp
+    timestamp,
   });
-  
+
   results.push({
     type: 'info',
     content: '4 packets transmitted, 4 packets received, 0.0% packet loss',
-    timestamp
+    timestamp,
   });
-  
+
   const min = 5;
   const max = 15;
-  const avg = ((Math.random() * (max - min)) + min).toFixed(3);
-  
+  const avg = (Math.random() * (max - min) + min).toFixed(3);
+
   results.push({
     type: 'info',
     content: `round-trip min/avg/max/stddev = ${min.toFixed(3)}/${avg}/${max.toFixed(3)}/2.345 ms`,
-    timestamp
+    timestamp,
   });
-  
+
   return results;
 };
 
@@ -167,33 +202,34 @@ const simulatePing = (host: string): CommandResult[] => {
 const simulateTraceroute = (host: string): CommandResult[] => {
   const results: CommandResult[] = [];
   const timestamp = new Date().toISOString();
-  
+
   results.push({
     type: 'info',
     content: `traceroute to ${host}, 30 hops max, 60 byte packets`,
-    timestamp
+    timestamp,
   });
-  
+
   // Generate realistic IP addresses
   const baseIp1 = Math.floor(Math.random() * 255);
   const baseIp2 = Math.floor(Math.random() * 255);
-  
+
   // Simulate 5 hops
   for (let i = 1; i <= 5; i++) {
-    const ip = (i === 5) 
-      ? host 
-      : `${baseIp1}.${baseIp2}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
-      
+    const ip =
+      i === 5
+        ? host
+        : `${baseIp1}.${baseIp2}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
+
     const time1 = (Math.random() * 10 + i * 5).toFixed(3);
     const time2 = (Math.random() * 10 + i * 5).toFixed(3);
     const time3 = (Math.random() * 10 + i * 5).toFixed(3);
-    
+
     results.push({
       type: 'info',
       content: `${i}  ${ip}  ${time1} ms  ${time2} ms  ${time3} ms`,
-      timestamp
+      timestamp,
     });
   }
-  
+
   return results;
 };

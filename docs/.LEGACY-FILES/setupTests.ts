@@ -22,7 +22,10 @@ declare global {
       toHaveFocus(): R;
       toHaveFormValues(expectedValues: Record<string, any>): R;
       toHaveStyle(css: Record<string, any>): R;
-      toHaveTextContent(text: string | RegExp, options?: { normalizeWhitespace: boolean }): R;
+      toHaveTextContent(
+        text: string | RegExp,
+        options?: { normalizeWhitespace: boolean }
+      ): R;
       toHaveValue(value?: string | string[] | number): R;
     }
   }

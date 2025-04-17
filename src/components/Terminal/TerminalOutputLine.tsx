@@ -19,16 +19,14 @@ const TerminalOutputLine: React.FC<TerminalOutputLineProps> = ({
   prefix,
   timestamp,
   children,
-  className = ''
+  className = '',
 }) => {
   return (
-    <div className={`terminal-line ${type ? `terminal-line-${type}` : ''} ${className}`}>
-      {prefix && (
-        <span className="terminal-line-prefix">{prefix}</span>
-      )}
-      {timestamp && (
-        <span className="terminal-timestamp">{timestamp}</span>
-      )}
+    <div
+      className={`terminal-line ${type ? `terminal-line-${type}` : ''} ${className}`}
+    >
+      {prefix && <span className="terminal-line-prefix">{prefix}</span>}
+      {timestamp && <span className="terminal-timestamp">{timestamp}</span>}
       <span className="terminal-line-content">{children}</span>
     </div>
   );

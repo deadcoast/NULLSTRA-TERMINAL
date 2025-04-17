@@ -19,13 +19,11 @@ const TerminalFileList: React.FC<TerminalFileListProps> = ({
   title,
   files,
   className = '',
-  onFileClick
+  onFileClick,
 }) => {
   return (
     <div className={`terminal-file-list ${className}`}>
-      <div className="terminal-file-list-header">
-        {title}
-      </div>
+      <div className="terminal-file-list-header">{title}</div>
       <div className="terminal-file-list-content">
         {files.map((file, index) => (
           <span

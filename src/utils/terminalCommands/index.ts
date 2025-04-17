@@ -21,7 +21,7 @@ export const initializeCommands = () => {
   registerUtilityCommands(commandRegistry);
   registerUICommands(commandRegistry); // Register UI-specific commands
   // Add additional command groups here as needed
-  
+
   return commandRegistry;
 };
 

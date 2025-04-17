@@ -1,5 +1,5 @@
-import { createClient, RedisClientType } from 'redis';
 import dotenv from 'dotenv';
+import { createClient, RedisClientType } from 'redis';
 
 // Load environment variables
 dotenv.config();
@@ -14,36 +14,37 @@ let redisClient: RedisClientType | null = null;
 /**
  * Setup Redis connection
  */
-export const setupRedisConnection = async (): Promise<RedisClientType | null> => {
-  // Skip if Redis is not enabled
-  if (!REDIS_ENABLED) {
-    console.log('Redis is disabled. Skipping connection.');
-    return null;
-  }
-  
-  try {
-    // Create Redis client
-    redisClient = createClient({ url: REDIS_URL });
-    
-    // Register error event handler
-    redisClient.on('error', (err) => {
-      console.error('Redis connection error:', err);
-    });
-    
-    // Register connect event handler
-    redisClient.on('connect', () => {
-      console.log('Connected to Redis');
-    });
-    
-    // Connect to Redis
-    await redisClient.connect();
-    
-    return redisClient;
-  } catch (error) {
-    console.error('Failed to connect to Redis:', error);
-    return null;
-  }
-};
+export const setupRedisConnection =
+  async (): Promise<RedisClientType | null> => {
+    // Skip if Redis is not enabled
+    if (!REDIS_ENABLED) {
+      console.log('Redis is disabled. Skipping connection.');
+      return null;
+    }
+
+    try {
+      // Create Redis client
+      redisClient = createClient({ url: REDIS_URL });
+
+      // Register error event handler
+      redisClient.on('error', (err: Error) => {
+        console.error('Redis connection error:', err);
+      });
+
+      // Register connect event handler
+      redisClient.on('connect', () => {
+        console.log('Connected to Redis');
+      });
+
+      // Connect to Redis
+      await redisClient.connect();
+
+      return redisClient;
+    } catch (error) {
+      console.error('Failed to connect to Redis:', error);
+      return null;
+    }
+  };
 
 /**
  * Get Redis client instance

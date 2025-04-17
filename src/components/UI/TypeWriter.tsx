@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 interface TypeWriterProps {
   text: string;
-  delay?: number;  // milliseconds per character
+  delay?: number; // milliseconds per character
   startDelay?: number; // milliseconds before typing starts
   showCursor?: boolean;
   onComplete?: () => void;
@@ -24,10 +24,13 @@ const enhancedTypeWriter = (
   const typeChunk = () => {
     if (currentIndex < chunks.length) {
       const chunk = chunks[currentIndex];
-      
+
       // Variable speed based on chunk complexity
       const speed = Math.max(30, Math.min(100, chunk.length * 5));
-      const delayFactor = chunk.endsWith('.') || chunk.endsWith('!') || chunk.endsWith('?') ? 2.5 : 1;
+      const delayFactor =
+        chunk.endsWith('.') || chunk.endsWith('!') || chunk.endsWith('?')
+          ? 2.5
+          : 1;
 
       displayedText += chunk + ' ';
       callback(displayedText);
@@ -50,13 +53,13 @@ const TypeWriter: React.FC<TypeWriterProps> = ({
   showCursor = false,
   onComplete,
   className = '',
-  highlightDuration = 1000 // Default 1 second highlight duration
+  highlightDuration = 1000, // Default 1 second highlight duration
 }) => {
   const [displayedText, setDisplayedText] = useState('');
   const [isComplete, setIsComplete] = useState(false);
   const [isHighlighted, setIsHighlighted] = useState(false);
   const highlightTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  
+
   // Clear any existing highlight timeouts
   const clearHighlightTimeout = () => {
     if (highlightTimeoutRef.current) {
@@ -64,26 +67,26 @@ const TypeWriter: React.FC<TypeWriterProps> = ({
       highlightTimeoutRef.current = null;
     }
   };
-  
+
   useEffect(() => {
     let timeout: NodeJS.Timeout;
-    
+
     // Reset when text prop changes
     setDisplayedText('');
     setIsComplete(false);
     setIsHighlighted(false);
     clearHighlightTimeout();
-    
+
     // Start typing after startDelay
     timeout = setTimeout(() => {
       // Set highlight when typing starts
       setIsHighlighted(true);
-      
+
       enhancedTypeWriter(
-        text, 
+        text,
         (chunk) => {
           setDisplayedText(chunk);
-          
+
           // Reset highlight timeout with each new chunk
           clearHighlightTimeout();
           highlightTimeoutRef.current = setTimeout(() => {
@@ -92,8 +95,10 @@ const TypeWriter: React.FC<TypeWriterProps> = ({
         },
         () => {
           setIsComplete(true);
-          if (onComplete) {onComplete();}
-          
+          if (onComplete) {
+            onComplete();
+          }
+
           // Keep highlight for highlightDuration after completion, then fade out
           clearHighlightTimeout();
           highlightTimeoutRef.current = setTimeout(() => {
@@ -103,15 +108,16 @@ const TypeWriter: React.FC<TypeWriterProps> = ({
         delay
       );
     }, startDelay);
-    
+
     return () => {
       clearTimeout(timeout);
       clearHighlightTimeout();
     };
   }, [text, delay, startDelay, onComplete, highlightDuration]);
-  
-  const combinedClassName = `terminal-text ${isHighlighted ? 'highlight' : ''} ${className}`.trim();
-  
+
+  const combinedClassName =
+    `terminal-text ${isHighlighted ? 'highlight' : ''} ${className}`.trim();
+
   return (
     <span className={combinedClassName}>
       {displayedText}

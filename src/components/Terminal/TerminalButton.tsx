@@ -4,7 +4,7 @@
 2. Implement `onMouseEnter` and `onMouseLeave` events to manage `isHovered` state for hover effects.
 3. Use `disabled` prop to conditionally render the button or a `span` to prevent interaction when disabled. 
  */
-import { useState } from "react";
+import { useState } from 'react';
 
 interface TerminalButtonProps {
   children: React.ReactNode;
@@ -21,15 +21,15 @@ const TerminalButton: React.FC<TerminalButtonProps> = ({
   onClick,
   active = false,
   disabled = false,
-  variant = 'primary'
+  variant = 'primary',
 }) => {
   const [isHovered, setIsHovered] = useState(false);
-  
+
   const baseClass = 'terminal-button';
   const variantClass = variant === 'accent' ? 'terminal-button-accent' : '';
   const activeClass = active ? 'terminal-button-active' : '';
   const disabledClass = disabled ? 'terminal-button-disabled' : '';
-  
+
   return (
     <button
       className={`${baseClass} ${variantClass} ${activeClass} ${disabledClass} flex items-center justify-center w-8 h-8`}
@@ -39,11 +39,15 @@ const TerminalButton: React.FC<TerminalButtonProps> = ({
       disabled={disabled}
       aria-label={icon}
     >
-      <span className={`${variant === 'accent' ? 'text-shocking-pink' : 'text-lime'} ${isHovered && !disabled ? 'terminal-shadow-' + (variant === 'accent' ? 'magenta' : 'green') : ''}`}>
+      <span
+        className={`${variant === 'accent' ? 'text-shocking-pink' : 'text-lime'} ${isHovered && !disabled ? 'terminal-shadow-' + (variant === 'accent' ? 'magenta' : 'green') : ''}`}
+      >
         {icon}
       </span>
       {isHovered && !disabled && (
-        <div className={`absolute bottom-full mb-1 px-2 py-1 text-xs bg-night border ${variant === 'accent' ? 'border-shocking-pink' : 'border-lime'} rounded`}>
+        <div
+          className={`absolute bottom-full mb-1 px-2 py-1 text-xs bg-night border ${variant === 'accent' ? 'border-shocking-pink' : 'border-lime'} rounded`}
+        >
           {icon}
         </div>
       )}

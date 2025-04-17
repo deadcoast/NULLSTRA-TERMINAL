@@ -277,10 +277,16 @@ const ThemeContext = createContext<ThemeContextType>({
 });
 
 // Theme provider component
-export const ThemeProvider: React.FC<{children: React.ReactNode}> = ({ children }) => {
-  const [theme, setThemeState] = useState<TerminalTheme>(terminalThemes.nullstra);
-  const [availableThemes, setAvailableThemes] = useState<TerminalTheme[]>(Object.values(terminalThemes));
-  
+export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
+  const [theme, setThemeState] = useState<TerminalTheme>(
+    terminalThemes.nullstra
+  );
+  const [availableThemes, setAvailableThemes] = useState<TerminalTheme[]>(
+    Object.values(terminalThemes)
+  );
+
   // Function to change the theme
   const setTheme = (newTheme: TerminalTheme | string) => {
     if (typeof newTheme === 'string') {
@@ -296,7 +302,7 @@ export const ThemeProvider: React.FC<{children: React.ReactNode}> = ({ children 
       localStorage.setItem('terminal-theme', newTheme.id);
     }
   };
-  
+
   // Load the theme from localStorage on component mount
   useEffect(() => {
     const savedTheme = localStorage.getItem('terminal-theme');
@@ -304,7 +310,7 @@ export const ThemeProvider: React.FC<{children: React.ReactNode}> = ({ children 
       setThemeState(terminalThemes[savedTheme]);
     }
   }, []);
-  
+
   return (
     <ThemeContext.Provider value={{ theme, setTheme, availableThemes }}>
       {children}
@@ -315,4 +321,4 @@ export const ThemeProvider: React.FC<{children: React.ReactNode}> = ({ children 
 // Custom hook to use the theme context
 export const useTheme = () => useContext(ThemeContext);
 
-export default ThemeContext; 
+export default ThemeContext;

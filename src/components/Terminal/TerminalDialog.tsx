@@ -19,24 +19,19 @@ const TerminalDialog: React.FC<TerminalDialogProps> = ({
   children,
   onClose,
   className = '',
-  showCloseButton = true
+  showCloseButton = true,
 }) => {
   return (
     <div className={`terminal-dialog ${className}`}>
       <div className="terminal-dialog-header">
         <span className="terminal-dialog-title">{title}</span>
         {showCloseButton && onClose && (
-          <button
-            className="terminal-dialog-close"
-            onClick={onClose}
-          >
+          <button className="terminal-dialog-close" onClick={onClose}>
             X
           </button>
         )}
       </div>
-      <div className="terminal-dialog-content">
-        {children}
-      </div>
+      <div className="terminal-dialog-content">{children}</div>
     </div>
   );
 };

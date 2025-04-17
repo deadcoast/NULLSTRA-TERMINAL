@@ -10,10 +10,13 @@ interface StatusLineProps {
   networkActive?: boolean;
 }
 
-const StatusLine: React.FC<StatusLineProps> = ({ ipAddress, networkActive = false }) => {
+const StatusLine: React.FC<StatusLineProps> = ({
+  ipAddress,
+  networkActive = false,
+}) => {
   const [time, setTime] = useState('');
   const [date, setDate] = useState('');
-  
+
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
@@ -21,22 +24,24 @@ const StatusLine: React.FC<StatusLineProps> = ({ ipAddress, networkActive = fals
       const dateStr = now.toLocaleDateString('en-US', {
         year: '2-digit',
         month: '2-digit',
-        day: '2-digit'
+        day: '2-digit',
       });
-      
+
       setTime(timeStr);
       setDate(dateStr);
     };
-    
+
     updateTime();
     const interval = setInterval(updateTime, 1000);
-    
+
     return () => clearInterval(interval);
   }, []);
-  
+
   return (
     <div className="flex justify-between text-xs mt-2 border-t border-terminal-green border-opacity-30 pt-1">
-      <div className={`text-terminal-magenta ${networkActive ? 'network-active' : ''}`}>
+      <div
+        className={`text-terminal-magenta ${networkActive ? 'network-active' : ''}`}
+      >
         &lt;{ipAddress}&gt;
       </div>
       <div className="text-terminal-cyan">

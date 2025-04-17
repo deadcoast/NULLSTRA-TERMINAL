@@ -1,30 +1,30 @@
 ```tsx
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 
 const Terminal = () => {
   const [lines, setLines] = useState([
-    "  ┌───────┬─────────────────────────────────────────────────────────────────┐",
-    "  │ CLEye │ > ALWAYS_WATCHING                                               │",
-    "  ├───────┴─────────────────────────────────────────────────────────────────│",
-    "  ├─╦──────────────╗                                                        │",
-    "  │ ║   NULLSTRA   ║                                                        │",
-    "  │ ╠──────────────╝                                                        │",
-    "  │ ║                                                                       │",
-    "  │1╠─  {                                                                   │",
+    '  ┌───────┬─────────────────────────────────────────────────────────────────┐',
+    '  │ CLEye │ > ALWAYS_WATCHING                                               │',
+    '  ├───────┴─────────────────────────────────────────────────────────────────│',
+    '  ├─╦──────────────╗                                                        │',
+    '  │ ║   NULLSTRA   ║                                                        │',
+    '  │ ╠──────────────╝                                                        │',
+    '  │ ║                                                                       │',
+    '  │1╠─  {                                                                   │',
     '  │2╠─  "name": "USER_43127",                                               │',
     '  │3╠─  "IP": "192.168.1.100",                                              │',
     '  │4╠─  "path": "C:/chrome/chrome.exe",                                     │',
     '  │5╠─  "enabled_tracking": true                                            │',
-    "  │6╠─  }                                                                   │",
-    "  ├─╝                                                                       │",
-    "  └─────────────────────────────────────────────────────────────────────────┘",
-    "", // Add an empty line for spacing
-    "[ID-317#I1] [INIT] System startup sequence initiated...",
-    "[ID-317#W2] [WARN] Running pre-boot diagnostics...",
-    "[ID-317#A3] [OK] Check completed with minor discrepancies (J-1WGX). Integrity check passed.",
+    '  │6╠─  }                                                                   │',
+    '  ├─╝                                                                       │',
+    '  └─────────────────────────────────────────────────────────────────────────┘',
+    '', // Add an empty line for spacing
+    '[ID-317#I1] [INIT] System startup sequence initiated...',
+    '[ID-317#W2] [WARN] Running pre-boot diagnostics...',
+    '[ID-317#A3] [OK] Check completed with minor discrepancies (J-1WGX). Integrity check passed.',
     // Add more initial lines if needed
   ]);
-  const [input, setInput] = useState("");
+  const [input, setInput] = useState('');
   const terminalInputRef = useRef<HTMLInputElement>(null); // Type the input ref
   const terminalOutputRef = useRef<HTMLDivElement>(null); // Type the output ref
 
@@ -50,31 +50,31 @@ const Terminal = () => {
   };
 
   const handleInputSubmit = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    if (event.key === "Enter") {
+    if (event.key === 'Enter') {
       const command = input.trim();
       // Use magenta-shadow for user input line
       const userLine = `<span class="text-magenta magenta-shadow">[USER@cybersys ~]$&nbsp;${command.replace(
         / /g,
-        "&nbsp;"
+        '&nbsp;'
       )}</span>`;
       let newLines = [...lines, userLine];
 
       // --- Basic Command Handling (Placeholder) ---
-      if (command === "help") {
+      if (command === 'help') {
         newLines.push(
-          "[SYS] Available commands: help, clear, sysinfo, ls [folder]"
+          '[SYS] Available commands: help, clear, sysinfo, ls [folder]'
         );
-      } else if (command === "clear") {
+      } else if (command === 'clear') {
         newLines = [];
-      } else if (command === "sysinfo") {
-        newLines.push("[SYS]&nbsp;CYBERSYS Model 470B");
-        newLines.push("[SYS]&nbsp;OS: NULLSTRA-UNIX 2389.04.1 LTS");
-        newLines.push("[SYS]&nbsp;Kernel: 15.92.R-NULLSTRA-secure");
-        newLines.push("[SYS]&nbsp;Uptime: 4588 Days, 17 Hours, 19 Minutes");
-      } else if (command.startsWith("ls")) {
-        newLines.push("[SYS]&nbsp;Listing directory...");
+      } else if (command === 'sysinfo') {
+        newLines.push('[SYS]&nbsp;CYBERSYS Model 470B');
+        newLines.push('[SYS]&nbsp;OS: NULLSTRA-UNIX 2389.04.1 LTS');
+        newLines.push('[SYS]&nbsp;Kernel: 15.92.R-NULLSTRA-secure');
+        newLines.push('[SYS]&nbsp;Uptime: 4588 Days, 17 Hours, 19 Minutes');
+      } else if (command.startsWith('ls')) {
+        newLines.push('[SYS]&nbsp;Listing directory...');
         newLines.push(
-          "Command_History&nbsp;&nbsp;Diagnostics&nbsp;&nbsp;Legislation&nbsp;&nbsp;User_Notes"
+          'Command_History&nbsp;&nbsp;Diagnostics&nbsp;&nbsp;Legislation&nbsp;&nbsp;User_Notes'
         );
       } else if (command) {
         newLines.push(`[ERR]&nbsp;Command not recognized: ${command}`);
@@ -82,7 +82,7 @@ const Terminal = () => {
       // -------------------------------------------
 
       setLines(newLines);
-      setInput("");
+      setInput('');
       event.preventDefault();
     }
   };

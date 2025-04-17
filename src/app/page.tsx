@@ -11,11 +11,7 @@ import Terminal from '../components/Terminal';
 export default function Home() {
   return (
     <main className="min-h-screen">
-      <Terminal 
-        ipAddress="192.168.1.1"
-        showHeader={true}
-        showStatus={true}
-      />
+      <Terminal ipAddress="192.168.1.1" showHeader={true} showStatus={true} />
     </main>
   );
 }

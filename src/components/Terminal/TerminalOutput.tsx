@@ -16,32 +16,31 @@ interface TerminalOutputProps {
   onExecuteCommand?: (command: string) => void;
 }
 
-const TerminalOutput = forwardRef<HTMLDivElement, TerminalOutputProps>(({ 
-  messages, 
-  onExecuteCommand 
-}, ref) => {
-  // Handle the different message types
-  const renderMessage = (message: MessageType, index: number) => {
+const TerminalOutput = forwardRef<HTMLDivElement, TerminalOutputProps>(
+  ({ messages, onExecuteCommand }, ref) => {
+    // Handle the different message types
+    const renderMessage = (message: MessageType, index: number) => {
+      return (
+        <div key={index} className="mb-1 relative z-10">
+          <MessageRenderer
+            message={message as TerminalMessage}
+            onExecuteCommand={onExecuteCommand}
+          />
+        </div>
+      );
+    };
+
     return (
-      <div key={index} className="mb-1 relative z-10">
-        <MessageRenderer 
-          message={message as TerminalMessage} 
-          onExecuteCommand={onExecuteCommand}
-        />
+      <div
+        className="terminal-output flex-grow overflow-y-auto mb-1 text-xs leading-tight pr-1"
+        ref={ref}
+      >
+        <div className="crt-glow opacity-50 pointer-events-none absolute inset-0"></div>
+        {messages.map((message, index) => renderMessage(message, index))}
       </div>
     );
-  };
-  
-  return (
-    <div 
-      className="terminal-output flex-grow overflow-y-auto mb-1 text-xs leading-tight pr-1" 
-      ref={ref}
-    >
-      <div className="crt-glow opacity-50 pointer-events-none absolute inset-0"></div>
-      {messages.map((message, index) => renderMessage(message, index))}
-    </div>
-  );
-});
+  }
+);
 
 TerminalOutput.displayName = 'TerminalOutput';
 

@@ -1,90 +1,90 @@
-import * as React from "react";
-import TerminalOutputLine from "../../TerminalOutputLine";
+import * as React from 'react';
+import TerminalOutputLine from '../../TerminalOutputLine';
 
 // src/components/Terminal/__tests__/TerminalOutputLine.test.tsx
-import "@testing-library/jest-dom";
-import { render, screen } from "@testing-library/react";
+import '@testing-library/jest-dom';
+import { render, screen } from '@testing-library/react';
 
 // src/components/Terminal/__tests__/TerminalOutputLine.test.tsx
 // Mock interface for TerminalOutputLineProps
 interface MockTerminalOutputLineProps {
-  type?: "error" | "warning" | "success" | "info" | "system";
+  type?: 'error' | 'warning' | 'success' | 'info' | 'system';
   prefix?: string;
   timestamp?: string;
   children: React.ReactNode;
   className?: string;
 }
 
-describe("TerminalOutputLine() TerminalOutputLine method", () => {
+describe('TerminalOutputLine() TerminalOutputLine method', () => {
   // Happy path tests
-  describe("Happy Paths", () => {
-    it("renders with all props provided", () => {
+  describe('Happy Paths', () => {
+    it('renders with all props provided', () => {
       // Test to ensure the component renders correctly with all props
       const props: MockTerminalOutputLineProps = {
-        type: "success",
-        prefix: ">",
-        timestamp: "12:00",
-        children: "Operation completed successfully",
-        className: "custom-class",
+        type: 'success',
+        prefix: '>',
+        timestamp: '12:00',
+        children: 'Operation completed successfully',
+        className: 'custom-class',
       } as any;
 
       render(<TerminalOutputLine {...props} />);
 
-      expect(screen.getByText(">")).toBeInTheDocument();
-      expect(screen.getByText("12:00")).toBeInTheDocument();
+      expect(screen.getByText('>')).toBeInTheDocument();
+      expect(screen.getByText('12:00')).toBeInTheDocument();
       expect(
-        screen.getByText("Operation completed successfully"),
+        screen.getByText('Operation completed successfully')
       ).toBeInTheDocument();
       expect(
-        screen.getByText("Operation completed successfully").parentElement,
-      ).toHaveClass("terminal-line-success custom-class");
+        screen.getByText('Operation completed successfully').parentElement
+      ).toHaveClass('terminal-line-success custom-class');
     });
 
-    it("renders without optional props", () => {
+    it('renders without optional props', () => {
       // Test to ensure the component renders correctly without optional props
       const props: MockTerminalOutputLineProps = {
-        children: "Default message",
+        children: 'Default message',
       } as any;
 
       render(<TerminalOutputLine {...props} />);
 
-      expect(screen.getByText("Default message")).toBeInTheDocument();
-      expect(screen.getByText("Default message").parentElement).toHaveClass(
-        "terminal-line",
+      expect(screen.getByText('Default message')).toBeInTheDocument();
+      expect(screen.getByText('Default message').parentElement).toHaveClass(
+        'terminal-line'
       );
     });
   });
 
   // Edge case tests
-  describe("Edge Cases", () => {
-    it("renders with an unknown type", () => {
+  describe('Edge Cases', () => {
+    it('renders with an unknown type', () => {
       // Test to ensure the component handles an unknown type gracefully
       const props: MockTerminalOutputLineProps = {
-        type: "unknown" as any,
-        children: "Unknown type message",
+        type: 'unknown' as any,
+        children: 'Unknown type message',
       } as any;
 
       render(<TerminalOutputLine {...props} />);
 
-      expect(screen.getByText("Unknown type message")).toBeInTheDocument();
+      expect(screen.getByText('Unknown type message')).toBeInTheDocument();
       expect(
-        screen.getByText("Unknown type message").parentElement,
-      ).toHaveClass("terminal-line");
+        screen.getByText('Unknown type message').parentElement
+      ).toHaveClass('terminal-line');
     });
 
-    it("renders with empty children", () => {
+    it('renders with empty children', () => {
       // Test to ensure the component handles empty children gracefully
       const props: MockTerminalOutputLineProps = {
-        children: "",
+        children: '',
       } as any;
 
       render(<TerminalOutputLine {...props} />);
 
-      expect(screen.getByText("")).toBeInTheDocument();
-      expect(screen.getByText("").parentElement).toHaveClass("terminal-line");
+      expect(screen.getByText('')).toBeInTheDocument();
+      expect(screen.getByText('').parentElement).toHaveClass('terminal-line');
     });
 
-    it("renders with null children", () => {
+    it('renders with null children', () => {
       // Test to ensure the component handles null children gracefully
       const props: MockTerminalOutputLineProps = {
         children: null,
@@ -92,7 +92,7 @@ describe("TerminalOutputLine() TerminalOutputLine method", () => {
 
       render(<TerminalOutputLine {...props} />);
 
-      expect(screen.queryByText("")).not.toBeInTheDocument();
+      expect(screen.queryByText('')).not.toBeInTheDocument();
     });
   });
 });
