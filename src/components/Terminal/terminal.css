@@ -1,0 +1,670 @@
+/* Add theme variables for dynamic theming */
+.terminal-container {
+  /* These will be overridden by inline styles from theme context */
+  --terminal-bg: var(--night, #0b0b0cff);
+  --terminal-fg: var(--lime, #c2f04cff);
+  --terminal-cursor: var(--shocking-pink, #ea39b9ff);
+  --terminal-selection: #536D8C;
+  --terminal-black: var(--black, #000000ff);
+  --terminal-red: #FF0055;
+  --terminal-green: var(--lime, #c2f04cff);
+  --terminal-yellow: var(--maize, #f6ed5dff);
+  --terminal-blue: #0088FF;
+  --terminal-magenta: var(--shocking-pink, #ea39b9ff);
+  --terminal-cyan: var(--chrysler-blue, #2f04cfff);
+  --terminal-white: #F1F1F1;
+  --terminal-bright-black: #686868;
+  --terminal-bright-red: #FF6E6E;
+  --terminal-bright-green: #63FFA5;
+  --terminal-bright-yellow: #FFFC67;
+  --terminal-bright-blue: #6871FF;
+  --terminal-bright-magenta: #FF77FF;
+  --terminal-bright-cyan: #84FFFD;
+  --terminal-bright-white: #FFFFFF;
+  
+  /* NULLSTRA Gradient effects */
+  --gradient-terminal-header: linear-gradient(90deg, var(--shocking-pink), var(--chrysler-blue));
+  --gradient-terminal-glow: radial-gradient(circle at center, rgba(194, 240, 76, 0.2), transparent 70%);
+  --gradient-terminal-scanline: linear-gradient(to bottom, rgba(194, 240, 76, 0.03), rgba(194, 240, 76, 0) 50%, rgba(194, 240, 76, 0.03) 100%);
+  
+  /* Apply theme variables */
+  background-color: var(--terminal-bg);
+  color: var(--terminal-fg);
+  
+  /* Basic terminal container styling */
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
+  font-family: var(--font-terminal, 'JetBrains Mono', 'Fira Code', monospace);
+  font-size: 14px;
+  line-height: 1.2;
+  margin: 0;
+  padding: 0;
+  text-shadow:
+    var(--terminal-green) 0 0 1px,
+    rgba(194, 240, 76, 0.1) -1px 0 1px,
+    rgba(194, 240, 76, 0.1) 1px 0 1px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ======= ANIMATION KEYFRAMES ======= */
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes cursor-pulse {
+  0%, 100% { opacity: 1; }
+  40% { opacity: 0.8; }
+  50% { opacity: 0; }
+  60% { opacity: 0.8; }
+}
+
+@keyframes flicker {
+  0% { opacity: 0.08; }
+  5% { opacity: 0.02; }
+  10% { opacity: 0.08; }
+  15% { opacity: 0.15; }
+  25% { opacity: 0.1; }
+  30% { opacity: 0.18; }
+  100% { opacity: 0.1; }
+}
+
+@keyframes command-flash {
+  0% { background-color: rgba(194, 240, 76, 0.2); }
+  50% { background-color: rgba(194, 240, 76, 0.1); }
+  100% { background-color: transparent; }
+}
+
+@keyframes status-slide {
+  0% { left: -100%; }
+  50%, 100% { left: 100%; }
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+@keyframes hue-rotate {
+  0% { filter: hue-rotate(0deg); }
+  50% { filter: hue-rotate(30deg); }
+  100% { filter: hue-rotate(0deg); }
+}
+
+/* Scanline Effect */
+.terminal-container::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+    linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(194, 240, 76, 0.02), rgba(47, 4, 207, 0.04));
+  z-index: 2;
+  background-size: 100% 2px, 3px 100%;
+  pointer-events: none;
+}
+
+/* Flicker Effect */
+.terminal-container::after {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: rgba(18, 16, 16, 0.1);
+  opacity: 0;
+  z-index: 3;
+  pointer-events: none;
+  animation: flicker 0.15s infinite;
+}
+
+/* Terminal selection color */
+.terminal-container ::selection {
+  background-color: var(--terminal-selection);
+  color: var(--terminal-fg);
+}
+
+/* ======= TERMINAL BACKGROUND ELEMENTS ======= */
+
+.terminal-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--night, rgba(11, 11, 12, 0.9));
+  overflow: auto;
+}
+
+.terminal-scanlines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+  background-size: 100% 4px;
+  z-index: 2;
+}
+
+.scanline {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--gradient-terminal-scanline);
+  pointer-events: none;
+  animation: scanline 10s linear infinite;
+  opacity: 0.3;
+  z-index: 8;
+}
+
+.crt-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(0deg,
+      rgba(0, 0, 0, 0.15),
+      rgba(0, 0, 0, 0.15) 1px,
+      transparent 1px,
+      transparent 2px);
+  pointer-events: none;
+  z-index: 9;
+}
+
+.crt-glow {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--gradient-terminal-glow);
+  box-shadow: inset 0 0 60px rgba(194, 240, 76, 0.3);
+  pointer-events: none;
+  z-index: 10;
+}
+
+.crt-effect {
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 3;
+  mix-blend-mode: overlay;
+}
+
+.vignette {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center,
+      transparent 50%,
+      rgba(0, 0, 0, 0.7) 100%);
+  pointer-events: none;
+  z-index: 7;
+}
+
+.cursor {
+  animation: cursor-pulse 1.2s infinite;
+  box-shadow: 0 0 3px rgba(194, 240, 76, 0.7);
+}
+
+/* Theme classes for colors */
+.text-terminal-black { color: var(--terminal-black); }
+.text-terminal-red { color: var(--terminal-red); }
+.text-terminal-green { color: var(--terminal-green); }
+.text-terminal-yellow { color: var(--terminal-yellow); }
+.text-terminal-blue { color: var(--terminal-blue); }
+.text-terminal-magenta { color: var(--terminal-magenta); }
+.text-terminal-cyan { color: var(--terminal-cyan); }
+.text-terminal-white { color: var(--terminal-white); }
+
+/* Bright color variants */
+.text-terminal-bright-black { color: var(--terminal-bright-black); }
+.text-terminal-bright-red { color: var(--terminal-bright-red); }
+.text-terminal-bright-green { color: var(--terminal-bright-green); }
+.text-terminal-bright-yellow { color: var(--terminal-bright-yellow); }
+.text-terminal-bright-blue { color: var(--terminal-bright-blue); }
+.text-terminal-bright-magenta { color: var(--terminal-bright-magenta); }
+.text-terminal-bright-cyan { color: var(--terminal-bright-cyan); }
+.text-terminal-bright-white { color: var(--terminal-bright-white); }
+
+.bg-terminal-black { background-color: var(--terminal-black); }
+.bg-terminal-red { background-color: var(--terminal-red); }
+.bg-terminal-green { background-color: var(--terminal-green); }
+.bg-terminal-yellow { background-color: var(--terminal-yellow); }
+.bg-terminal-blue { background-color: var(--terminal-blue); }
+.bg-terminal-magenta { background-color: var(--terminal-magenta); }
+.bg-terminal-cyan { background-color: var(--terminal-cyan); }
+.bg-terminal-white { background-color: var(--terminal-white); }
+
+/* Bright background variants */
+.bg-terminal-bright-black { background-color: var(--terminal-bright-black); }
+.bg-terminal-bright-red { background-color: var(--terminal-bright-red); }
+.bg-terminal-bright-green { background-color: var(--terminal-bright-green); }
+.bg-terminal-bright-yellow { background-color: var(--terminal-bright-yellow); }
+.bg-terminal-bright-blue { background-color: var(--terminal-bright-blue); }
+.bg-terminal-bright-magenta { background-color: var(--terminal-bright-magenta); }
+.bg-terminal-bright-cyan { background-color: var(--terminal-bright-cyan); }
+.bg-terminal-bright-white { background-color: var(--terminal-bright-white); }
+
+.border-terminal-black { border-color: var(--terminal-black); }
+.border-terminal-red { border-color: var(--terminal-red); }
+.border-terminal-green { border-color: var(--terminal-green); }
+.border-terminal-yellow { border-color: var(--terminal-yellow); }
+.border-terminal-blue { border-color: var(--terminal-blue); }
+.border-terminal-magenta { border-color: var(--terminal-magenta); }
+.border-terminal-cyan { border-color: var(--terminal-cyan); }
+.border-terminal-white { border-color: var(--terminal-white); }
+
+/* Bright border variants */
+.border-terminal-bright-black { border-color: var(--terminal-bright-black); }
+.border-terminal-bright-red { border-color: var(--terminal-bright-red); }
+.border-terminal-bright-green { border-color: var(--terminal-bright-green); }
+.border-terminal-bright-yellow { border-color: var(--terminal-bright-yellow); }
+.border-terminal-bright-blue { border-color: var(--terminal-bright-blue); }
+.border-terminal-bright-magenta { border-color: var(--terminal-bright-magenta); }
+.border-terminal-bright-cyan { border-color: var(--terminal-bright-cyan); }
+.border-terminal-bright-white { border-color: var(--terminal-bright-white); }
+
+/* ======= TEXT EFFECTS ======= */
+
+/* Text shadow effect for terminal text */
+.terminal-text-shadow {
+  text-shadow: 0 0 5px var(--terminal-fg);
+}
+
+/* Text shadow variants for different colors */
+.terminal-shadow-green {
+  text-shadow: 0 0 5px var(--lime, var(--terminal-green));
+}
+
+.terminal-shadow-cyan {
+  text-shadow: 0 0 5px var(--chrysler-blue, var(--terminal-cyan));
+}
+
+.terminal-shadow-magenta {
+  text-shadow: 0 0 5px var(--shocking-pink, var(--terminal-magenta));
+}
+
+.lime-shadow {
+  text-shadow:
+    var(--lime, var(--terminal-green)) 0 0 1px,
+    rgba(194, 240, 76, 0.15) -1px 0 2px,
+    rgba(194, 240, 76, 0.15) 1px 0 2px;
+}
+
+.magenta-shadow {
+  text-shadow:
+    var(--shocking-pink, var(--terminal-magenta)) 0 0 2px,
+    rgba(234, 57, 185, 0.25) -1px 0 2px,
+    rgba(234, 57, 185, 0.25) 1px 0 2px;
+}
+
+.white-shadow {
+  text-shadow:
+    var(--terminal-white) 0 0 1px,
+    hsla(0, 0%, 100%, 0.2) -2px 0 1px,
+    hsla(0, 0%, 100%, 0.2) 2px 0 1px;
+}
+
+.terminal-text {
+  text-shadow: 0 0 1px rgba(194, 240, 76, 0.7);
+  transition: text-shadow 0.3s ease;
+}
+
+.terminal-text.highlight {
+  text-shadow: 0 0 3px rgba(194, 240, 76, 0.9);
+}
+
+/* ======= STATUS BARS AND HEADERS ======= */
+
+/* Header and Footer */
+.terminal-header,
+.terminal-footer {
+  color: rgba(194, 240, 76, 0.8);
+  text-shadow: none;
+  flex-shrink: 0;
+}
+
+.terminal-header {
+  display: flex;
+  align-items: stretch;
+  height: 22px;
+  border-bottom: 1px solid rgba(194, 240, 76, 0.3);
+  background: rgba(11, 11, 12, 0.8);
+}
+
+.terminal-footer {
+  border-top: 1px solid rgba(194, 240, 76, 0.3);
+  background: rgba(11, 11, 12, 0.8);
+}
+
+/* Gradient header variant */
+.terminal-header-gradient {
+  background: var(--gradient-terminal-header);
+  background-size: 200% 100%;
+  animation: hue-rotate 15s infinite linear;
+}
+
+.terminal-header-tag {
+  background-color: var(--shocking-pink, var(--terminal-magenta));
+  color: var(--black, var(--terminal-black));
+  padding: 5px 10px;
+  font-weight: bold;
+}
+
+.terminal-header-content {
+  padding: 5px 10px;
+  color: var(--shocking-pink, var(--terminal-magenta));
+  flex-grow: 1;
+  text-align: center;
+}
+
+.terminal-tag {
+  background-color: var(--shocking-pink, var(--terminal-magenta));
+  color: var(--black, var(--terminal-black));
+  font-weight: bold;
+  padding: 2px 10px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.terminal-title {
+  padding: 2px 10px;
+  color: var(--shocking-pink, var(--terminal-magenta));
+  font-size: 14px;
+  flex-grow: 1;
+  text-align: left;
+}
+
+/* Connection status bars */
+.terminal-connection-status {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 18px;
+  background-color: var(--black, var(--terminal-black));
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 0;
+}
+
+.terminal-connection-text {
+  color: var(--lime, var(--terminal-green));
+  padding-left: 10px;
+  font-weight: bold;
+}
+
+.terminal-ip-address {
+  color: var(--terminal-bright-green);
+  padding-right: 10px;
+  font-weight: bold;
+}
+
+.terminal-status {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 18px;
+  background-color: var(--black, var(--terminal-black));
+  display: flex;
+  justify-content: space-between;
+  padding: 2px 0;
+}
+
+.terminal-status-line {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 10px;
+  font-size: 14px;
+  color: var(--shocking-pink, var(--terminal-magenta));
+}
+
+.terminal-status-ip {
+  color: var(--shocking-pink, var(--terminal-magenta));
+  padding-left: 10px;
+}
+
+.terminal-status-time {
+  color: var(--shocking-pink, var(--terminal-magenta));
+  padding-right: 10px;
+}
+
+/* Message type-specific styling */
+.msg-error { color: var(--terminal-red); }
+.msg-warning { color: var(--terminal-yellow); }
+.msg-success { color: var(--terminal-green); }
+.msg-info { color: var(--terminal-cyan); }
+
+/* ======= TERMINAL CONTENT ======= */
+
+.terminal-content {
+  position: absolute;
+  top: 22px;
+  bottom: 22px;
+  left: 0;
+  right: 0;
+  overflow-y: auto;
+  padding: 0 10px;
+  background-color: var(--night, rgba(11, 11, 12, 0.95));
+  z-index: 1;
+}
+
+.terminal-output {
+  flex-grow: 1;
+  overflow-y: auto;
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border: 1px solid var(--shocking-pink, var(--terminal-magenta));
+  box-shadow: inset 0 0 5px rgba(234, 57, 185, 0.3);
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* Hide scrollbar but allow scrolling */
+.terminal-output::-webkit-scrollbar {
+  width: 0px;
+  background: transparent;
+}
+
+.terminal-output {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.terminal-output > div {
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* Add animation for the progress indicator */
+@keyframes progress-indeterminate {
+  0% {
+    width: 0%;
+    left: 0;
+  }
+  50% {
+    width: 30%;
+  }
+  75% {
+    left: 70%;
+  }
+  100% {
+    left: 100%;
+    width: 0%;
+  }
+}
+
+.animate-progress-indeterminate {
+  position: relative;
+  width: 30%;
+  animation: progress-indeterminate 1.5s infinite ease-in-out;
+}
+
+/* Add transition for smooth progress bar changes */
+.transition-width {
+  transition: width 0.3s ease-in-out;
+}
+
+/* ======= BUTTONS AND INTERACTIVE ELEMENTS ======= */
+
+.terminal-button {
+  background-color: rgba(11, 11, 12, 0.8);
+  border: 1px solid var(--lime, var(--terminal-green));
+  color: var(--lime, var(--terminal-green));
+  padding: 5px 10px;
+  margin: 5px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s ease;
+}
+
+.terminal-button:hover {
+  background-color: rgba(194, 240, 76, 0.2);
+  box-shadow: 0 0 10px rgba(194, 240, 76, 0.5);
+}
+
+.terminal-button-active {
+  background-color: rgba(194, 240, 76, 0.3);
+  box-shadow: 0 0 5px rgba(194, 240, 76, 0.7) inset;
+}
+
+.terminal-button-accent {
+  background-color: rgba(11, 11, 12, 0.8);
+  border: 1px solid var(--shocking-pink, var(--terminal-magenta));
+  color: var(--shocking-pink, var(--terminal-magenta));
+}
+
+.terminal-button-accent:hover {
+  background-color: rgba(234, 57, 185, 0.2);
+  box-shadow: 0 0 10px rgba(234, 57, 185, 0.5);
+}
+
+.terminal-button-disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.command-execute {
+  animation: command-flash 0.3s ease;
+}
+
+/* ======= PROMPT STYLING ======= */
+
+.terminal-prompt {
+  display: flex;
+  align-items: center;
+  background-color: rgba(0, 20, 0, 0.5);
+  padding: 5px 10px;
+  border: 1px solid var(--lime, var(--terminal-green));
+  box-shadow: 0 0 5px rgba(194, 240, 76, 0.3);
+}
+
+.terminal-prompt-container {
+  margin: 10px 0;
+  border: 1px solid var(--lime, var(--terminal-green));
+  background-color: rgba(0, 15, 0, 0.3);
+  box-shadow: 0 0 10px rgba(194, 240, 76, 0.3);
+  display: flex;
+  height: 22px;
+  align-items: center;
+}
+
+.terminal-prompt-user {
+  color: var(--terminal-bright-green);
+  font-weight: bold;
+}
+
+.terminal-user {
+  background-color: var(--lime, var(--terminal-green));
+  color: var(--black, var(--terminal-black));
+  font-weight: bold;
+  padding: 0 5px;
+  margin-right: 5px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.terminal-prompt-separator {
+  color: var(--terminal-white);
+  margin: 0 5px;
+}
+
+.terminal-prompt-path, .terminal-path {
+  color: var(--terminal-bright-green);
+  margin-right: 10px;
+}
+
+.terminal-input-wrapper {
+  flex-grow: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.terminal-input {
+  position: relative;
+  width: 100%;
+  background-color: transparent;
+  border: none;
+  outline: none;
+  color: var(--lime, var(--terminal-green));
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0;
+  margin: 0;
+}
+
+.terminal-input input {
+  caret-color: var(--lime, var(--terminal-lime));
+  border: none;
+  outline: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+}
+
+.terminal-input input:focus + .caret-pseudo::after {
+  content: '_';
+  display: inline-block;
+  background-color: var(--lime, var(--terminal-lime));
+  animation: blink 1s step-end infinite;
+  margin-left: 1px;
+  vertical-align: bottom;
+}
+
+.terminal-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 14px;
+  background-color: var(--lime, var(--terminal-green));
+  margin-left: 2px;
+  animation: blink 1s step-end infinite;
+}
+
+.terminal-cursor-hidden {
+  display: none;
+} 
