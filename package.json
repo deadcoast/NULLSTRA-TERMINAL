@@ -13,11 +13,6 @@
     "test": "jest",
     "server": "ts-node --project tsconfig.server.json server/index.ts"
   },
-  "lint-staged": {
-    "*.{js,jsx,ts,tsx}": [
-      "eslint --fix"
-    ]
-  },
   "keywords": [
     "terminal",
     "themes",
