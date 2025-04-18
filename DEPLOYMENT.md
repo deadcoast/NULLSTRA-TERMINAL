@@ -1,6 +1,6 @@
 # Deployment Guide
 
-This document outlines the steps to deploy the Futuristic Terminal UI application to various environments.
+This document outlines the steps to deploy the NULLSTRA-terminal to various environments.
 
 ## Prerequisites
 
