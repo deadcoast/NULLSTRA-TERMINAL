@@ -3,8 +3,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import io, { Socket } from "socket.io-client";
 
 // Server URL
-const SOCKET_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
-const REST_API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000";
+const SOCKET_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4001";
+const REST_API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4001";
 
 // Socket.io client options
 const socketOptions = {

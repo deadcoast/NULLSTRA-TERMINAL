@@ -329,8 +329,11 @@ const Terminal: React.FC<TerminalProps> = ({
   );
   const [themeDialogOpen, setThemeDialogOpen] = useState(false);
 
-  // Generate session ID based on IP address
-  const sessionId = `session-${ipAddress.replace(/\./g, "-")}`;
+  // Client-side IP formatting state
+  const [clientIpAddress, setClientIpAddress] = useState("");
+
+  // Generate session ID based on IP address - handle empty IP case for SSR
+  const sessionId = `session-${ipAddress ? ipAddress.replace(/\./g, "-") : "default"}`;
 
   // Socket.io hook
   const {
@@ -525,6 +528,13 @@ const Terminal: React.FC<TerminalProps> = ({
     }
   }, [outputMessages]);
 
+  // Update client-side IP address after mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setClientIpAddress(formatIpAddress(ipAddress));
+    }
+  }, [ipAddress]);
+
   return (
     <button
       className={`terminal-container ${className || ""} bg-transparent border-0 p-0 w-full text-left`}
@@ -549,7 +559,9 @@ const Terminal: React.FC<TerminalProps> = ({
       >
         <TerminalWindow isProcessing={isExecuting}>
           {/* Header section */}
-          {showHeader && <TerminalHeader title={title} ipAddress={ipAddress} />}
+          {showHeader && (
+            <TerminalHeader title={title} ipAddress={clientIpAddress} />
+          )}
 
           {/* Main terminal area */}
           <div
@@ -599,7 +611,7 @@ const Terminal: React.FC<TerminalProps> = ({
               onSubmit={handleCommandSubmit}
               onClear={handleClear}
               onKeyNavigation={handleKeyNavigation}
-              disabled={isExecuting || !isConnected}
+              disabled={false}
               ref={terminalInputRef}
               cursorStyle="fade"
             />
@@ -608,7 +620,7 @@ const Terminal: React.FC<TerminalProps> = ({
           {/* Status bar */}
           {showStatus && (
             <TerminalStatusLine
-              ipAddress={formatIpAddress(ipAddress)}
+              ipAddress={clientIpAddress || ""}
               isConnected={isConnected}
               isExecuting={isExecuting}
               timestamp={formatTimestamp()}

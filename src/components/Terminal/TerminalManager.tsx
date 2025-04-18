@@ -26,7 +26,7 @@ const TerminalManager: React.FC<TerminalManagerProps> = ({
   initialSessions = [],
   maxSessions = 4,
 }) => {
-  // Generate a default session if none provided
+  // Create a default session with placeholder IP
   const defaultSessions: TerminalSession[] =
     initialSessions.length > 0
       ? initialSessions
@@ -34,7 +34,7 @@ const TerminalManager: React.FC<TerminalManagerProps> = ({
           {
             id: `term-${Date.now()}`,
             name: "Main Terminal",
-            ipAddress: `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
+            ipAddress: "", // Start with empty IP address
             initialMessages: [
               {
                 type: "info",
@@ -51,6 +51,25 @@ const TerminalManager: React.FC<TerminalManagerProps> = ({
     defaultSessions[0].id,
   );
 
+  // Generate random IPs only on the client-side
+  useEffect(() => {
+    // Only run on the client side
+    if (typeof window === "undefined") return;
+
+    // Add random IP addresses to sessions that don't have one
+    setSessions((prevSessions) =>
+      prevSessions.map((session) => {
+        if (!session.ipAddress) {
+          return {
+            ...session,
+            ipAddress: `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
+          };
+        }
+        return session;
+      }),
+    );
+  }, []);
+
   // Log initial rendering for debugging
   useEffect(() => {
     // eslint-disable-next-line no-console
@@ -64,10 +83,14 @@ const TerminalManager: React.FC<TerminalManagerProps> = ({
       return;
     }
 
+    // Create session with IP only on client side
     const newSession: TerminalSession = {
       id: `term-${Date.now()}`,
       name: `Terminal ${sessions.length + 1}`,
-      ipAddress: `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
+      ipAddress:
+        typeof window !== "undefined"
+          ? `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`
+          : "",
     };
 
     setSessions([...sessions, newSession]);
