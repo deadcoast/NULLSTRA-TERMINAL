@@ -34,22 +34,26 @@ const TerminalOutputLine: React.FC<TerminalOutputLineProps> = ({
 }) => {
   // State to track if we're on the client side
   const [isClient, setIsClient] = useState(false);
-  
+
   // Use effect to set isClient to true after hydration completes
   useEffect(() => {
     setIsClient(true);
   }, []);
 
   // Determine the line class based on type
-  const lineClass = classNames("terminal-line", {
-    "terminal-line-command": type === "command",
-    "terminal-line-error": type === "error",
-    "terminal-line-warning": type === "warning",
-    "terminal-line-success": type === "success",
-    "terminal-line-info": type === "info",
-    "terminal-line-system": type === "system",
-    "animated": animated,
-  }, className);
+  const lineClass = classNames(
+    "terminal-line",
+    {
+      "terminal-line-command": type === "command",
+      "terminal-line-error": type === "error",
+      "terminal-line-warning": type === "warning",
+      "terminal-line-success": type === "success",
+      "terminal-line-info": type === "info",
+      "terminal-line-system": type === "system",
+      animated: animated,
+    },
+    className,
+  );
 
   // For file listings
   const renderFiles = () => {
@@ -77,7 +81,7 @@ const TerminalOutputLine: React.FC<TerminalOutputLineProps> = ({
       {files && renderFiles()}
       {timestamp && (
         <span className="terminal-timestamp" suppressHydrationWarning>
-          {isClient ? timestamp : ''}
+          {isClient ? timestamp : ""}
         </span>
       )}
     </div>

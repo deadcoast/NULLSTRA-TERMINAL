@@ -19,11 +19,23 @@ interface TerminalOutputProps {
 }
 
 const TerminalOutput = forwardRef<HTMLDivElement, TerminalOutputProps>(
-  ({ messages, onExecuteCommand, className = "", suppressHydrationWarning = false }, ref) => {
+  (
+    {
+      messages,
+      onExecuteCommand,
+      className = "",
+      suppressHydrationWarning = false,
+    },
+    ref,
+  ) => {
     // Handle the different message types
     const renderMessage = (message: MessageType, index: number) => {
       return (
-        <div key={`${message.timestamp}-${index}`} suppressHydrationWarning={suppressHydrationWarning} className="mb-1 relative z-10">
+        <div
+          key={`${message.timestamp}-${index}`}
+          suppressHydrationWarning={suppressHydrationWarning}
+          className="mb-1 relative z-10"
+        >
           <MessageRenderer
             message={message as TerminalMessage}
             onExecuteCommand={onExecuteCommand}

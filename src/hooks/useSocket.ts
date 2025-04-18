@@ -55,7 +55,7 @@ export const useSocket = () => {
   useEffect(() => {
     // eslint-disable-next-line no-console
     console.log("Initializing socket connection to:", SOCKET_URL);
-    
+
     // Create Socket.io client instance
     socketRef.current = io(SOCKET_URL, socketOptions);
     const socket = socketRef.current;
@@ -89,10 +89,10 @@ export const useSocket = () => {
         if (!isConnected) {
           // eslint-disable-next-line no-console
           console.log(
-            "Socket connection timeout - not connected after 5 seconds"
+            "Socket connection timeout - not connected after 5 seconds",
           );
           setError(
-            "Connection timeout - could not connect to server. Is the server running?"
+            "Connection timeout - could not connect to server. Is the server running?",
           );
         }
       }, 5000);

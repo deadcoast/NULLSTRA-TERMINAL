@@ -313,13 +313,18 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
 
   return (
     <ThemeContext.Provider value={{ theme, setTheme, availableThemes }}>
-      <div className="theme-wrapper" style={{
-        // Ensure critical theme values are directly applied to wrapper
-        "--terminal-black": theme.colors.background,
-        "--terminal-green": theme.colors.green,
-        "--terminal-magenta": theme.colors.magenta,
-        "--font-terminal": theme.fonts.primary,
-      } as React.CSSProperties}>
+      <div
+        className="theme-wrapper"
+        style={
+          {
+            // Ensure critical theme values are directly applied to wrapper
+            "--terminal-black": theme.colors.background,
+            "--terminal-green": theme.colors.green,
+            "--terminal-magenta": theme.colors.magenta,
+            "--font-terminal": theme.fonts.primary,
+          } as React.CSSProperties
+        }
+      >
         {children}
       </div>
     </ThemeContext.Provider>

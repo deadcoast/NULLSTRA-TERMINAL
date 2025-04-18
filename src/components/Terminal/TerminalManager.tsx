@@ -38,7 +38,8 @@ const TerminalManager: React.FC<TerminalManagerProps> = ({
             initialMessages: [
               {
                 type: "info",
-                content: "Welcome to the Terminal! Connection to server may be pending...",
+                content:
+                  "Welcome to the Terminal! Connection to server may be pending...",
                 timestamp: new Date().toISOString(),
               },
             ],

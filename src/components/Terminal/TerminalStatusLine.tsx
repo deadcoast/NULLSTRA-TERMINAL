@@ -24,18 +24,22 @@ const TerminalStatusLine: React.FC<TerminalStatusLineProps> = ({
   children,
 }) => {
   const [clientTimestamp, setClientTimestamp] = useState(timestamp);
-  
-  // Update timestamp on client side only
+  const [clientIPAddress, setClientIPAddress] = useState("");
+
+  // Update timestamp and IP address on client side only
   useEffect(() => {
     setClientTimestamp(timestamp);
-  }, [timestamp]);
+    setClientIPAddress(ipAddress);
+  }, [timestamp, ipAddress]);
 
   return (
     <div
       className={`terminal-status-line text-xs flex justify-between items-center px-2 py-1 border-t border-shocking-pink ${className}`}
     >
       <div className="flex items-center space-x-2">
-        <span className="terminal-status-ip">&lt;{ipAddress}&gt;</span>
+        <span className="terminal-status-ip" suppressHydrationWarning>
+          &lt;{typeof window !== "undefined" ? clientIPAddress : ""}&gt;
+        </span>
         <span
           className={`connection-status ${isConnected ? "text-lime" : "text-red"}`}
         >
@@ -47,7 +51,7 @@ const TerminalStatusLine: React.FC<TerminalStatusLineProps> = ({
       </div>
       {children || (
         <span suppressHydrationWarning className="terminal-status-time">
-          {typeof window !== 'undefined' ? clientTimestamp : timestamp}
+          {typeof window !== "undefined" ? clientTimestamp : ""}
         </span>
       )}
     </div>

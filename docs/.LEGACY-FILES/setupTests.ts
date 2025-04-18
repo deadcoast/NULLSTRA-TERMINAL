@@ -24,7 +24,7 @@ declare global {
       toHaveStyle(css: Record<string, any>): R;
       toHaveTextContent(
         text: string | RegExp,
-        options?: { normalizeWhitespace: boolean }
+        options?: { normalizeWhitespace: boolean },
       ): R;
       toHaveValue(value?: string | string[] | number): R;
     }

@@ -512,13 +512,13 @@ const Terminal: React.FC<TerminalProps> = ({
 
   // Add a useEffect to format timestamps on client side only
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       // Client-side only code
-      const formattedMessages = outputMessages.map(msg => ({
+      const formattedMessages = outputMessages.map((msg) => ({
         ...msg,
-        clientFormatted: true
+        clientFormatted: true,
       }));
-      
+
       if (formattedMessages.length !== outputMessages.length) {
         setOutputMessages(formattedMessages);
       }
@@ -576,13 +576,14 @@ const Terminal: React.FC<TerminalProps> = ({
                         content: `Welcome to the Terminal UI. ${isConnected ? "Connected to server." : "WARNING: Not connected to server. Some features may be unavailable."}`,
                         timestamp: new Date().toISOString(),
                         type: isConnected ? "info" : "warning",
-                        clientFormatted: true
+                        clientFormatted: true,
                       },
                       {
-                        content: "Type 'help' for a list of available commands.",
+                        content:
+                          "Type 'help' for a list of available commands.",
                         timestamp: new Date().toISOString(),
                         type: "info",
-                        clientFormatted: true
+                        clientFormatted: true,
                       },
                     ]
               }

@@ -25,16 +25,16 @@ const TerminalWindow: React.FC<TerminalWindowProps> = ({
     >
       {/* Explicit background rendering */}
       <div className="absolute inset-0 bg-terminal-black z-0"></div>
-      
+
       {/* Scanline effect */}
       <div className="terminal-scanlines absolute inset-0 pointer-events-none z-10"></div>
-      
+
       {/* CRT effect */}
       <div className="crt-effect absolute inset-0 pointer-events-none z-20"></div>
-      
+
       {/* Vignette effect */}
       <div className="vignette absolute inset-0 pointer-events-none z-30"></div>
-      
+
       {/* Content */}
       <div className="relative z-40">{children}</div>
     </div>
