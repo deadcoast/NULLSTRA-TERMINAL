@@ -1,4 +1,5 @@
-import { useCallback, useState } from "react";
+import * as React from "react";
+const {  useCallback, useState  } = React;
 import { glitchText, simulateConnectionIssue } from "../utils";
 import initialFileSystemData from "../utils/terminalCommands/fileSystemData";
 import {

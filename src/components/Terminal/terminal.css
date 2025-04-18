@@ -1,3 +1,8 @@
+/* Terminal-specific styles 
+ * This file contains styles specific to the terminal UI components.
+ * Base variables are imported from globals.css
+ */
+
 /* Add theme variables for dynamic theming */
 .terminal-container {
   /* These will be overridden by inline styles from theme context */
@@ -60,6 +65,7 @@
     rgba(194, 240, 76, 0.1) 1px 0 1px;
   position: relative;
   z-index: 1;
+  contain: content;
 }
 
 /* ======= ANIMATION KEYFRAMES ======= */
@@ -166,8 +172,7 @@
   left: 0;
   bottom: 0;
   right: 0;
-  background:
-    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
     linear-gradient(
       90deg,
       rgba(255, 0, 0, 0.04),
@@ -276,6 +281,8 @@
   pointer-events: none;
   z-index: 3;
   mix-blend-mode: overlay;
+  contain: strict;
+  will-change: transform;
 }
 
 .vignette {
@@ -296,6 +303,7 @@
 .cursor {
   animation: cursor-pulse 1.2s infinite;
   box-shadow: 0 0 3px rgba(194, 240, 76, 0.7);
+  will-change: opacity;
 }
 
 /* Theme classes for colors */
@@ -658,6 +666,7 @@
   box-shadow: inset 0 0 5px rgba(234, 57, 185, 0.3);
   white-space: pre-wrap;
   word-break: break-all;
+  contain: content;
 }
 
 /* Hide scrollbar but allow scrolling */
@@ -716,6 +725,7 @@
   cursor: pointer;
   font-family: inherit;
   transition: all 0.2s ease;
+  will-change: transform;
 }
 
 .terminal-button:hover {
@@ -846,4 +856,34 @@
 
 .terminal-cursor-hidden {
   display: none;
+}
+
+/* CSS performance optimizations */
+.terminal-output {
+  contain: content;
+}
+
+.terminal-window {
+  contain: layout style;
+}
+
+.crt-effect {
+  contain: strict;
+  will-change: transform;
+}
+
+/* Add hardware acceleration for animations */
+.terminal-cursor {
+  will-change: opacity;
+}
+
+.terminal-button {
+  will-change: transform;
+}
+
+/* Apply passive property for scroll events */
+.virtualized-list {
+  overflow-y: auto;
+  /* passive scroll listener for improved performance */
+  overscroll-behavior: contain;
 }

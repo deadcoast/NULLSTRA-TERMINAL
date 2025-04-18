@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import * as React from "react";
+const {   useEffect, useState   } = React;
 
 // Define glitch parameters outside the component
 const glitchParams = {

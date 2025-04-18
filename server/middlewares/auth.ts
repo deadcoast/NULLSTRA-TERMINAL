@@ -1,15 +1,13 @@
-import dotenv from "dotenv";
-import { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken";
+import * as dotenv from "dotenv";
+import { Request as ExpressRequest, NextFunction, Response } from "express";
+import * as jwt from "jsonwebtoken";
 
-// Extend Express Request interface to include user information
-declare module "express-serve-static-core" {
-  interface Request {
-    user?: {
-      userId: string;
-      sessionId: string;
-    };
-  }
+// Define custom request with user information
+interface Request extends ExpressRequest {
+  user?: {
+    userId: string;
+    sessionId: string;
+  };
 }
 
 // Load environment variables
@@ -48,7 +46,12 @@ export const authenticate = (
     // Get token from header
     const authHeader = req.headers.authorization;
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    // Check if auth header exists and is a string (not an array)
+    if (
+      !authHeader ||
+      typeof authHeader !== "string" ||
+      !authHeader.startsWith("Bearer ")
+    ) {
       res.status(401).json({
         success: false,
         message: "Authentication required. Please provide a valid token.",
@@ -56,7 +59,7 @@ export const authenticate = (
       return;
     }
 
-    // Extract token
+    // Extract token from the string header
     const token = authHeader.split(" ")[1];
 
     // Verify token

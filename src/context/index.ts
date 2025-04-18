@@ -1,7 +1,2 @@
-export {
-  default as ThemeContext,
-  ThemeProvider,
-  terminalThemes,
-  useTheme,
-  type TerminalTheme,
-} from "./ThemeContext";
+export * from "./TerminalContext";
+export * from "./ThemeContext";

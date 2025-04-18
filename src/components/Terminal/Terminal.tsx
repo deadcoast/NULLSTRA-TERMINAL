@@ -1,272 +1,25 @@
 "use client";
 /**
- * 1. Implement error handling to manage exceptions and improve robustness.  
-2. Use TypeScript interfaces or types to define data structures for better type safety.  
-3. Optimize performance by minimizing unnecessary computations or using memoization.  
+ * 1. Implement error handling to manage exceptions and improve robustness.
+ * 2. Use TypeScript interfaces or types to define data structures for better type safety.
+ * 3. Optimize performance by minimizing unnecessary computations or using memoization.
  */
 
 import React, { useCallback, useEffect, useRef, useState } from "react";
+
 import { useTheme } from "../../context";
 import { useSocket } from "../../hooks";
 import { CommandResult } from "../../hooks/useSocket";
 import { formatIpAddress, formatTimestamp } from "../../utils/effectsHelper";
 import { TerminalMessage } from "../../utils/terminalCommands/types";
-import { CRTEffect } from "../UI";
-import FileViewer from "./FileViewer";
-import StatusPanel from "./StatusPanel";
-import "./terminal.css";
 
+import FileViewer from "./FileViewer";
+import "./terminal.css";
+import TerminalBody from "./TerminalBody";
 import TerminalHeader from "./TerminalHeader";
-import TerminalOutput from "./TerminalOutput";
-import TerminalPrompt from "./TerminalPrompt";
 import TerminalStatusLine from "./TerminalStatusLine";
 import TerminalWindow from "./TerminalWindow";
 import ThemeSelector from "./ThemeSelector";
-
-const BOX_CHARS = {
-  // Single Line
-  TL: "┌",
-  TR: "┐",
-  BL: "└",
-  BR: "┘",
-  HZ: "─",
-  VT: "│",
-  LT: "├",
-  RT: "┤",
-  TT: "┬",
-  BT: "┴",
-  // Double Line (Used in Button/Line Numbers)
-  DVT: "║", // Double Vertical
-  DTL: "╔",
-  DTR: "╗",
-  DBL: "╚",
-  DBR: "╝",
-  // Mixed Single/Double (Used in Button/Line Numbers)
-  LTD: "╠", // VT-Double HZ Left Tee ( │ + ═ ) -> Your example uses this: │╠─
-  RTD: "╣", // VT-Double HZ Right Tee ( │ + ═ ) -> Not in example, but inverse of LTD
-  DHLT: "╦", // Double HZ-VT Top Tee ( ═ + │ ) -> Your example uses this: ─╦─
-  DHBT: "╩", // Double HZ-VT Bottom Tee ( ═ + │ ) -> Not in example
-  // Mixed Double/Single (Not explicitly in example, but possible)
-  DLT: "╟", // Double VT-HZ Left Tee ( ║ + ─ )
-  DRT: "╢", // Double VT-HZ Right Tee ( ║ + ─ )
-  TTD: "╤", // Top Tee Double Vertical
-  BTD: "╧", // Bottom Tee Double Vertical
-};
-
-/**
- * Generates the top bar section.
- * @param {number} titleWidth - The width allocated for the first section (e.g., 'CLEye').
- * @param {number} contentWidth - The width allocated for the second section (e.g., '> ALWAYS_WATCHING').
- * @param {string} title - The text for the first section.
- * @param {string} content - The text for the second section.
- * @returns {string[]} - An array containing the three lines of the top bar.
- */
-function generateTopBar(
-  titleWidth: number,
-  contentWidth: number,
-  title: string,
-  content: string,
-): string[] {
-  const top =
-    BOX_CHARS.TL +
-    BOX_CHARS.HZ.repeat(titleWidth) +
-    BOX_CHARS.TT +
-    BOX_CHARS.HZ.repeat(contentWidth) +
-    BOX_CHARS.TR;
-  const middle =
-    BOX_CHARS.VT +
-    ` ${title} `.padEnd(titleWidth) +
-    BOX_CHARS.VT +
-    ` ${content} `.padEnd(contentWidth) +
-    BOX_CHARS.VT;
-  const bottom =
-    BOX_CHARS.LT +
-    BOX_CHARS.HZ.repeat(titleWidth) +
-    BOX_CHARS.BT +
-    BOX_CHARS.HZ.repeat(contentWidth) +
-    BOX_CHARS.RT;
-  return [top, middle, bottom];
-}
-
-/**
- * Generates the button section (based on your provided structure).
- * Requires knowledge of the total terminal width to add padding and the right border.
- * @param {number} buttonInnerWidth - The width inside the double borders (excluding the ║ chars).
- * @param {number} totalWidth - The total width of the terminal line (for padding).
- * @param {string} title - The text for the button.
- * @returns {string[]} - An array containing the three lines of the button section.
- */
-function generateButtonSection(
-  buttonInnerWidth: number,
-  totalWidth: number,
-  title: string,
-): string[] {
-  const titlePadding = Math.floor((buttonInnerWidth - title.length) / 2);
-  const extraPadding = buttonInnerWidth - title.length - 2 * titlePadding; // Handles odd widths
-
-  // Line 1: ├─╦──────────────╗ ... │
-  const topContent =
-    BOX_CHARS.LT +
-    BOX_CHARS.HZ +
-    BOX_CHARS.DHLT +
-    BOX_CHARS.HZ.repeat(buttonInnerWidth) +
-    BOX_CHARS.DTR;
-  const top = topContent.padEnd(totalWidth - 1, " ") + BOX_CHARS.VT;
-
-  // Line 2: │ ║   NULLSTRA   ║ ... │
-  const middleContent =
-    BOX_CHARS.VT +
-    " " +
-    BOX_CHARS.DVT +
-    " ".repeat(titlePadding) +
-    title +
-    " ".repeat(titlePadding + extraPadding) +
-    BOX_CHARS.DVT;
-  const middle = middleContent.padEnd(totalWidth - 1, " ") + BOX_CHARS.VT;
-
-  // Line 3: │ ╠──────────────╝ ... │
-  const bottomContent =
-    BOX_CHARS.VT +
-    " " +
-    BOX_CHARS.LTD +
-    BOX_CHARS.HZ.repeat(buttonInnerWidth) +
-    BOX_CHARS.DBR;
-  const bottom = bottomContent.padEnd(totalWidth - 1, " ") + BOX_CHARS.VT;
-
-  return [top, middle, bottom];
-}
-
-/**
- * Generates a single content line with a line number.
- * @param {number} lineNumber - The line number to display.
- * @param {string} content - The actual content for the line.
- * @param {number} totalWidth - The total width of the terminal line.
- * @param {number} lineNumberWidth - How much space to allocate for the number (e.g., 1 or 2 for numbers < 100).
- * @returns {string} - The formatted line string.
- */
-function generateContentLine(
-  lineNumber: number,
-  content: string,
-  totalWidth: number,
-  lineNumberWidth: number = 1,
-): string {
-  const numStr = lineNumber.toString().padStart(lineNumberWidth, " "); // Pad number if needed
-  const left = BOX_CHARS.VT + numStr + BOX_CHARS.LTD + BOX_CHARS.HZ + " "; // Example: │1╠─
-  const right = " " + BOX_CHARS.VT; // Example:  │
-  const availableWidth = totalWidth - left.length - right.length;
-  const paddedContent = content.padEnd(availableWidth, " ");
-
-  return left + paddedContent + right;
-}
-
-/**
- * Generates the line marking the end of the numbered section.
- * @param {number} totalWidth - The total width of the terminal line.
- * @param {number} lineNumberWidth - The width used for line numbers (must match generateContentLine).
- * @returns {string} - The formatted line string.
- */
-function generateLineNumberEnd(
-  totalWidth: number,
-  lineNumberWidth: number = 1,
-): string {
-  // Needs to align with the vertical line before the number and the ╝ character
-  // Example: ├─╝
-  const left =
-    BOX_CHARS.LT + BOX_CHARS.HZ.repeat(lineNumberWidth) + BOX_CHARS.DBR; // Assuming ╝ aligns under ╠
-  const right = BOX_CHARS.VT;
-  const padding = totalWidth - left.length - right.length;
-  return left + " ".repeat(padding) + right;
-}
-
-/**
- * Generates the final bottom border.
- * @param {number} totalWidth - The total width of the terminal line.
- * @returns {string} - The bottom border string.
- */
-function generateBottomBorder(totalWidth: number): string {
-  return BOX_CHARS.BL + BOX_CHARS.HZ.repeat(totalWidth - 2) + BOX_CHARS.BR;
-}
-
-/**
- * Generates the complete terminal frame.
- * @param {Object} config - The configuration object containing:
- *   - totalWidth: The total width of the terminal line.
- *   - topBarTitle: The title for the top bar./**
- * Generates the complete static frame of the terminal.
- * @param {object} config
- * @param {number} config.totalWidth - Overall width (character count).
- * @param {string} config.topBarTitle - Title for the top bar left section.
- * @param {number} config.topBarTitleWidth - Width for the top bar left section.
- * @param {string} config.topBarContent - Content for the top bar right section.
- * @param {string} config.buttonTitle - Title for the button.
- * @param {number} config.buttonInnerWidth - Width inside the button's double borders.
- * @param {string[]} config.initialContent - Array of initial content strings for numbered lines.
- * @param {number} config.lineNumberWidth - Space for line numbers (e.g., 1 for 1-9, 2 for 10-99).
- * @param {string} config.leadingSpaces - Optional string to prepend to each line (e.g., '  ').
- * @returns {string[]} - Array of strings representing the complete terminal frame.
- */
-function generateTerminalFrame({
-  totalWidth,
-  topBarTitle,
-  topBarTitleWidth,
-  topBarContent,
-  buttonTitle,
-  buttonInnerWidth,
-  initialContent,
-  lineNumberWidth = 1,
-  leadingSpaces = "  ", // Match your original code's indentation
-}: {
-  totalWidth: number;
-  topBarTitle: string;
-  topBarTitleWidth: number;
-  topBarContent: string;
-  buttonTitle: string;
-  buttonInnerWidth: number;
-  initialContent: string[];
-  lineNumberWidth?: number;
-  leadingSpaces?: string;
-}): string[] {
-  const lines: string[] = [];
-  const topBarContentWidth = totalWidth - topBarTitleWidth - 3; // -3 for borders │, ┬, │
-
-  // 1. Top Bar
-  const topBarLines = generateTopBar(
-    topBarTitleWidth,
-    topBarContentWidth,
-    topBarTitle,
-    topBarContent,
-  );
-  lines.push(...topBarLines.map((line) => leadingSpaces + line));
-
-  // 2. Button Section
-  const buttonLines = generateButtonSection(
-    buttonInnerWidth,
-    totalWidth,
-    buttonTitle,
-  );
-  lines.push(...buttonLines.map((line) => leadingSpaces + line));
-
-  // 3. Initial Content Lines with Numbers
-  initialContent.forEach((content, index) => {
-    const line = generateContentLine(
-      index + 1,
-      content,
-      totalWidth,
-      lineNumberWidth,
-    );
-    lines.push(leadingSpaces + line);
-  });
-
-  // 4. Line Number End Separator
-  const endLine = generateLineNumberEnd(totalWidth, lineNumberWidth);
-  lines.push(leadingSpaces + endLine);
-
-  // 5. Bottom Border
-  const bottomLine = generateBottomBorder(totalWidth);
-  lines.push(leadingSpaces + bottomLine);
-
-  return lines;
-}
 
 // --- Configuration for the Frame ---
 const terminalConfig = {
@@ -315,9 +68,6 @@ const Terminal: React.FC<TerminalProps> = ({
 }) => {
   // Theme context
   const { theme } = useTheme();
-  const _outputRef = useRef<HTMLDivElement>(null);
-  const _promptRef = useRef<HTMLInputElement>(null);
-  const terminalOutputRef = useRef<HTMLDivElement>(null);
   const terminalInputRef = useRef<HTMLInputElement>(null);
 
   // Terminal state
@@ -333,7 +83,9 @@ const Terminal: React.FC<TerminalProps> = ({
   const [clientIpAddress, setClientIpAddress] = useState("");
 
   // Generate session ID based on IP address - handle empty IP case for SSR
-  const sessionId = `session-${ipAddress ? ipAddress.replace(/\./g, "-") : "default"}`;
+  const sessionId = `session-${
+    ipAddress ? ipAddress.replace(/\./g, "-") : "default"
+  }`;
 
   // Socket.io hook
   const {
@@ -352,14 +104,6 @@ const Terminal: React.FC<TerminalProps> = ({
     filename: "",
     content: "",
     fileType: "text",
-  });
-
-  // State for file viewer dialog
-  const [_fileViewerOpen, _setFileViewerOpen] = useState(false);
-  const [_currentFile, _setCurrentFile] = useState({
-    name: "",
-    content: "",
-    type: "text",
   });
 
   // Update output messages when command results change
@@ -381,14 +125,6 @@ const Terminal: React.FC<TerminalProps> = ({
     }
   }, [error]);
 
-  // Scroll to bottom when output messages change
-  useEffect(() => {
-    if (terminalOutputRef.current) {
-      terminalOutputRef.current.scrollTop =
-        terminalOutputRef.current.scrollHeight;
-    }
-  }, [outputMessages]);
-
   // Get command history from server on mount
   useEffect(() => {
     if (isConnected) {
@@ -402,131 +138,80 @@ const Terminal: React.FC<TerminalProps> = ({
   }, []);
 
   // Focus input when clicked anywhere in terminal
-  const focusInput = () => {
+  const focusInput = useCallback(() => {
     terminalInputRef.current?.focus();
-  };
+  }, []);
 
-  // Handle keyboard events for accessibility
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === " ") {
-      focusInput();
-    }
-  };
+  const handleCommandSubmit = useCallback(
+    (command: string) => {
+      if (!command.trim()) {
+        return;
+      }
 
-  const handleCommandSubmit = (command: string) => {
-    if (!command.trim()) {
-      return;
-    }
+      // Special command handling
+      if (command.trim() === "clear") {
+        handleClear();
+        return;
+      }
 
-    // Special command handling
-    if (command.trim() === "clear") {
-      handleClear();
-      return;
-    }
+      if (command.trim() === "theme") {
+        setThemeDialogOpen(true);
+        return;
+      }
 
-    if (command.trim() === "theme") {
-      setThemeDialogOpen(true);
-      return;
-    }
+      // Parse command and arguments
+      const parts = command.trim().split(" ");
+      const cmd = parts[0];
+      const args = parts.slice(1);
 
-    // Parse command and arguments
-    const parts = command.trim().split(" ");
-    const cmd = parts[0];
-    const args = parts.slice(1);
+      // Add to command history
+      setCommandHistory((prev) => [command, ...prev].slice(0, 100));
+      setHistoryIndex(-1);
 
-    // Add to command history
-    setCommandHistory((prev) => [command, ...prev].slice(0, 100));
-    setHistoryIndex(-1);
+      // Clear input
+      setInputValue("");
 
-    // Clear input
-    setInputValue("");
-
-    // Execute command
-    executeCommand(cmd, args, sessionId);
-  };
+      // Execute command
+      executeCommand(cmd, args, sessionId);
+    },
+    [executeCommand, sessionId],
+  );
 
   // Handle input change
-  const handleInputChange = (value: string) => {
+  const handleInputChange = useCallback((value: string) => {
     setInputValue(value);
-  };
+  }, []);
 
   // Handle key navigation (up/down for history)
-  const handleKeyNavigation = (direction: "up" | "down") => {
-    if (commandHistory.length === 0) {
-      return;
-    }
+  const handleKeyNavigation = useCallback(
+    (direction: "up" | "down") => {
+      if (commandHistory.length === 0) {
+        return;
+      }
 
-    if (direction === "up") {
-      // Navigate up in history
-      const newIndex =
-        historyIndex < commandHistory.length - 1
-          ? historyIndex + 1
-          : historyIndex;
-      setHistoryIndex(newIndex);
-      setInputValue(commandHistory[newIndex] || "");
-    } else {
-      // Navigate down in history
-      const newIndex = historyIndex > 0 ? historyIndex - 1 : -1;
-      setHistoryIndex(newIndex);
-      setInputValue(newIndex === -1 ? "" : commandHistory[newIndex]);
-    }
-  };
+      if (direction === "up") {
+        // Navigate up in history
+        const newIndex =
+          historyIndex < commandHistory.length - 1
+            ? historyIndex + 1
+            : historyIndex;
+        setHistoryIndex(newIndex);
+        setInputValue(commandHistory[newIndex] || "");
+      } else {
+        // Navigate down in history
+        const newIndex = historyIndex > 0 ? historyIndex - 1 : -1;
+        setHistoryIndex(newIndex);
+        setInputValue(newIndex === -1 ? "" : commandHistory[newIndex]);
+      }
+    },
+    [commandHistory, historyIndex],
+  );
 
   // Handle clear command
   const handleClear = useCallback(() => {
     setOutputMessages([]);
     clearResults();
   }, [clearResults]);
-
-  // Open file viewer
-  const _handleOpenFile = (
-    filename: string,
-    content: string,
-    fileType = "text",
-  ) => {
-    setFileViewer({
-      isOpen: true,
-      filename,
-      content,
-      fileType,
-    });
-  };
-
-  // --- Generate Initial Frame ---
-  const initialFrameLines = generateTerminalFrame(terminalConfig);
-
-  // Include the initial frame in messages for display
-  const _allDisplayMessages = React.useMemo(() => {
-    const frameMessages = initialFrameLines.map((line) => ({
-      content: line,
-      timestamp: new Date().toISOString(),
-      type: "info" as const,
-    }));
-
-    // Add a spacer
-    const spacerMessage = {
-      content: "",
-      timestamp: new Date().toISOString(),
-      type: "info" as const,
-    };
-
-    return [...frameMessages, spacerMessage, ...outputMessages];
-  }, [initialFrameLines, outputMessages]);
-
-  // Add a useEffect to format timestamps on client side only
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      // Client-side only code
-      const formattedMessages = outputMessages.map((msg) => ({
-        ...msg,
-        clientFormatted: true,
-      }));
-
-      if (formattedMessages.length !== outputMessages.length) {
-        setOutputMessages(formattedMessages);
-      }
-    }
-  }, [outputMessages]);
 
   // Update client-side IP address after mount
   useEffect(() => {
@@ -537,14 +222,10 @@ const Terminal: React.FC<TerminalProps> = ({
 
   return (
     <button
-      className={`terminal-container ${className || ""} bg-transparent border-0 p-0 w-full text-left`}
+      className={`terminal-container ${
+        className || ""
+      } bg-transparent border-0 p-0 w-full text-left`}
       onClick={focusInput}
-      onKeyDown={(e) => {
-        handleKeyDown(e);
-        if (e.key === "Enter" || e.key === " ") {
-          focusInput();
-        }
-      }}
       aria-label="Terminal interface"
     >
       <div
@@ -564,58 +245,17 @@ const Terminal: React.FC<TerminalProps> = ({
           )}
 
           {/* Main terminal area */}
-          <div
-            className="flex-grow overflow-hidden relative p-2"
-            role="region"
-            aria-label="Terminal output area"
-          >
-            {/* Add the CRT effect */}
-            <CRTEffect
-              intensity={theme.effects?.crtIntensity || 0.5}
-              isProcessing={isExecuting}
-            />
-
-            {/* Status Panel */}
-            <StatusPanel className="mb-4" />
-
-            {/* Terminal output area */}
-            <TerminalOutput
-              messages={
-                outputMessages.length > 0
-                  ? outputMessages
-                  : [
-                      {
-                        content: `Welcome to the Terminal UI. ${isConnected ? "Connected to server." : "WARNING: Not connected to server. Some features may be unavailable."}`,
-                        timestamp: new Date().toISOString(),
-                        type: isConnected ? "info" : "warning",
-                        clientFormatted: true,
-                      },
-                      {
-                        content:
-                          "Type 'help' for a list of available commands.",
-                        timestamp: new Date().toISOString(),
-                        type: "info",
-                        clientFormatted: true,
-                      },
-                    ]
-              }
-              onExecuteCommand={handleCommandSubmit}
-              ref={terminalOutputRef}
-              suppressHydrationWarning
-            />
-
-            {/* Command input */}
-            <TerminalPrompt
-              value={inputValue}
-              onChange={handleInputChange}
-              onSubmit={handleCommandSubmit}
-              onClear={handleClear}
-              onKeyNavigation={handleKeyNavigation}
-              disabled={false}
-              ref={terminalInputRef}
-              cursorStyle="fade"
-            />
-          </div>
+          <TerminalBody
+            outputMessages={outputMessages}
+            inputValue={inputValue}
+            isExecuting={isExecuting}
+            isConnected={isConnected}
+            onInputChange={handleInputChange}
+            onCommandSubmit={handleCommandSubmit}
+            onClear={handleClear}
+            onKeyNavigation={handleKeyNavigation}
+            focusInput={focusInput}
+          />
 
           {/* Status bar */}
           {showStatus && (

@@ -1,12 +1,13 @@
 /**
  * 1. Allow customizable intensity levels for more control over the glitch effect.
 2. Implement a toggle for enabling/disabling the glitch effect dynamically.
-3. Add support for different glitch styles (e.g., color shift, distortion) to enhance visual variety.
-4. Implement error handling to manage invalid data inputs gracefully.  
-5. Add customizable styles for table borders and text to enhance visual appeal.  
-6. Optimize the `getColumnWidths` function for performance with large datasets.   
-*/
-import React from "react";
+ * 3. Add support for different glitch styles (e.g., color shift, distortion) to enhance visual variety.
+ * 4. Implement error handling to manage invalid data inputs gracefully.
+ * 5. Add customizable styles for table borders and text to enhance visual appeal.
+ * 6. Optimize the `getColumnWidths` function for performance with large datasets.
+ */
+import * as React from "react";
+
 import { Glitch } from "../UI";
 
 interface TableData {

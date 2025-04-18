@@ -1,5 +1,5 @@
-import dotenv from "dotenv";
-import { createClient, RedisClientType } from "redis";
+import * as dotenv from "dotenv";
+import { createClient, RedisClient } from "redis";
 
 // Load environment variables
 dotenv.config();
@@ -21,47 +21,48 @@ const logger = {
 };
 
 // Redis client instance
-let redisClient: RedisClientType | null = null;
+let redisClient: RedisClient | null = null;
 
 /**
  * Setup Redis connection
  */
-export const setupRedisConnection =
-  async (): Promise<RedisClientType | null> => {
-    // Skip if Redis is not enabled
-    if (!REDIS_ENABLED) {
-      logger.info("Redis is disabled. Skipping connection.");
-      return null;
-    }
+export const setupRedisConnection = async (): Promise<RedisClient | null> => {
+  // Skip if Redis is not enabled
+  if (!REDIS_ENABLED) {
+    logger.info("Redis is disabled. Skipping connection.");
+    return null;
+  }
 
-    try {
-      // Create Redis client
-      redisClient = createClient({ url: REDIS_URL });
+  try {
+    // Create Redis client
+    redisClient = createClient({ url: REDIS_URL });
 
-      // Register error event handler
-      redisClient.on("error", (err: Error) => {
-        logger.error("Redis connection error:", err);
-      });
+    // Register error event handler
+    redisClient.on("error", (err: Error) => {
+      logger.error("Redis connection error:", err);
+    });
 
-      // Register connect event handler
-      redisClient.on("connect", () => {
-        logger.info("Connected to Redis");
-      });
+    // Register connect event handler
+    redisClient.on("connect", () => {
+      logger.info("Connected to Redis");
+    });
 
-      // Connect to Redis
+    // Connect to Redis
+    if (redisClient.connect && typeof redisClient.connect === "function") {
       await redisClient.connect();
-
-      return redisClient;
-    } catch (error) {
-      logger.error("Failed to connect to Redis:", error);
-      return null;
     }
-  };
+
+    return redisClient;
+  } catch (error) {
+    logger.error("Failed to connect to Redis:", error);
+    return null;
+  }
+};
 
 /**
  * Get Redis client instance
  */
-export const getRedisClient = (): RedisClientType | null => {
+export const getRedisClient = (): RedisClient | null => {
   return redisClient;
 };
 

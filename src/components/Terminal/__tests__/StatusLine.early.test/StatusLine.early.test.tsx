@@ -24,73 +24,68 @@ jest.mock("react", () => {
 describe("StatusLine() StatusLine method", () => {
   // Happy Path Tests
   describe("Happy Paths", () => {
-    it("should render the component with the given IP address and default network status", () => {
+    it("should render the component with the given status", () => {
       // Arrange
-      const ipAddress = "192.168.1.1";
+      const status = "192.168.1.1";
 
       // Act
-      render(<StatusLine ipAddress={ipAddress} />);
+      render(<StatusLine status={status} />);
 
       // Assert
-      expect(screen.getByText(`<${ipAddress}>`)).toBeInTheDocument();
-      expect(
-        screen.getByText(/^\d{2}:\d{2}:\d{2} \| \d{2}\/\d{2}\/\d{2}$/),
-      ).toBeInTheDocument();
+      expect(screen.getByText(status)).toBeInTheDocument();
     });
 
-    it("should render the component with network active class when networkActive is true", () => {
+    it("should render the component with connected connection status", () => {
       // Arrange
-      const ipAddress = "192.168.1.1";
-      const networkActive = true;
+      const status = "192.168.1.1";
+      const connectionStatus = "connected";
 
       // Act
       render(
-        <StatusLine ipAddress={ipAddress} networkActive={networkActive} />,
+        <StatusLine status={status} connectionStatus={connectionStatus} />,
       );
 
       // Assert
-      const ipElement = screen.getByText(`<${ipAddress}>`);
-      expect(ipElement).toHaveClass("network-active");
+      expect(screen.getByText("Connected")).toBeInTheDocument();
     });
   });
 
   // Edge Case Tests
   describe("Edge Cases", () => {
-    it("should handle an empty IP address gracefully", () => {
+    it("should handle an empty status gracefully", () => {
       // Arrange
-      const ipAddress = "";
+      const status = "";
 
       // Act
-      render(<StatusLine ipAddress={ipAddress} />);
+      render(<StatusLine status={status} />);
 
       // Assert
-      expect(screen.getByText("<>")).toBeInTheDocument();
+      expect(screen.getByText("Ready")).toBeInTheDocument();
     });
 
-    it("should handle a very long IP address gracefully", () => {
+    it("should handle a very long status gracefully", () => {
       // Arrange
-      const ipAddress = "123.456.789.012.345.678.901.234";
+      const status = "123.456.789.012.345.678.901.234";
 
       // Act
-      render(<StatusLine ipAddress={ipAddress} />);
+      render(<StatusLine status={status} />);
 
       // Assert
-      expect(screen.getByText(`<${ipAddress}>`)).toBeInTheDocument();
+      expect(screen.getByText(status)).toBeInTheDocument();
     });
 
-    it("should not apply network-active class when networkActive is false", () => {
+    it("should display disconnected connection status correctly", () => {
       // Arrange
-      const ipAddress = "192.168.1.1";
-      const networkActive = false;
+      const status = "192.168.1.1";
+      const connectionStatus = "disconnected";
 
       // Act
       render(
-        <StatusLine ipAddress={ipAddress} networkActive={networkActive} />,
+        <StatusLine status={status} connectionStatus={connectionStatus} />,
       );
 
       // Assert
-      const ipElement = screen.getByText(`<${ipAddress}>`);
-      expect(ipElement).not.toHaveClass("network-active");
+      expect(screen.getByText("Disconnected")).toBeInTheDocument();
     });
   });
 });

@@ -1,7 +1,12 @@
 // src/components/UI/index.ts
-import CRTEffect from "./CRTEffect";
+import dynamic from "next/dynamic";
 import Glitch from "./Glitch";
-import OverlayEffects from "./OverlayEffects";
 import TypeWriter from "./TypeWriter";
 
-export { CRTEffect, Glitch, OverlayEffects, TypeWriter };
+// Lazy load the CRT effect component using Next.js dynamic import
+const CRTEffect = dynamic(() => import("./CRTEffect"), {
+  ssr: false,
+  loading: () => null,
+});
+
+export { CRTEffect, Glitch, TypeWriter };

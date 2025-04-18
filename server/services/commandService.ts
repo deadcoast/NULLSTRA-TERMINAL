@@ -1,5 +1,5 @@
 import { exec } from "child_process";
-import util from "util";
+import * as util from "util";
 import { getRedisClient } from "../db/redis";
 
 // Convert exec to Promise-based API
@@ -157,7 +157,11 @@ const simulatePing = (host: string): CommandResult[] => {
 
   results.push({
     type: "info",
-    content: `PING ${host} (${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}): 56 data bytes`,
+    content: `PING ${host} (${Math.floor(Math.random() * 255)}.${Math.floor(
+      Math.random() * 255,
+    )}.${Math.floor(Math.random() * 255)}.${Math.floor(
+      Math.random() * 255,
+    )}): 56 data bytes`,
     timestamp,
   });
 
@@ -189,7 +193,9 @@ const simulatePing = (host: string): CommandResult[] => {
 
   results.push({
     type: "info",
-    content: `round-trip min/avg/max/stddev = ${min.toFixed(3)}/${avg}/${max.toFixed(3)}/2.345 ms`,
+    content: `round-trip min/avg/max/stddev = ${min.toFixed(
+      3,
+    )}/${avg}/${max.toFixed(3)}/2.345 ms`,
     timestamp,
   });
 
@@ -218,7 +224,9 @@ const simulateTraceroute = (host: string): CommandResult[] => {
     const ip =
       i === 5
         ? host
-        : `${baseIp1}.${baseIp2}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`;
+        : `${baseIp1}.${baseIp2}.${Math.floor(
+            Math.random() * 255,
+          )}.${Math.floor(Math.random() * 255)}`;
 
     const time1 = (Math.random() * 10 + i * 5).toFixed(3);
     const time2 = (Math.random() * 10 + i * 5).toFixed(3);

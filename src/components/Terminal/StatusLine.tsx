@@ -1,53 +1,83 @@
-/**
- * 1. Add type annotations for `ipAddress` and `networkActive` in the function parameters to ensure type safety.  
-2. Use `useMemo` for formatting the date and time strings to optimize performance and avoid unnecessary re-renders.  
-3. Consider adding a cleanup function to clear the interval in case the component unmounts to prevent memory leaks.  
- */
-import React, { useEffect, useState } from "react";
+import * as React from "react";
+import styled from "styled-components";
 
 interface StatusLineProps {
-  ipAddress: string;
-  networkActive?: boolean;
+  status?: string;
+  connectionStatus?: "connected" | "disconnected" | "connecting";
+  cursorPosition?: { line: number; column: number };
+  encoding?: string;
+  mode?: string;
+  className?: string;
 }
 
+const StatusLineContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: ${({ theme }) =>
+    theme.colors?.statusBarBackground || "#333"};
+  color: ${({ theme }) => theme.colors?.statusBarForeground || "#ddd"};
+  padding: 0 8px;
+  font-size: 12px;
+  height: 24px;
+  border-top: 1px solid ${({ theme }) => theme.colors?.border || "#444"};
+`;
+
+const LeftSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const RightSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`;
+
+const StatusIndicator = styled.span<{
+  status?: "connected" | "disconnected" | "connecting";
+}>`
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+  background-color: ${({ status }) =>
+    status === "connected"
+      ? "#4CAF50"
+      : status === "connecting"
+      ? "#FFC107"
+      : "#F44336"};
+  margin-right: 4px;
+`;
+
 const StatusLine: React.FC<StatusLineProps> = ({
-  ipAddress,
-  networkActive = false,
+  status = "Ready",
+  connectionStatus = "connected",
+  cursorPosition = { line: 1, column: 1 },
+  encoding = "UTF-8",
+  mode = "Normal",
+  className,
 }) => {
-  const [time, setTime] = useState("");
-  const [date, setDate] = useState("");
-
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      const timeStr = now.toTimeString().split(" ")[0];
-      const dateStr = now.toLocaleDateString("en-US", {
-        year: "2-digit",
-        month: "2-digit",
-        day: "2-digit",
-      });
-
-      setTime(timeStr);
-      setDate(dateStr);
-    };
-
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-
-    return () => clearInterval(interval);
-  }, []);
-
   return (
-    <div className="flex justify-between text-xs mt-2 border-t border-terminal-green border-opacity-30 pt-1">
-      <div
-        className={`text-terminal-magenta ${networkActive ? "network-active" : ""}`}
-      >
-        &lt;{ipAddress}&gt;
-      </div>
-      <div className="text-terminal-cyan">
-        {time} | {date}
-      </div>
-    </div>
+    <StatusLineContainer className={className}>
+      <LeftSection>
+        <div>
+          <StatusIndicator status={connectionStatus} />
+          {status}
+        </div>
+        <div>Mode: {mode}</div>
+      </LeftSection>
+      <RightSection>
+        <div>
+          Ln {cursorPosition.line}, Col {cursorPosition.column}
+        </div>
+        <div>{encoding}</div>
+        <div>
+          {connectionStatus.charAt(0).toUpperCase() + connectionStatus.slice(1)}
+        </div>
+      </RightSection>
+    </StatusLineContainer>
   );
 };
 

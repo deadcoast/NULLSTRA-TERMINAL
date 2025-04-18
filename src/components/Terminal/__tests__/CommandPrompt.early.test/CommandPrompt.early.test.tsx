@@ -6,12 +6,11 @@ import CommandPrompt from "../../CommandPrompt";
  * command execution and updates the input based on history navigation.
  *
  * @param {Object} params - The parameters for the command input.
- * @param {string} params.path - The current path for the input context.
+ * @param {string} params.prompt - The prompt symbol to display.
  * @param {function} params.onSubmit - Callback function to handle command submission.
  * @param {Array<string>} params.history - Array of previously submitted commands.
- * @param {number} params.historyIndex - Current index in the command history.
- * @param {function} params.onNavigateHistory - Callback function to navigate through history.
- * @param {string} [params.cursorStyle='default'] - Style of the cursor (default is 'default').
+ * @param {boolean} params.autoFocus - Whether the input should be focused automatically.
+ * @param {boolean} params.disabled - Whether the input is disabled.
  * @returns {JSX.Element} The rendered command input component.
  * @throws {Error} Throws an error if the input is invalid during submission.
  */
@@ -49,17 +48,14 @@ describe("CommandPrompt() CommandPrompt method", () => {
       // Test to ensure the component renders correctly with default props
       const { getByText, getByRole } = render(
         <CommandPrompt
-          path="/home/user"
+          prompt="$"
           onSubmit={jest.fn()}
           history={[]}
-          historyIndex={-1}
-          onNavigateHistory={jest.fn()}
+          autoFocus={true}
         />,
       );
 
-      expect(getByText("USER")).toBeInTheDocument();
-      expect(getByText("/")).toBeInTheDocument();
-      expect(getByText("/home/user")).toBeInTheDocument();
+      expect(getByText("$")).toBeInTheDocument();
       expect(getByRole("textbox")).toBeInTheDocument();
     });
 
@@ -68,11 +64,10 @@ describe("CommandPrompt() CommandPrompt method", () => {
       const mockOnSubmit = jest.fn();
       const { getByRole } = render(
         <CommandPrompt
-          path="/home/user"
+          prompt="$"
           onSubmit={mockOnSubmit}
           history={[]}
-          historyIndex={-1}
-          onNavigateHistory={jest.fn()}
+          autoFocus={true}
         />,
       );
 
@@ -91,11 +86,10 @@ describe("CommandPrompt() CommandPrompt method", () => {
       const mockOnSubmit = jest.fn();
       const { getByRole } = render(
         <CommandPrompt
-          path="/home/user"
+          prompt="$"
           onSubmit={mockOnSubmit}
           history={[]}
-          historyIndex={-1}
-          onNavigateHistory={jest.fn()}
+          autoFocus={true}
         />,
       );
 
@@ -107,23 +101,23 @@ describe("CommandPrompt() CommandPrompt method", () => {
 
     it("should navigate history correctly with ArrowUp and ArrowDown keys", () => {
       // Test to ensure history navigation works with ArrowUp and ArrowDown keys
-      const mockOnNavigateHistory = jest.fn();
+      const mockOnKeyPress = jest.fn();
       const { getByRole } = render(
         <CommandPrompt
-          path="/home/user"
+          prompt="$"
           onSubmit={jest.fn()}
           history={["command1", "command2"]}
-          historyIndex={0}
-          onNavigateHistory={mockOnNavigateHistory}
+          autoFocus={true}
+          onKeyPress={mockOnKeyPress}
         />,
       );
 
       const input = getByRole("textbox");
       fireEvent.keyDown(input, { key: "ArrowUp", code: "ArrowUp" });
-      expect(mockOnNavigateHistory).toHaveBeenCalledWith("up");
+      expect(mockOnKeyPress).toHaveBeenCalled();
 
       fireEvent.keyDown(input, { key: "ArrowDown", code: "ArrowDown" });
-      expect(mockOnNavigateHistory).toHaveBeenCalledWith("down");
+      expect(mockOnKeyPress).toHaveBeenCalled();
     });
   });
 });

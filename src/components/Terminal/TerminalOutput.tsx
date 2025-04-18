@@ -1,11 +1,14 @@
 /**
  * 1. Implement a loading indicator to enhance user experience during command execution.
-2. Add keyboard shortcuts for quick command execution to improve accessibility.
-3. Include error handling to display user-friendly messages for failed commands.
+ * 2. Add keyboard shortcuts for quick command execution to improve accessibility.
+ * 3. Include error handling to display user-friendly messages for failed commands.
  */
-import { forwardRef } from "react";
+import * as React from "react";
+const {  forwardRef  } = React;
+
 import { CommandResult } from "../../hooks/useSocket";
 import { TerminalMessage } from "../../utils/terminalCommands/types";
+
 import MessageRenderer from "./MessageRenderer";
 
 // Define a union type that can handle both the original TerminalMessage and the new CommandResult

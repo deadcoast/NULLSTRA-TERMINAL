@@ -1,12 +1,10 @@
 // src/components/Terminal/TerminalFileList.tsx
 /**
  * 1. Add type definitions for `files` and `onFileClick` to ensure type safety and improve code readability.
-
-2. Implement error handling for cases where `files` might be empty or undefined to prevent runtime errors.
-
-3. Use `React.Fragment` or shorthand syntax (`<>...</>`) to avoid unnecessary div wrappers if no additional styling is needed.
+ * 2. Implement error handling for cases where `files` might be empty or undefined to prevent runtime errors.
+ * 3. Use `React.Fragment` or shorthand syntax (`<>...</>`) to avoid unnecessary div wrappers if no additional styling is needed.
  */
-import React from "react";
+import * as React from "react";
 
 interface TerminalFileListProps {
   title: string;

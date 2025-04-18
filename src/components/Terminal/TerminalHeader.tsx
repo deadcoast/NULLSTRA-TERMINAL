@@ -1,11 +1,9 @@
 /**
  * 1. Implement PropTypes or TypeScript interfaces to enforce type checking for the component's props, ensuring better maintainability and reducing runtime errors.
-
-2. Add accessibility features, such as ARIA roles and keyboard navigation support, to improve usability for all users.
-
-3. Include customizable styles or themes to allow users to personalize the appearance of the terminal header.
+ * 2. Add accessibility features, such as ARIA roles and keyboard navigation support, to improve usability for all users.
+ * 3. Include customizable styles or themes to allow users to personalize the appearance of the terminal header.
  */
-import React from "react";
+import * as React from "react";
 
 interface TerminalHeaderProps {
   title: string;

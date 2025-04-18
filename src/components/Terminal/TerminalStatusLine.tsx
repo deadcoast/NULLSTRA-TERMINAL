@@ -1,10 +1,10 @@
 // src/components/Terminal/TerminalStatusLine.tsx
 /**
  * 1. Implement error handling to manage connection issues and display user-friendly messages.
-2. Use TypeScript enums for status indicators to improve code readability and maintainability.
-3. Optimize rendering by using React.memo to prevent unnecessary re-renders when props haven't changed.
+ * 2. Use TypeScript enums for status indicators to improve code readability and maintainability.
+ * 3. Optimize rendering by using React.memo to prevent unnecessary re-renders when props haven't changed.
  */
-import React from "react";
+import * as React from "react";
 
 interface TerminalStatusLineProps {
   ipAddress: string;

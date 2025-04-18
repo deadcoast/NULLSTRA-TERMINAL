@@ -1,11 +1,10 @@
 /**
  * 1. Add a cleanup function in `triggerUpdate` to ensure that the timeout is cleared if the component unmounts before the animation completes.
-
-2. Use `useCallback` for `triggerUpdate` to prevent unnecessary re-creations of the function on re-renders.
-
-3. Consider using a CSS transition for the `updated` class to enhance the visual effect of the update animation.
+ * 2. Use `useCallback` for `triggerUpdate` to prevent unnecessary re-creations of the function on re-renders.
+ * 3. Consider using a CSS transition for the `updated` class to enhance the visual effect of the update animation.
  */
-import React, { useEffect, useState } from "react";
+import * as React from "react";
+const {   useEffect, useState   } = React;
 
 interface StatusTagProps {
   children: React.ReactNode;

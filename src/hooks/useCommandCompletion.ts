@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
+import * as React from "react";
+const {  useCallback, useEffect, useState  } = React;
 import { CommandRegistry } from "../utils/terminalCommands/types";
 
 interface UseCommandCompletionParams {

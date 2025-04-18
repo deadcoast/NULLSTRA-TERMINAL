@@ -1,114 +1,128 @@
-/*
- * 1. **Debounce Input Handling**: Implement a debounce mechanism for the `handleSubmit` function to prevent multiple rapid submissions when the Enter key is pressed multiple times.
- * 2. **Accessibility Improvements**: Add ARIA roles and properties to enhance accessibility, such as `aria-live` for announcing command execution feedback to screen readers.
- * 3. **Error Handling**: Introduce error handling for the `onSubmit` function to manage and display any errors that may occur during command execution, providing user feedback.
- */
-
-import { KeyboardEvent, useEffect, useRef, useState } from "react";
+import * as React from "react";
+const {   useEffect, useRef, useState   } = React;
+import styled from "styled-components";
 
 interface CommandPromptProps {
-  path: string;
-  onSubmit: (command: string) => void;
-  history: string[];
-  historyIndex: number;
-  onNavigateHistory: (direction: "up" | "down") => void;
-  cursorStyle?: "default" | "fade"; // Add option for cursor style
+  prompt?: string;
+  placeholder?: string;
+  onSubmit?: (command: string) => void;
+  onKeyPress?: (e: React.KeyboardEvent) => void;
+  autoFocus?: boolean;
+  history?: string[];
+  disabled?: boolean;
+  className?: string;
 }
 
-const CommandPrompt: React.FC<CommandPromptProps> = ({
-  path,
-  onSubmit,
-  history,
-  historyIndex,
-  onNavigateHistory,
-  cursorStyle = "default", // Default to the original style
-}) => {
-  const [input, setInput] = useState("");
-  const inputRef = useRef<HTMLInputElement>(null);
-  const [isExecuting, setIsExecuting] = useState(false);
-  const [commandExecuted, setCommandExecuted] = useState(false);
+const PromptContainer = styled.div`
+  display: flex;
+  align-items: baseline;
+  width: 100%;
+  font-family: "Menlo", "Monaco", "Courier New", monospace;
+  padding: 4px 0;
+`;
 
-  // Focus input on mount and when path changes
+const PromptLabel = styled.span`
+  color: ${({ theme }) => theme.colors?.promptColor || "#36c2dd"};
+  margin-right: 8px;
+  user-select: none;
+`;
+
+const Input = styled.input`
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: ${({ theme }) => theme.colors?.textPrimary || "#ddd"};
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0;
+
+  &:focus {
+    outline: none;
+  }
+
+  &::placeholder {
+    color: ${({ theme }) => theme.colors?.textMuted || "#888"};
+    opacity: 0.7;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+`;
+
+const CommandPrompt: React.FC<CommandPromptProps> = ({
+  prompt = ">",
+  placeholder = "Type a command...",
+  onSubmit,
+  onKeyPress,
+  autoFocus = true,
+  history = [],
+  disabled = false,
+  className,
+}) => {
+  const [command, setCommand] = useState("");
+  const [historyIndex, setHistoryIndex] = useState(-1);
+  const inputRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
-    if (inputRef.current) {
+    if (autoFocus && inputRef.current) {
       inputRef.current.focus();
     }
-  }, [path]);
+  }, [autoFocus]);
 
-  // Handle command execution with visual feedback
-  const handleSubmit = () => {
-    if (!input.trim()) {
-      return;
-    }
-
-    setIsExecuting(true);
-    setCommandExecuted(true);
-
-    // Clear command-executed class after animation completes
-    setTimeout(() => {
-      setCommandExecuted(false);
-    }, 300); // Match animation duration
-
-    // Visual delay for execution effect
-    setTimeout(() => {
-      onSubmit(input);
-      setInput("");
-      setIsExecuting(false);
-    }, 200);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setCommand(e.target.value);
   };
 
-  // Update input when navigating through history
-  useEffect(() => {
-    if (historyIndex >= 0 && historyIndex < history.length) {
-      setInput(history[historyIndex]);
-    } else if (historyIndex === -1) {
-      setInput("");
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // Execute command on Enter
+    if (e.key === "Enter" && command.trim() && onSubmit) {
+      onSubmit(command);
+      setCommand("");
+      setHistoryIndex(-1);
     }
-  }, [historyIndex, history]);
 
-  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === "Enter") {
+    // Navigate command history
+    if (e.key === "ArrowUp" && history.length > 0) {
       e.preventDefault();
-      handleSubmit();
-      if (input.trim()) {
-        onSubmit(input);
-        setInput("");
-      }
-    } else if (e.key === "ArrowUp") {
+      const newIndex =
+        historyIndex < history.length - 1 ? historyIndex + 1 : historyIndex;
+      setHistoryIndex(newIndex);
+      setCommand(history[history.length - 1 - newIndex] || "");
+    }
+
+    if (e.key === "ArrowDown" && historyIndex >= 0) {
       e.preventDefault();
-      onNavigateHistory("up");
-    } else if (e.key === "ArrowDown") {
-      e.preventDefault();
-      onNavigateHistory("down");
+      const newIndex = historyIndex - 1;
+      setHistoryIndex(newIndex);
+      setCommand(newIndex >= 0 ? history[history.length - 1 - newIndex] : "");
+    }
+
+    // Pass the event to the parent component if needed
+    if (onKeyPress) {
+      onKeyPress(e);
     }
   };
-
-  // Define cursor class based on the selected style
-  const cursorClass = cursorStyle === "fade" ? "cursor-fade" : "cursor";
 
   return (
-    <div
-      className={`command-prompt command-input-line ${commandExecuted ? "command-executed" : ""} ${isExecuting ? "command-execute" : ""}`}
-    >
-      <div className="text-terminal-brightGreen mr-2 flex items-center">
-        <span>USER</span>
-        <span className="text-terminal-white mx-1">/</span>
-        <span className="path">{path}</span>
-      </div>
-      <div className="flex-1 flex items-center">
-        <span className="text-terminal-white mr-1">&gt;</span>
-        <input
-          ref={inputRef}
-          type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={handleKeyDown}
-          className="flex-1 bg-transparent border-none outline-none text-terminal-green"
-          disabled={isExecuting}
-        />
-        <span className={`${cursorClass} ${isExecuting ? "hidden" : ""}`} />
-      </div>
-    </div>
+    <PromptContainer className={className}>
+      <PromptLabel>{prompt}</PromptLabel>
+      <Input
+        ref={inputRef}
+        type="text"
+        value={command}
+        onChange={handleChange}
+        onKeyDown={handleKeyDown}
+        placeholder={placeholder}
+        disabled={disabled}
+        aria-label="Command input"
+        spellCheck={false}
+        autoCapitalize="off"
+        autoComplete="off"
+        autoCorrect="off"
+      />
+    </PromptContainer>
   );
 };
 

@@ -180,4 +180,44 @@ describe("TerminalManager", () => {
     // The "New Terminal" button should not be visible
     expect(screen.queryByText("+ New Terminal")).not.toBeInTheDocument();
   });
+
+  // Tests from TerminalManager.early.test.tsx
+  describe("Edge Cases", () => {
+    test("should not allow creating more sessions than maxSessions", () => {
+      render(<TerminalManager maxSessions={2} />);
+      fireEvent.click(screen.getByText("+ New Terminal"));
+
+      // After adding one terminal, we should have reached maxSessions and button should be gone
+      expect(screen.queryByText("+ New Terminal")).not.toBeInTheDocument();
+    });
+
+    test("should not close the last remaining session", () => {
+      render(<TerminalManager />);
+      const closeButton = screen.getByText("✕");
+      fireEvent.click(closeButton);
+
+      // The Main Terminal should still be visible because it's the last one
+      expect(screen.getByText(/Main Terminal/)).toBeInTheDocument();
+    });
+
+    test("should activate another session if the active one is closed", () => {
+      render(<TerminalManager />);
+      fireEvent.click(screen.getByText("+ New Terminal"));
+
+      // Click on the second tab to make it active
+      const newTab = screen.getAllByText(/Terminal/)[1];
+      fireEvent.click(newTab);
+
+      // Find the close button on this tab and click it
+      const closeButton = newTab.querySelector("button");
+      if (closeButton) {
+        fireEvent.click(closeButton);
+      }
+
+      // The Main Terminal should now be active
+      expect(screen.getByText(/Main Terminal/)).toHaveClass(
+        "bg-lime text-night font-bold",
+      );
+    });
+  });
 });

@@ -1,11 +1,11 @@
-/** 
+/**
  * 1. Add keyboard accessibility for toggling the theme selection dropdown to improve usability for keyboard users.
-
-2. Implement a confirmation dialog when changing themes to prevent accidental theme changes.
-
-3. Optimize the ColorPreview component by memoizing it to prevent unnecessary re-renders when the theme does not change.
+ * 2. Implement a confirmation dialog when changing themes to prevent accidental theme changes.
+ * 3. Optimize the ColorPreview component by memoizing it to prevent unnecessary re-renders when the theme does not change.
  */
-import React, { useState } from "react";
+import * as React from "react";
+const {   useState   } = React;
+
 import { TerminalTheme, useTheme } from "../../context";
 
 interface ThemeSelectorProps {

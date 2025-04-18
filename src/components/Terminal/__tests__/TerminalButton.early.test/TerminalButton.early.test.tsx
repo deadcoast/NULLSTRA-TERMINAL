@@ -3,7 +3,7 @@ import TerminalButton from "../../TerminalButton";
 // src/components/Terminal/TerminalButton.test.tsx
 import "@testing-library/jest-dom";
 import { fireEvent, render } from "@testing-library/react";
-import React from "react";
+import * as React from "react";
 
 // Mock interface for TerminalButtonProps
 interface MockTerminalButtonProps {

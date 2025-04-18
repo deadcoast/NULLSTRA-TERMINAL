@@ -1,10 +1,11 @@
 // src/components/Terminal/TerminalButton.tsx
 /**
  * 1. Add `type` prop to the button for better accessibility: `<button type="button" ...>`.
-2. Implement `onMouseEnter` and `onMouseLeave` events to manage `isHovered` state for hover effects.
-3. Use `disabled` prop to conditionally render the button or a `span` to prevent interaction when disabled. 
+ * 2. Implement `onMouseEnter` and `onMouseLeave` events to manage `isHovered` state for hover effects.
+ * 3. Use `disabled` prop to conditionally render the button or a `span` to prevent interaction when disabled.
  */
-import { useState } from "react";
+import * as React from "react";
+const {  useState  } = React;
 
 interface TerminalButtonProps {
   children: React.ReactNode;

@@ -1,15 +1,16 @@
 // src/components/Terminal/TerminalPrompt.tsx
 /**
  * 1. **Debounce Input Changes**: Implement a debounce mechanism for the `onChange` handler to reduce the frequency of updates, improving performance and user experience.
-
-2. **Keyboard Shortcuts for Navigation**: Enhance keyboard navigation by adding shortcuts for quickly accessing command history (e.g., Ctrl + Up/Down) and toggling suggestions (e.g., Ctrl + Space).
-
-3. **Customizable Cursor Styles**: Allow users to customize cursor styles further by providing additional options or themes, enhancing visual appeal and user preference.
+ * 2. **Keyboard Shortcuts for Navigation**: Enhance keyboard navigation by adding shortcuts for quickly accessing command history (e.g., Ctrl + Up/Down) and toggling suggestions (e.g., Ctrl + Space).
+ * 3. **Customizable Cursor Styles**: Allow users to customize cursor styles further by providing additional options or themes, enhancing visual appeal and user preference.
  */
-import React, { forwardRef, useEffect, useRef, useState } from "react";
+import * as React from "react";
+const {   forwardRef, useEffect, useRef, useState   } = React;
+
 import { useCommandCompletion } from "../../hooks";
 import { CommandRegistry } from "../../utils/terminalCommands/types";
 import { Glitch } from "../UI";
+
 import SuggestionList from "./SuggestionList";
 
 interface TerminalPromptProps {

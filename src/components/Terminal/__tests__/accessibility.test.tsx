@@ -3,17 +3,10 @@ import { axe, toHaveNoViolations } from "jest-axe";
 import { TerminalManager } from "../../";
 
 // Add jest-axe matchers
-expect.extend(toHaveNoViolations);
+expect.extend({ toHaveNoViolations });
 
-// Extend Jest matchers for jest-axe with proper TypeScript declaration
-declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
-  namespace jest {
-    interface Matchers<R> {
-      toHaveNoViolations(): R;
-    }
-  }
-}
+// Extend Jest matchers for jest-axe is already declared in jest-axe.d.ts
+// No need to redeclare it here
 
 // Mock the Terminal component to simplify testing
 jest.mock("../Terminal", () => {

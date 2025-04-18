@@ -17,7 +17,9 @@
  * 2. Use `useMemo` for the `colors` and `width` calculations to optimize performance by preventing unnecessary recalculations on re-renders.
  * 3. Implement a cleanup function in the `useEffect` to reset the `dots` state when the component unmounts or when the progress changes to avoid potential memory leaks.
  */
-import React, { useEffect, useState } from "react";
+import * as React from "react";
+const {   useEffect, useState   } = React;
+
 import { Glitch } from "../UI";
 
 interface ProgressIndicatorProps {

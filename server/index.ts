@@ -1,11 +1,13 @@
 import cors from "cors";
-import dotenv from "dotenv";
-import express from "express";
-import http from "http";
+import * as dotenv from "dotenv";
+import * as http from "http";
 import { Server } from "socket.io";
 import { setupRedisConnection } from "./db/redis";
 import { setupCommandRoutes } from "./routes/commandRoutes";
 import { setupSocketHandlers } from "./socket/socketHandlers";
+
+// Need to use require for Express to work with the CommonJS module system
+const express = require("express");
 
 // Load environment variables
 dotenv.config();
@@ -14,19 +16,27 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 4001;
 
-// Middleware
-app.use(cors());
+// Middleware with proper CORS for Next.js
+app.use(
+  cors({
+    origin: process.env.NEXT_PUBLIC_CLIENT_URL || "http://localhost:3000",
+    methods: ["GET", "POST"],
+    credentials: true,
+  }),
+);
 app.use(express.json());
 
-// Create HTTP server
+// Create HTTP server with type assertion
 const server = http.createServer(app);
 
-// Initialize Socket.io
+// Initialize Socket.io with improved configuration
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    origin: process.env.NEXT_PUBLIC_CLIENT_URL || "http://localhost:3000",
     methods: ["GET", "POST"],
+    credentials: true,
   },
+  transports: ["websocket", "polling"],
 });
 
 // API Routes
@@ -41,21 +51,24 @@ if (redisEnabled) {
   setupRedisConnection();
 }
 
-// Add a simple logger class at the top of the file
+// Add a simple logger class
 const logger = {
   info: (message: string) => {
-    // eslint-disable-next-line no-console
-    console.log(message);
+    console.log(`[SERVER] ${message}`);
   },
   error: (message: string, error?: unknown) => {
-    // eslint-disable-next-line no-console
-    console.error(message, error);
+    console.error(`[SERVER ERROR] ${message}`, error);
   },
 };
 
 // Start server
 server.listen(PORT, () => {
   logger.info(`🚀 Server running on port ${PORT}`);
-  logger.info(`🔌 Socket.io initialized`);
+  logger.info(`🔌 Socket.io initialized and ready for connections`);
   logger.info(`🔄 Redis ${redisEnabled ? "connected" : "disabled"}`);
+  logger.info(
+    `🌐 CORS configured for ${
+      process.env.NEXT_PUBLIC_CLIENT_URL || "http://localhost:3000"
+    }`,
+  );
 });

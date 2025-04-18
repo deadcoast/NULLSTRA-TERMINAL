@@ -7,10 +7,17 @@
  * @param {Object} message - The message object containing data to be rendered.
  * @param {Function} onExecuteCommand - Callback function to execute commands related to the message.
  */
-import React, { useEffect, useState } from "react";
+import * as React from "react";
+const {   useEffect, useState   } = React;
+
 import { CommandResult } from "../../hooks/useSocket";
 import { TerminalMessage } from "../../utils/terminalCommands/types";
+import {
+  useAnsiParsedText,
+  useFormattedText,
+} from "../../utils/textFormatters";
 import { Glitch, TypeWriter } from "../UI";
+
 import ProgressIndicator from "./ProgressIndicator";
 import TableRenderer from "./TableRenderer";
 
@@ -26,8 +33,8 @@ interface ExtendedTerminalMessage extends TerminalMessage {
   };
 }
 
-interface MessageProps {
-  message: CombinedMessage;
+interface MessageRendererProps {
+  message: TerminalMessage;
   onExecuteCommand?: (command: string) => void;
 }
 
@@ -76,7 +83,7 @@ const normalizeMessage = (
 };
 
 // Error message component with glitch effect
-const ErrorMessage: React.FC<MessageProps> = ({ message }) => {
+const ErrorMessage: React.FC<MessageRendererProps> = ({ message }) => {
   const normalizedMsg = normalizeMessage(message);
   return (
     <div className="text-red">
@@ -98,7 +105,7 @@ const ErrorMessage: React.FC<MessageProps> = ({ message }) => {
 };
 
 // Success message component
-const SuccessMessage: React.FC<MessageProps> = ({ message }) => {
+const SuccessMessage: React.FC<MessageRendererProps> = ({ message }) => {
   const normalizedMsg = normalizeMessage(message);
   return (
     <div className="text-lime">
@@ -116,7 +123,7 @@ const SuccessMessage: React.FC<MessageProps> = ({ message }) => {
 };
 
 // Warning message component with mild glitch effect
-const WarningMessage: React.FC<MessageProps> = ({ message }) => {
+const WarningMessage: React.FC<MessageRendererProps> = ({ message }) => {
   const normalizedMsg = normalizeMessage(message);
   return (
     <div className="text-yellow">
@@ -138,7 +145,7 @@ const WarningMessage: React.FC<MessageProps> = ({ message }) => {
 };
 
 // Info message component
-const InfoMessage: React.FC<MessageProps> = ({ message }) => {
+const InfoMessage: React.FC<MessageRendererProps> = ({ message }) => {
   const normalizedMsg = normalizeMessage(message);
   return (
     <div className="text-blue">
@@ -156,7 +163,7 @@ const InfoMessage: React.FC<MessageProps> = ({ message }) => {
 };
 
 // Command message component
-const CommandMessage: React.FC<MessageProps> = ({ message }) => {
+const CommandMessage: React.FC<MessageRendererProps> = ({ message }) => {
   const normalizedMsg = normalizeMessage(message);
   return (
     <div className="text-shocking-pink">
@@ -174,7 +181,7 @@ const CommandMessage: React.FC<MessageProps> = ({ message }) => {
 };
 
 // Default message component
-const DefaultMessage: React.FC<MessageProps> = ({ message }) => {
+const DefaultMessage: React.FC<MessageRendererProps> = ({ message }) => {
   const normalizedMsg = normalizeMessage(message);
   return (
     <div className="text-white">
@@ -192,7 +199,7 @@ const DefaultMessage: React.FC<MessageProps> = ({ message }) => {
 };
 
 // File listing component
-const FileListingMessage: React.FC<MessageProps> = ({
+const FileListingMessage: React.FC<MessageRendererProps> = ({
   message,
   onExecuteCommand,
 }) => {
@@ -271,7 +278,7 @@ const FileListingMessage: React.FC<MessageProps> = ({
 };
 
 // Table message component
-const TableMessage: React.FC<MessageProps> = ({ message }) => {
+const TableMessage: React.FC<MessageRendererProps> = ({ message }) => {
   const normalizedMsg = normalizeMessage(message);
   if (!normalizedMsg.tableData) {
     return <DefaultMessage message={normalizedMsg} />;
@@ -302,7 +309,7 @@ const TableMessage: React.FC<MessageProps> = ({ message }) => {
 };
 
 // Progress indicator message component
-const ProgressMessage: React.FC<MessageProps> = ({ message }) => {
+const ProgressMessage: React.FC<MessageRendererProps> = ({ message }) => {
   const normalizedMsg = normalizeMessage(message);
   if (!normalizedMsg.progress) {
     return <DefaultMessage message={normalizedMsg} />;
@@ -337,12 +344,60 @@ const ProgressMessage: React.FC<MessageProps> = ({ message }) => {
   );
 };
 
+// Add a mapping for message types to CSS classes
+const typeToClassMap: Record<string, string> = {
+  success: "text-terminal-success",
+  error: "text-terminal-error",
+  warning: "text-terminal-warning",
+  info: "text-terminal-info",
+  command: "text-terminal-command font-bold",
+};
+
 // Main message renderer component
-const MessageRenderer: React.FC<MessageProps> = ({
+const MessageRenderer: React.FC<MessageRendererProps> = ({
   message,
   onExecuteCommand,
 }) => {
   const normalizedMsg = normalizeMessage(message);
+
+  // Extract content based on message type
+  let content: string = "";
+  if (typeof message === "string") {
+    content = message;
+  } else if ("content" in message) {
+    content = message.content;
+  }
+
+  // Apply memoized formatting for performance
+  const formattedContent = useFormattedText(content);
+  const processedContent = useAnsiParsedText(formattedContent);
+
+  // Get CSS class based on message type
+  let messageClass = "";
+  if (typeof message !== "string" && "type" in message) {
+    messageClass = typeToClassMap[message.type] || "";
+  }
+
+  // Render clickable command example if it starts with a $ prompt and has an onExecuteCommand handler
+  if (
+    content.startsWith("$ ") &&
+    onExecuteCommand &&
+    typeof message !== "string" &&
+    message.type !== "command"
+  ) {
+    const command = content.substring(2).trim();
+    return (
+      <div className="flex">
+        <span className="text-terminal-muted mr-1">$</span>
+        <button
+          className="text-terminal-link hover:underline cursor-pointer bg-transparent border-0 p-0 text-left font-mono"
+          onClick={() => onExecuteCommand(command)}
+        >
+          {command}
+        </button>
+      </div>
+    );
+  }
 
   // Check if it"s a progress message
   if (normalizedMsg.progress) {
@@ -381,4 +436,5 @@ const MessageRenderer: React.FC<MessageProps> = ({
   }
 };
 
-export default MessageRenderer;
+// Apply memoization for performance
+export default React.memo(MessageRenderer);

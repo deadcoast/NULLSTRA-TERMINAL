@@ -1,12 +1,17 @@
 "use client";
 /**
  * 1. Implement session persistence using local storage to retain sessions across page reloads.
-2. Add a notification system to inform users when the maximum session limit is reached.
-3. Allow users to customize the IP address generation logic for more control over session configurations.
+ * 2. Add a notification system to inform users when the maximum session limit is reached.
+ * 3. Allow users to customize the IP address generation logic for more control over session configurations.
  */
-import React, { useEffect, useState } from "react";
+import * as React from "react";
+const {   useEffect, useState   } = React;
+
 import { ThemeProvider } from "../../context";
 import { CommandResult } from "../../hooks/useSocket";
+
+import { SplitDirection } from "./SplitPane";
+import SplitTerminal from "./SplitTerminal";
 import Terminal from "./Terminal";
 import ThemeSelector from "./ThemeSelector";
 
@@ -15,6 +20,11 @@ interface TerminalSession {
   name: string;
   ipAddress: string;
   initialMessages?: CommandResult[];
+  split?: {
+    enabled: boolean;
+    direction: SplitDirection;
+    secondaryIpAddress?: string;
+  };
 }
 
 interface TerminalManagerProps {
@@ -43,6 +53,10 @@ const TerminalManager: React.FC<TerminalManagerProps> = ({
                 timestamp: new Date().toISOString(),
               },
             ],
+            split: {
+              enabled: false,
+              direction: "horizontal",
+            },
           },
         ];
 
@@ -60,10 +74,25 @@ const TerminalManager: React.FC<TerminalManagerProps> = ({
     setSessions((prevSessions) =>
       prevSessions.map((session) => {
         if (!session.ipAddress) {
-          return {
+          const updatedSession = {
             ...session,
-            ipAddress: `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
+            ipAddress: `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(
+              Math.random() * 255,
+            )}`,
           };
+
+          // Generate a secondary IP for split session if needed
+          if (session.split?.enabled && !session.split.secondaryIpAddress) {
+            updatedSession.split = {
+              enabled: true,
+              direction: session.split.direction,
+              secondaryIpAddress: `192.168.${Math.floor(
+                Math.random() * 255,
+              )}.${Math.floor(Math.random() * 255)}`,
+            };
+          }
+
+          return updatedSession;
         }
         return session;
       }),
@@ -89,8 +118,14 @@ const TerminalManager: React.FC<TerminalManagerProps> = ({
       name: `Terminal ${sessions.length + 1}`,
       ipAddress:
         typeof window !== "undefined"
-          ? `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`
+          ? `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(
+              Math.random() * 255,
+            )}`
           : "",
+      split: {
+        enabled: false,
+        direction: "horizontal",
+      },
     };
 
     setSessions([...sessions, newSession]);
@@ -113,12 +148,66 @@ const TerminalManager: React.FC<TerminalManagerProps> = ({
     }
   };
 
-  // Rename a terminal session
-  const _renameSession = (id: string, newName: string) => {
+  // Split the current terminal
+  const splitTerminal = (
+    id: string,
+    direction: SplitDirection = "horizontal",
+  ) => {
     setSessions(
-      sessions.map((session) =>
-        session.id === id ? { ...session, name: newName } : session,
-      ),
+      sessions.map((session) => {
+        if (session.id === id) {
+          return {
+            ...session,
+            split: {
+              enabled: true,
+              direction,
+              secondaryIpAddress: `192.168.${Math.floor(
+                Math.random() * 255,
+              )}.${Math.floor(Math.random() * 255)}`,
+            },
+          };
+        }
+        return session;
+      }),
+    );
+  };
+
+  // Close a split terminal
+  const closeSplit = (id: string) => {
+    setSessions(
+      sessions.map((session) => {
+        if (session.id === id && session.split?.enabled) {
+          return {
+            ...session,
+            split: {
+              ...session.split,
+              enabled: false,
+            },
+          };
+        }
+        return session;
+      }),
+    );
+  };
+
+  // Toggle split direction
+  const toggleSplitDirection = (id: string) => {
+    setSessions(
+      sessions.map((session) => {
+        if (session.id === id && session.split?.enabled) {
+          return {
+            ...session,
+            split: {
+              ...session.split,
+              direction:
+                session.split.direction === "horizontal"
+                  ? "vertical"
+                  : "horizontal",
+            },
+          };
+        }
+        return session;
+      }),
     );
   };
 
@@ -165,6 +254,7 @@ const TerminalManager: React.FC<TerminalManagerProps> = ({
                       e.stopPropagation(); // Prevent activating the tab
                       closeSession(session.id);
                     }}
+                    aria-label={`Close ${session.name}`}
                   >
                     ✕
                   </button>
@@ -177,25 +267,101 @@ const TerminalManager: React.FC<TerminalManagerProps> = ({
               <button
                 className="terminal-tab-add py-1 px-2 text-lime hover:text-white"
                 onClick={createSession}
+                aria-label="Create new terminal"
               >
                 + New Terminal
               </button>
             )}
           </div>
 
-          {/* Theme Selector */}
-          <div className="flex items-center px-2">
+          {/* Terminal Controls */}
+          <div className="flex items-center px-2 space-x-2">
+            {/* Split Terminal Controls */}
+            <div className="flex items-center space-x-1">
+              {!activeSession.split?.enabled ? (
+                <>
+                  <button
+                    className="terminal-control-btn text-lime hover:text-white px-2"
+                    onClick={() =>
+                      splitTerminal(activeSession.id, "horizontal")
+                    }
+                    title="Split horizontally (Alt+Shift+H)"
+                    aria-label="Split terminal horizontally"
+                  >
+                    ↔
+                  </button>
+                  <button
+                    className="terminal-control-btn text-lime hover:text-white px-2"
+                    onClick={() => splitTerminal(activeSession.id, "vertical")}
+                    title="Split vertically (Alt+Shift+V)"
+                    aria-label="Split terminal vertically"
+                  >
+                    ↕
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    className="terminal-control-btn text-lime hover:text-white px-2"
+                    onClick={() => toggleSplitDirection(activeSession.id)}
+                    title={`Switch to ${
+                      activeSession.split.direction === "horizontal"
+                        ? "vertical"
+                        : "horizontal"
+                    } split`}
+                    aria-label={`Switch to ${
+                      activeSession.split.direction === "horizontal"
+                        ? "vertical"
+                        : "horizontal"
+                    } split`}
+                  >
+                    {activeSession.split.direction === "horizontal"
+                      ? "↕"
+                      : "↔"}
+                  </button>
+                  <button
+                    className="terminal-control-btn text-lime hover:text-white px-2"
+                    onClick={() => closeSplit(activeSession.id)}
+                    title="Close split view"
+                    aria-label="Close split view"
+                  >
+                    ✕
+                  </button>
+                </>
+              )}
+            </div>
+
+            {/* Theme Selector */}
             <ThemeSelector minimal />
           </div>
         </div>
 
         {/* Active Terminal Instance */}
         <div className="terminal-container flex-grow">
-          <Terminal
-            key={activeSession.id}
-            ipAddress={activeSession.ipAddress}
-            initialMessages={activeSession.initialMessages}
-          />
+          {activeSession.split?.enabled ? (
+            <SplitTerminal
+              direction={activeSession.split.direction}
+              terminals={[
+                {
+                  ipAddress: activeSession.ipAddress,
+                  initialMessages: activeSession.initialMessages,
+                  title: `${activeSession.name} (1)`,
+                },
+                {
+                  ipAddress: activeSession.split.secondaryIpAddress,
+                  title: `${activeSession.name} (2)`,
+                },
+              ]}
+              syncScroll={true}
+            />
+          ) : (
+            <Terminal
+              key={activeSession.id}
+              ipAddress={activeSession.ipAddress}
+              initialMessages={activeSession.initialMessages}
+              title={activeSession.name}
+            />
+          )}
         </div>
       </div>
     </ThemeProvider>

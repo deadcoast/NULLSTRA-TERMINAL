@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import TerminalDialog from "../../TerminalDialog";
 
 // src/components/Terminal/TerminalDialog.test.tsx

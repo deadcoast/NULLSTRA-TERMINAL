@@ -3,7 +3,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Use local font instead of Google Fonts */
+/* Use font from public directory */
 @font-face {
   font-family: "PP Fraktion Mono";
   src: url("/fonts/PPFraktionMono-Regular.woff2") format("woff2");
@@ -93,6 +93,7 @@ body {
   border-color: var(--shocking-pink);
 }
 
+/* Text shadow effects */
 .lime-shadow {
   text-shadow:
     var(--terminal-lime) 0 0 1px,
@@ -123,6 +124,7 @@ body {
   text-shadow: 0 0 3px rgba(0, 255, 0, 0.9);
 }
 
+/* Animation keyframes */
 @keyframes blink {
   0%,
   100% {
@@ -220,6 +222,37 @@ body {
   }
 }
 
+@keyframes noise-animation {
+  /* Simple example */
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(2px, 2px);
+  }
+}
+
+@keyframes scanline-animation {
+  0% {
+    background-position: 0 0;
+  }
+  100% {
+    background-position: 0 -200px;
+  }
+}
+
+@keyframes status-appear {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Basic terminal container styling - these are used by multiple components */
 .terminal-container {
   position: relative;
   width: 100%;
@@ -240,6 +273,56 @@ body {
   z-index: 1;
 }
 
+.cursor-fade {
+  display: inline-block;
+  width: 8px;
+  height: 14px;
+  background-color: var(--terminal-green);
+  margin-left: 2px;
+  animation: blink-fade 1.5s infinite;
+  box-shadow: 0 0 4px rgba(0, 255, 0, 0.8);
+}
+
+.cursor {
+  animation: cursor-pulse 1.2s infinite;
+  box-shadow: 0 0 3px rgba(0, 255, 0, 0.7);
+}
+
+/* Basic status styling used by multiple components */
+.terminal-status-line {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 10px;
+  font-size: 14px;
+  color: var(--terminal-magenta);
+}
+
+.terminal-status-ip {
+  color: var(--terminal-magenta);
+  padding-left: 10px;
+}
+
+.terminal-status-time {
+  color: var(--terminal-magenta);
+  padding-right: 10px;
+}
+
+/* Status tag styling */
+.status-tag {
+  position: relative;
+  overflow: hidden;
+  animation: status-appear 0.3s ease-out;
+  background-color: var(--terminal-green);
+  color: var(--terminal-black);
+  padding: 2px 8px;
+  margin: 0 4px;
+  border-radius: 2px;
+  font-size: 0.85em;
+  font-weight: bold;
+  display: inline-flex;
+  align-items: center;
+}
+
 .terminal-container::before {
   content: " ";
   display: block;
@@ -248,8 +331,7 @@ body {
   left: 0;
   bottom: 0;
   right: 0;
-  background:
-    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
     linear-gradient(
       90deg,
       rgba(255, 0, 0, 0.04),
@@ -316,25 +398,6 @@ body {
   opacity: 0.1;
   animation: scanline-animation 10s linear infinite;
   pointer-events: none;
-}
-
-@keyframes noise-animation {
-  /* Simple example */
-  0% {
-    transform: translate(0, 0);
-  }
-  100% {
-    transform: translate(2px, 2px);
-  }
-}
-
-@keyframes scanline-animation {
-  0% {
-    background-position: 0 0;
-  }
-  100% {
-    background-position: 0 -200px;
-  }
 }
 
 .terminal-scanlines {
@@ -417,21 +480,6 @@ body {
   );
   pointer-events: none;
   z-index: 7;
-}
-
-.cursor-fade {
-  display: inline-block;
-  width: 8px;
-  height: 14px;
-  background-color: var(--terminal-green);
-  margin-left: 2px;
-  animation: blink-fade 1.5s infinite;
-  box-shadow: 0 0 4px rgba(0, 255, 0, 0.8);
-}
-
-.cursor {
-  animation: cursor-pulse 1.2s infinite;
-  box-shadow: 0 0 3px rgba(0, 255, 0, 0.7);
 }
 
 .terminal-header,
@@ -519,24 +567,6 @@ body {
   display: flex;
   justify-content: space-between;
   padding: 2px 0;
-}
-
-.terminal-status-line {
-  display: flex;
-  justify-content: space-between;
-  padding: 5px 10px;
-  font-size: 14px;
-  color: var(--terminal-magenta);
-}
-
-.terminal-status-ip {
-  color: var(--terminal-magenta);
-  padding-left: 10px;
-}
-
-.terminal-status-time {
-  color: var(--terminal-magenta);
-  padding-right: 10px;
 }
 
 .terminal-content {
@@ -1013,32 +1043,6 @@ body {
 }
 
 /* Status Tag Animation */
-@keyframes status-appear {
-  from {
-    opacity: 0;
-    transform: scale(0.8);
-  }
-  to {
-    opacity: 1;
-    transform: scale(1);
-  }
-}
-
-.status-tag {
-  position: relative;
-  overflow: hidden;
-  animation: status-appear 0.3s ease-out;
-  background-color: var(--terminal-green);
-  color: var(--terminal-black);
-  padding: 2px 8px;
-  margin: 0 4px;
-  border-radius: 2px;
-  font-size: 0.85em;
-  font-weight: bold;
-  display: inline-flex;
-  align-items: center;
-}
-
 .status-tag.updated::after {
   content: "";
   position: absolute;

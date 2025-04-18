@@ -1,11 +1,11 @@
 /**
  * 1. Implement a cleanup function in the `useEffect` to prevent memory leaks by ensuring the interval is cleared when the component unmounts.
-
-2. Use a more sophisticated method for simulating metrics, such as a random walk or a predefined pattern, to make the changes in memory, CPU, and disk usage more realistic.
-
-3. Add a visual representation (e.g., progress bars or charts) for memory, CPU, and disk usage to enhance user experience and provide clearer insights into system performance.
+ * 2. Use a more sophisticated method for simulating metrics, such as a random walk or a predefined pattern, to make the changes in memory, CPU, and disk usage more realistic.
+ * 3. Add a visual representation (e.g., progress bars or charts) for memory, CPU, and disk usage to enhance user experience and provide clearer insights into system performance.
  */
-import React, { useEffect, useState } from "react";
+import * as React from "react";
+const {   useEffect, useState   } = React;
+
 import StatusTag from "./StatusTag";
 
 interface StatusPanelProps {

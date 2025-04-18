@@ -1,0 +1,153 @@
+/* Terminal Benchmarking Styles */
+
+/* Terminal container */
+.benchmark-terminal {
+  border: 1px solid #333;
+  background-color: #1a1a1a;
+  color: #f0f0f0;
+  font-family: monospace;
+  border-radius: 4px;
+  height: 300px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+}
+
+/* Terminal input */
+.benchmark-terminal-input {
+  background-color: transparent;
+  border: none;
+  color: #f0f0f0;
+  font-family: monospace;
+  font-size: 14px;
+  padding: 5px;
+  width: 100%;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #444;
+}
+
+.benchmark-terminal-input:focus {
+  outline: none;
+  border-bottom-color: #0070f3;
+}
+
+/* Terminal output */
+.benchmark-terminal-output {
+  flex: 1;
+  overflow: auto;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+/* Command entry */
+.command-entry {
+  margin-bottom: 5px;
+}
+
+/* Command prompt */
+.prompt {
+  color: #0f0;
+  font-weight: bold;
+}
+
+/* Command text */
+.command-text {
+  color: #fff;
+}
+
+/* Command output */
+.command-output {
+  margin-bottom: 15px;
+  padding-left: 10px;
+  white-space: pre-wrap;
+  color: #ccc;
+}
+
+/* Terminal animations */
+@keyframes cursor-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.cursor {
+  display: inline-block;
+  width: 8px;
+  height: 15px;
+  background-color: #f0f0f0;
+  animation: cursor-blink 1s infinite;
+  vertical-align: middle;
+  margin-left: 2px;
+}
+
+/* Benchmark results visualization */
+.performance-chart {
+  height: 200px;
+  margin: 20px 0;
+  display: flex;
+  align-items: flex-end;
+  border-bottom: 1px solid #eaeaea;
+  position: relative;
+}
+
+.chart-bar {
+  flex: 1;
+  background-color: #0070f3;
+  margin: 0 2px;
+  position: relative;
+  transition: height 0.3s ease;
+  min-width: 10px;
+}
+
+.chart-bar:hover::after {
+  content: attr(data-value);
+  position: absolute;
+  top: -25px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: white;
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.chart-axis {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px;
+}
+
+.chart-axis-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px dashed #eaeaea;
+}
+
+.chart-axis-label {
+  font-size: 10px;
+  color: #666;
+  transform: translateY(-50%);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .benchmark-terminal {
+    height: 200px;
+  }
+
+  .performance-chart {
+    height: 150px;
+  }
+}

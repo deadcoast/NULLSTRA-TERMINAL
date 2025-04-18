@@ -6,10 +6,11 @@
     "target": "es2020",
     "isolatedModules": false,
     "noEmit": false,
+    "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "downlevelIteration": true,
-    "skipLibCheck": true
+    "types": ["node"],
+    "allowJs": true
   },
-  "include": ["server/**/*.ts"]
+  "include": ["server/**/*.ts", "types/**/*.d.ts"]
 }

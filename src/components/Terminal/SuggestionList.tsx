@@ -1,9 +1,10 @@
 /**
  * 1. Add keyboard navigation support for selecting suggestions using arrow keys.
-2. Implement a debounce function to optimize rendering of suggestions based on user input.
-3. Allow for customizable suggestion item rendering to enhance flexibility.
+ * 2. Implement a debounce function to optimize rendering of suggestions based on user input.
+ * 3. Allow for customizable suggestion item rendering to enhance flexibility.
  */
-import React, { useCallback, useEffect, useRef } from "react";
+import * as React from "react";
+const {   useCallback, useEffect, useRef   } = React;
 
 interface SuggestionListProps {
   suggestions: string[];

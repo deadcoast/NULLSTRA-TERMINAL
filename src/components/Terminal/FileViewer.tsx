@@ -9,7 +9,9 @@
  * 8. Implement responsive design to ensure proper display on various devices.
  * 9. Optimize performance by minimizing CSS and JavaScript file sizes.
  */
-import React, { useCallback, useEffect, useState } from "react";
+import * as React from "react";
+const {   useCallback, useEffect, useState   } = React;
+
 import { Glitch } from "../UI";
 
 interface FileViewerProps {

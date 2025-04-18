@@ -14,11 +14,19 @@ module.exports = {
     react: {
       version: "detect", // Tells eslint-plugin-react to automatically detect the React version
     },
+    // Add resolver for import plugin
+    "import/resolver": {
+      typescript: {}, // This allows import plugin to resolve TypeScript imports
+      node: {
+        extensions: [".js", ".jsx", ".ts", ".tsx"],
+      },
+    },
   },
   env: {
     browser: true, // Enable browser global variables
     es2021: true, // Add ECMAScript 2021 globals and set ecmaVersion to 12
     node: true, // Enable Node.js global variables and Node.js scoping
+    es6: true,
   },
   plugins: [
     "@typescript-eslint", // Plugin for TypeScript rules
@@ -26,6 +34,8 @@ module.exports = {
     "react-hooks", // Plugin for React Hooks rules
     "jsx-a11y", // Plugin for JSX accessibility rules
     "prettier", // Runs Prettier as an ESLint rule
+    "midaterminal", // Custom plugin for project-specific rules
+    "import",
     // Must be the last plugin
   ],
   extends: [
@@ -61,8 +71,16 @@ module.exports = {
   ],
   rules: {
     // --- Base ESLint Overrides ---
-    "no-console": ["warn", { allow: ["warn", "error"] }], // Warn about console.log, but allow warn/error
-    "no-unused-vars": "off", // Disable base rule, use TypeScript version below
+    "no-console": "off",
+    "no-unused-vars": [
+      "warn",
+      {
+        argsIgnorePattern: "^_",
+        varsIgnorePattern: "^_",
+      },
+    ],
+    "no-prototype-builtins": "warn",
+    "prefer-const": "warn",
 
     // --- TypeScript Overrides ---
     "@typescript-eslint/no-unused-vars": [
@@ -80,6 +98,27 @@ module.exports = {
     "react/react-in-jsx-scope": "off", // Not needed with React 17+ new JSX transform
     "react/jsx-props-no-spreading": "off", // Allow prop spreading (e.g., {...props}) - adjust if needed
     "react/display-name": "warn", // Warn if components don't have a display name
+    "react/jsx-pascal-case": "error", // Enforce PascalCase for component names
+
+    // --- Newly Added Rules from CODE-QUALITY-TOOLS.md ---
+    "import/order": [
+      "warn",
+      {
+        groups: [
+          "builtin",
+          "external",
+          "internal",
+          "parent",
+          "sibling",
+          "index",
+        ],
+        "newlines-between": "always",
+      },
+    ],
+    "import/no-duplicates": "warn",
+
+    // --- Custom midaterminal rules ---
+    "midaterminal/prefer-terminal-import": "error",
 
     // --- React Hooks Overrides ---
     // (Defaults from recommended are usually good)

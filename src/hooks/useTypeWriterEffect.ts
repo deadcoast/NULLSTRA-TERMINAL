@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useState, useRef } from "react";
+import * as React from "react";
+const {  useCallback, useEffect, useState, useRef  } = React;
 
 // Define the options interface for the enhanced hook
 interface EnhancedTypewriterOptions {

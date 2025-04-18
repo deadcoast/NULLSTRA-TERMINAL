@@ -2,15 +2,9 @@
  * 2. **Implement error boundaries**: Wrap the `children` with an error boundary to gracefully handle any rendering errors in the child components.
  * 3. **Use a layout context**: Create a context provider to manage global state or theme settings, allowing child components to access shared data easily.
  */
-import { Metadata } from "next";
-import localFont from "next/font/local";
+import type { Metadata } from "next";
+import { terminalFont } from "../fonts/font-loader";
 import "../globals.css";
-
-const fraktionMono = localFont({
-  src: "../fonts/PPFraktionMono-Regular.woff2",
-  display: "swap",
-  variable: "--font-terminal",
-});
 
 export const metadata: Metadata = {
   title: "Futuristic Terminal UI",
@@ -23,7 +17,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${fraktionMono.variable} font-sans h-full`}>
+    <html lang="en" className={`${terminalFont.variable} font-sans h-full`}>
       <body className="antialiased h-full">{children}</body>
     </html>
   );

@@ -9,5 +9,9 @@
 import { TerminalManager } from "../components";
 
 export default function Home() {
-  return <TerminalManager />;
+  return (
+    <div className="h-screen">
+      <TerminalManager />
+    </div>
+  );
 }

@@ -1,5 +1,7 @@
 // src/utils/index.ts
-import {
+
+// Terminal effects utilities
+export {
   formatIpAddress,
   formatTimestamp,
   generateNoise,
@@ -8,20 +10,31 @@ import {
   simulateConnectionIssue,
   typeText,
 } from "./effectsHelper";
-import {
-  // executeCommand, // Removed as it's not exported from terminalCommands/index
-  type TerminalMessage,
-} from "./terminalCommands/index"; // Corrected path
 
+// Terminal rendering utilities
 export {
-  formatIpAddress,
-  formatTimestamp,
-  // executeCommand, // Removed export
-  generateNoise,
-  generateRandomError,
-  glitchText,
-  simulateConnectionIssue,
-  typeText,
-};
+  generateBottomBorder,
+  generateButtonSection,
+  generateContentLine,
+  generateLineNumberEnd,
+  generateTerminalFrame,
+  generateTopBar,
+} from "./terminalRendering";
 
-export type { TerminalMessage };
+// Box drawing utilities
+export {
+  BOX_CHARS,
+  padLine as renderBox,
+  createContentLine as renderBoxedContent,
+  createHorizontalLine as renderHorizontalLine,
+  prefixLine as renderVerticalLine,
+} from "./boxDrawing";
+
+// Terminal command utilities
+export * from "./terminalCommands";
+
+// Terminal message type
+export type { TerminalMessage } from "./terminalCommands/types";
+
+// Text formatting utilities
+export * from "./textFormatters";

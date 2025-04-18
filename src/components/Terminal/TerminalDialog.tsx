@@ -1,10 +1,11 @@
 // src/components/Terminal/TerminalDialog.tsx
 /**
  * 1. Add TypeScript interfaces for props to ensure type safety and improve code readability.
-2. Implement accessibility features, such as ARIA roles and keyboard navigation, to enhance usability.
-3. Include a backdrop or overlay to focus user attention on the dialog and improve visual hierarchy. 
+ * 2. Implement accessibility features, such as ARIA roles and keyboard navigation, to enhance usability.
+ * 3. Include a backdrop or overlay to focus user attention on the dialog and improve visual hierarchy.
  */
-import React, { ReactNode } from "react";
+import type { ReactNode } from "react";
+import * as React from "react";
 
 interface TerminalDialogProps {
   title: string;

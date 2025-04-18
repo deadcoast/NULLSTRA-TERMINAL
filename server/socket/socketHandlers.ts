@@ -1,5 +1,5 @@
-import dotenv from "dotenv";
-import jwt from "jsonwebtoken";
+import * as dotenv from "dotenv";
+import * as jwt from "jsonwebtoken";
 import { Server, Socket } from "socket.io";
 import { executeCommand, getCommandHistory } from "../services/commandService";
 

@@ -1,7 +1,5 @@
 "use client";
 
-import CommandPrompt from "./CommandPrompt";
-import StatusLine from "./StatusLine";
 import StatusPanel from "./StatusPanel";
 import StatusTag from "./StatusTag";
 import Terminal from "./Terminal";
@@ -20,8 +18,6 @@ export default Terminal;
 
 // Export all the smaller components for use elsewhere
 export {
-  CommandPrompt,
-  StatusLine,
   StatusPanel,
   StatusTag,
   TerminalButton,
