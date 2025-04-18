@@ -1,8 +1,9 @@
 // Import testing-library utilities
-import '@testing-library/jest-dom';
+import "@testing-library/jest-dom";
 
 // Extend Jest matchers to include testing-library matchers
 declare global {
+  // eslint-disable-next-line @typescript-eslint/no-namespace
   namespace jest {
     interface Matchers<R> {
       toBeInTheDocument(): R;
@@ -20,11 +21,11 @@ declare global {
       toContainHTML(htmlText: string): R;
       toHaveClass(...classNames: string[]): R;
       toHaveFocus(): R;
-      toHaveFormValues(expectedValues: Record<string, any>): R;
-      toHaveStyle(css: Record<string, any>): R;
+      toHaveFormValues(expectedValues: Record<string, unknown>): R;
+      toHaveStyle(css: Record<string, unknown>): R;
       toHaveTextContent(
         text: string | RegExp,
-        options?: { normalizeWhitespace: boolean }
+        options?: { normalizeWhitespace: boolean },
       ): R;
       toHaveValue(value?: string | string[] | number): R;
     }

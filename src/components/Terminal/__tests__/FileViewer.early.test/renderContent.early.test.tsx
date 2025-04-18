@@ -4,29 +4,29 @@
  * @returns {void} - No return value.
  * @throws {Error} - Throws an error if the className is not a string.
  */
-import '@testing-library/jest-dom';
-import FileViewer from '../../FileViewer';
+import "@testing-library/jest-dom";
+import FileViewer from "../../FileViewer";
 
-import { render } from '@testing-library/react';
+import { render } from "@testing-library/react";
 
-describe('renderContent() renderContent method', () => {
+describe("renderContent() renderContent method", () => {
   // Happy path tests
-  describe('Happy Paths', () => {
-    it('should render plain text content correctly', () => {
+  describe("Happy Paths", () => {
+    it("should render plain text content correctly", () => {
       // Test description: This test checks if plain text content is rendered correctly without any JSON formatting.
-      const content = 'This is a plain text file.';
+      const content = "This is a plain text file.";
       const { container } = render(
         <FileViewer
           filename="file.txt"
           content={content}
           isOpen={true}
           onClose={() => {}}
-        />
+        />,
       );
-      expect(container.querySelector('pre')).toHaveTextContent(content);
+      expect(container.querySelector("pre")).toHaveTextContent(content);
     });
 
-    it('should render JSON content with syntax highlighting', () => {
+    it("should render JSON content with syntax highlighting", () => {
       // Test description: This test checks if JSON content is rendered with syntax highlighting.
       const content = '{"key": "value", "number": 123, "boolean": true}';
       const { container } = render(
@@ -35,41 +35,41 @@ describe('renderContent() renderContent method', () => {
           content={content}
           isOpen={true}
           onClose={() => {}}
-        />
+        />,
       );
-      const preElement = container.querySelector('pre');
+      const preElement = container.querySelector("pre");
       expect(preElement).toContainHTML(
-        '<span class="text-terminal-yellow">"key"</span>:'
-      );
-      expect(preElement).toContainHTML(
-        '<span class="text-terminal-green">"value"</span>'
+        '<span class="text-terminal-yellow">"key"</span>:',
       );
       expect(preElement).toContainHTML(
-        '<span class="text-terminal-cyan">123</span>'
+        '<span class="text-terminal-green">"value"</span>',
       );
       expect(preElement).toContainHTML(
-        '<span class="text-terminal-cyan">true</span>'
+        '<span class="text-terminal-cyan">123</span>',
+      );
+      expect(preElement).toContainHTML(
+        '<span class="text-terminal-cyan">true</span>',
       );
     });
   });
 
   // Edge case tests
-  describe('Edge Cases', () => {
-    it('should handle empty content gracefully', () => {
+  describe("Edge Cases", () => {
+    it("should handle empty content gracefully", () => {
       // Test description: This test checks if the function handles empty content without errors.
-      const content = '';
+      const content = "";
       const { container } = render(
         <FileViewer
           filename="empty.txt"
           content={content}
           isOpen={true}
           onClose={() => {}}
-        />
+        />,
       );
-      expect(container.querySelector('pre')).toHaveTextContent(content);
+      expect(container.querySelector("pre")).toHaveTextContent(content);
     });
 
-    it('should handle malformed JSON content without crashing', () => {
+    it("should handle malformed JSON content without crashing", () => {
       // Test description: This test checks if the function handles malformed JSON content without crashing.
       const content = '{"key": "value", "number": 123, "boolean": true';
       const { container } = render(
@@ -78,12 +78,12 @@ describe('renderContent() renderContent method', () => {
           content={content}
           isOpen={true}
           onClose={() => {}}
-        />
+        />,
       );
-      expect(container.querySelector('pre')).toHaveTextContent(content);
+      expect(container.querySelector("pre")).toHaveTextContent(content);
     });
 
-    it('should render JSON content that starts with an array', () => {
+    it("should render JSON content that starts with an array", () => {
       // Test description: This test checks if JSON content that starts with an array is rendered correctly.
       const content = '[{"key": "value"}, {"key2": "value2"}]';
       const { container } = render(
@@ -92,14 +92,14 @@ describe('renderContent() renderContent method', () => {
           content={content}
           isOpen={true}
           onClose={() => {}}
-        />
+        />,
       );
-      const preElement = container.querySelector('pre');
+      const preElement = container.querySelector("pre");
       expect(preElement).toContainHTML(
-        '<span class="text-terminal-yellow">"key"</span>:'
+        '<span class="text-terminal-yellow">"key"</span>:',
       );
       expect(preElement).toContainHTML(
-        '<span class="text-terminal-green">"value"</span>'
+        '<span class="text-terminal-green">"value"</span>',
       );
     });
   });

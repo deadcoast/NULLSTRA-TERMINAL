@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, useRef } from 'react';
+import { useCallback, useEffect, useState, useRef } from "react";
 
 // Define the options interface for the enhanced hook
 interface EnhancedTypewriterOptions {
@@ -34,7 +34,7 @@ const useEnhancedTypewriter = ({
   speedMultiplier = 3, // Default speed calculation factor
   maxRandomPause = 100, // Default max random pause
 }: EnhancedTypewriterOptions) => {
-  const [displayedText, setDisplayedText] = useState('');
+  const [displayedText, setDisplayedText] = useState("");
   const [isTyping, setIsTyping] = useState(false);
   const [isComplete, setIsComplete] = useState(false);
 
@@ -54,7 +54,7 @@ const useEnhancedTypewriter = ({
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
     }
-    setDisplayedText('');
+    setDisplayedText("");
     setIsTyping(true);
     setIsComplete(false);
     chunkIndexRef.current = 0; // Reset chunk index
@@ -117,12 +117,12 @@ const useEnhancedTypewriter = ({
         // Add the space back unless it's the last chunk or the next chunk starts with space (less common)
         // A more robust way is to capture the delimiter during split if needed, but this works for the default regex
         const chunkToAdd =
-          currentChunk + (chunkIndexRef.current < chunks.length - 1 ? ' ' : '');
+          currentChunk + (chunkIndexRef.current < chunks.length - 1 ? " " : "");
 
         // Calculate variable speed based on chunk length
         const baseSpeed = Math.max(
           minSpeed,
-          Math.min(maxSpeed, currentChunk.length * speedMultiplier)
+          Math.min(maxSpeed, currentChunk.length * speedMultiplier),
         );
         // Add a random slight pause after punctuation/chunk
         const randomPause = Math.random() * maxRandomPause;
@@ -153,7 +153,7 @@ const useEnhancedTypewriter = ({
 
       // Start the process after the initial startDelay
       clearCurrentTimeout(); // Clear any previous timeout just in case
-      if (chunks.length > 0 && chunks[0] !== '') {
+      if (chunks.length > 0 && chunks[0] !== "") {
         // Handle empty text or splits resulting in empty first chunk
         timeoutRef.current = setTimeout(typeNextChunk, startDelay);
       } else {

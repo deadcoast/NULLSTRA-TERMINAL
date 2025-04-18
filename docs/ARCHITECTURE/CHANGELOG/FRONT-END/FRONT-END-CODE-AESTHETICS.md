@@ -183,16 +183,16 @@ nullstra: {
 /* Add pseudo-elements for noise/scanlines */
 .terminal-background::before {
   /* Noise */
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background-image: url('noise.png'); /* Or generate with JS/Canvas/SVG */
+  background-image: url("noise.png"); /* Or generate with JS/Canvas/SVG */
   opacity: 0.05;
   animation: noise-animation 0.2s infinite steps(2);
 }
 .terminal-background::after {
   /* Scanlines */
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   background: linear-gradient(rgba(0, 0, 0, 0.1) 50%, transparent 50%);
@@ -252,7 +252,7 @@ Apply to status tags.
 
 .status-tag.updated::after {
   /* Example: subtle shimmer on update */
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
@@ -368,7 +368,7 @@ Apply to status tags.
 }
 
 .status-indicator::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
@@ -411,7 +411,7 @@ Apply to status tags.
 }
 
 .network-active::before {
-  content: '';
+  content: "";
   position: absolute;
   width: 6px;
   height: 6px;
@@ -443,7 +443,7 @@ Apply to status tags.
 // Enhanced TypeWriter component
 const enhancedTypeWriter = (
   text: string,
-  callback: (chunk: string) => void
+  callback: (chunk: string) => void,
 ) => {
   let currentIndex = 0;
   const chunks = text.split(/(?<=[.,!?:;])\s+/); // Split by punctuation
@@ -455,7 +455,7 @@ const enhancedTypeWriter = (
       // Variable speed based on chunk complexity
       const speed = Math.max(30, Math.min(100, chunk.length * 5));
 
-      callback(chunk + ' ');
+      callback(chunk + " ");
       currentIndex++;
 
       // Random slight pause after punctuation
@@ -474,7 +474,7 @@ const enhancedTypeWriter = (
 const createNoise = (
   ctx: CanvasRenderingContext2D,
   canvas: HTMLCanvasElement,
-  intensity: number
+  intensity: number,
 ) => {
   const imageData = ctx.createImageData(canvas.width, canvas.height);
   const data = imageData.data;
@@ -531,8 +531,8 @@ const TerminalButton: React.FC<TerminalButtonProps> = ({
     <button
       className={`
         terminal-button w-8 h-8 flex items-center justify-center
-        ${active ? 'bg-terminal-green bg-opacity-20' : 'bg-transparent'}
-        ${disabled ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}
+        ${active ? "bg-terminal-green bg-opacity-20" : "bg-transparent"}
+        ${disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer"}
       `}
       onClick={disabled ? undefined : onClick}
       onMouseEnter={() => setIsHovered(true)}
@@ -540,7 +540,7 @@ const TerminalButton: React.FC<TerminalButtonProps> = ({
     >
       <span
         className={`text-terminal-green ${
-          isHovered && !disabled ? 'text-opacity-100' : 'text-opacity-80'
+          isHovered && !disabled ? "text-opacity-100" : "text-opacity-80"
         }`}
       >
         {icon}
@@ -566,7 +566,7 @@ const CommandPrompt: React.FC<CommandPromptProps> = ({
   historyIndex,
   onNavigateHistory,
 }) => {
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState("");
   const [isExecuting, setIsExecuting] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -579,26 +579,26 @@ const CommandPrompt: React.FC<CommandPromptProps> = ({
     // Visual delay for execution effect
     setTimeout(() => {
       onSubmit(input);
-      setInput('');
+      setInput("");
       setIsExecuting(false);
     }, 200);
   };
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       e.preventDefault();
       handleSubmit();
-    } else if (e.key === 'ArrowUp') {
+    } else if (e.key === "ArrowUp") {
       e.preventDefault();
-      onNavigateHistory('up');
-    } else if (e.key === 'ArrowDown') {
+      onNavigateHistory("up");
+    } else if (e.key === "ArrowDown") {
       e.preventDefault();
-      onNavigateHistory('down');
+      onNavigateHistory("down");
     }
   };
 
   return (
-    <div className={`command-prompt ${isExecuting ? 'command-execute' : ''}`}>
+    <div className={`command-prompt ${isExecuting ? "command-execute" : ""}`}>
       <div className="text-terminal-brightGreen mr-2 flex items-center">
         <span>USER</span>
         <span className="text-terminal-white mx-1">/</span>
@@ -616,7 +616,7 @@ const CommandPrompt: React.FC<CommandPromptProps> = ({
           autoFocus
           disabled={isExecuting}
         />
-        <span className={`cursor ${isExecuting ? 'hidden' : ''}`} />
+        <span className={`cursor ${isExecuting ? "hidden" : ""}`} />
       </div>
     </div>
   );
@@ -662,7 +662,7 @@ const CommandPrompt: React.FC<CommandPromptProps> = ({
 }
 
 .status-indicator::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;

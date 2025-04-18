@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 // Define glitch parameters outside the component
 const glitchParams = {
@@ -21,16 +21,16 @@ const glitchParams = {
 
 interface GlitchProps {
   children: React.ReactNode;
-  intensity?: 'low' | 'medium' | 'high';
+  intensity?: "low" | "medium" | "high";
   active?: boolean;
   className?: string;
 }
 
 const Glitch: React.FC<GlitchProps> = ({
   children,
-  intensity = 'medium',
+  intensity = "medium",
   active = true,
-  className = '',
+  className = "",
 }) => {
   const [isGlitching, setIsGlitching] = useState(false);
 
@@ -50,7 +50,7 @@ const Glitch: React.FC<GlitchProps> = ({
           () => {
             setIsGlitching(false);
           },
-          Math.random() * duration + 50
+          Math.random() * duration + 50,
         );
       }
     }, frequency);
@@ -61,14 +61,14 @@ const Glitch: React.FC<GlitchProps> = ({
 
   return (
     <div
-      className={`relative inline-block ${isGlitching ? 'animate-glitch' : ''} ${className}`}
+      className={`relative inline-block ${isGlitching ? "animate-glitch" : ""} ${className}`}
       style={
         isGlitching
           ? {
               textShadow: `
-          ${Math.random() < 0.5 ? '-' : ''}${Math.random() * 3}px 0 rgba(255, 0, 0, 0.5),
-          ${Math.random() < 0.5 ? '-' : ''}${Math.random() * 3}px 0 rgba(0, 255, 0, 0.5),
-          ${Math.random() < 0.5 ? '-' : ''}${Math.random() * 3}px 0 rgba(0, 0, 255, 0.5)
+          ${Math.random() < 0.5 ? "-" : ""}${Math.random() * 3}px 0 rgba(255, 0, 0, 0.5),
+          ${Math.random() < 0.5 ? "-" : ""}${Math.random() * 3}px 0 rgba(0, 255, 0, 0.5),
+          ${Math.random() < 0.5 ? "-" : ""}${Math.random() * 3}px 0 rgba(0, 0, 255, 0.5)
         `,
             }
           : {}

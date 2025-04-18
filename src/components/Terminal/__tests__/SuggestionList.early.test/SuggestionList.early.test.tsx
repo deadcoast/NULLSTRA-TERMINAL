@@ -1,20 +1,20 @@
-import '@testing-library/jest-dom';
-import { fireEvent, render, screen } from '@testing-library/react';
-import SuggestionList from '../../SuggestionList';
+import "@testing-library/jest-dom";
+import { fireEvent, render, screen } from "@testing-library/react";
+import SuggestionList from "../../SuggestionList";
 
-describe('SuggestionList() SuggestionList method', () => {
+describe("SuggestionList() SuggestionList method", () => {
   // Happy Path Tests
-  describe('Happy Paths', () => {
-    it('renders suggestions correctly', () => {
+  describe("Happy Paths", () => {
+    it("renders suggestions correctly", () => {
       // Test to ensure suggestions are rendered correctly
-      const suggestions = ['command1', 'command2', 'command3'];
+      const suggestions = ["command1", "command2", "command3"];
       const onSelect = jest.fn();
       render(
         <SuggestionList
           suggestions={suggestions}
           activeSuggestion={1}
           onSelect={onSelect}
-        />
+        />,
       );
 
       suggestions.forEach((suggestion) => {
@@ -22,44 +22,44 @@ describe('SuggestionList() SuggestionList method', () => {
       });
     });
 
-    it('highlights the active suggestion', () => {
+    it("highlights the active suggestion", () => {
       // Test to ensure the active suggestion is highlighted
-      const suggestions = ['command1', 'command2', 'command3'];
+      const suggestions = ["command1", "command2", "command3"];
       const onSelect = jest.fn();
       render(
         <SuggestionList
           suggestions={suggestions}
           activeSuggestion={1}
           onSelect={onSelect}
-        />
+        />,
       );
 
-      const activeElement = screen.getByText('command2');
+      const activeElement = screen.getByText("command2");
       expect(activeElement).toHaveClass(
-        'bg-terminal-green text-terminal-black'
+        "bg-terminal-green text-terminal-black",
       );
     });
 
-    it('calls onSelect with the correct index when a suggestion is clicked', () => {
+    it("calls onSelect with the correct index when a suggestion is clicked", () => {
       // Test to ensure onSelect is called with the correct index
-      const suggestions = ['command1', 'command2', 'command3'];
+      const suggestions = ["command1", "command2", "command3"];
       const onSelect = jest.fn();
       render(
         <SuggestionList
           suggestions={suggestions}
           activeSuggestion={1}
           onSelect={onSelect}
-        />
+        />,
       );
 
-      fireEvent.click(screen.getByText('command1'));
+      fireEvent.click(screen.getByText("command1"));
       expect(onSelect).toHaveBeenCalledWith(0);
     });
   });
 
   // Edge Case Tests
-  describe('Edge Cases', () => {
-    it('returns null when there are no suggestions', () => {
+  describe("Edge Cases", () => {
+    it("returns null when there are no suggestions", () => {
       // Test to ensure component returns null when no suggestions are provided
       const onSelect = jest.fn();
       const { container } = render(
@@ -67,21 +67,21 @@ describe('SuggestionList() SuggestionList method', () => {
           suggestions={[]}
           activeSuggestion={0}
           onSelect={onSelect}
-        />
+        />,
       );
       expect(container.firstChild).toBeNull();
     });
 
-    it('handles negative activeSuggestion index gracefully', () => {
+    it("handles negative activeSuggestion index gracefully", () => {
       // Test to ensure negative activeSuggestion index does not break the component
-      const suggestions = ['command1', 'command2'];
+      const suggestions = ["command1", "command2"];
       const onSelect = jest.fn();
       render(
         <SuggestionList
           suggestions={suggestions}
           activeSuggestion={-1}
           onSelect={onSelect}
-        />
+        />,
       );
 
       suggestions.forEach((suggestion) => {
@@ -89,16 +89,16 @@ describe('SuggestionList() SuggestionList method', () => {
       });
     });
 
-    it('handles out-of-bounds activeSuggestion index gracefully', () => {
+    it("handles out-of-bounds activeSuggestion index gracefully", () => {
       // Test to ensure out-of-bounds activeSuggestion index does not break the component
-      const suggestions = ['command1', 'command2'];
+      const suggestions = ["command1", "command2"];
       const onSelect = jest.fn();
       render(
         <SuggestionList
           suggestions={suggestions}
           activeSuggestion={10}
           onSelect={onSelect}
-        />
+        />,
       );
 
       suggestions.forEach((suggestion) => {
@@ -106,9 +106,9 @@ describe('SuggestionList() SuggestionList method', () => {
       });
     });
 
-    it('renders file and folder icons correctly when isCommand is false', () => {
+    it("renders file and folder icons correctly when isCommand is false", () => {
       // Test to ensure file and folder icons are rendered correctly when isCommand is false
-      const suggestions = ['file.txt', 'folder/'];
+      const suggestions = ["file.txt", "folder/"];
       const onSelect = jest.fn();
       render(
         <SuggestionList
@@ -116,11 +116,11 @@ describe('SuggestionList() SuggestionList method', () => {
           activeSuggestion={0}
           onSelect={onSelect}
           isCommand={false}
-        />
+        />,
       );
 
-      expect(screen.getByText('📄')).toBeInTheDocument();
-      expect(screen.getByText('📁')).toBeInTheDocument();
+      expect(screen.getByText("📄")).toBeInTheDocument();
+      expect(screen.getByText("📁")).toBeInTheDocument();
     });
   });
 });

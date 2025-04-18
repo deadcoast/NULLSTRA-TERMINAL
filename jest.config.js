@@ -1,20 +1,20 @@
 module.exports = {
-  testEnvironment: 'jsdom',
-  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
-  testPathIgnorePatterns: ['<rootDir>/.next/', '<rootDir>/node_modules/'],
+  testEnvironment: "jsdom",
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
+  testPathIgnorePatterns: ["<rootDir>/.next/", "<rootDir>/node_modules/"],
   moduleNameMapper: {
-    '^@/(.*)$': '<rootDir>/src/$1',
-    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+    "^@/(.*)$": "<rootDir>/src/$1",
+    "\\.(css|less|scss|sass)$": "identity-obj-proxy",
   },
   transform: {
-    '^.+\\.(js|jsx|ts|tsx)$': ['babel-jest', { presets: ['next/babel'] }],
+    "^.+\\.(js|jsx|ts|tsx)$": ["babel-jest", { presets: ["next/babel"] }],
   },
   collectCoverage: true,
   collectCoverageFrom: [
-    'src/**/*.{js,jsx,ts,tsx}',
-    '!src/**/*.d.ts',
-    '!src/**/_*.{js,jsx,ts,tsx}',
-    '!**/node_modules/**',
+    "src/**/*.{js,jsx,ts,tsx}",
+    "!src/**/*.d.ts",
+    "!src/**/_*.{js,jsx,ts,tsx}",
+    "!**/node_modules/**",
   ],
   coverageThreshold: {
     global: {

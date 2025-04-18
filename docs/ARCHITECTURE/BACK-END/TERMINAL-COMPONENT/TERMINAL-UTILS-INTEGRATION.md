@@ -144,7 +144,7 @@ import TerminalOutput from './TerminalOutput';
 
 ```tsx
 // Create a specialized component for terminal output rendering
-import { TerminalMessage } from '../utils/terminalCommands';
+import { TerminalMessage } from "../utils/terminalCommands";
 
 interface TerminalOutputProps {
   messages: TerminalMessage[];
@@ -165,21 +165,21 @@ const TerminalOutput: React.FC<TerminalOutputProps> = ({ messages }) => {
 
 ```tsx
 // Create message renderer based on message type
-import { TerminalMessage } from '../utils/terminalCommands';
-import { Glitch, TypeWriter } from '../UI';
+import { TerminalMessage } from "../utils/terminalCommands";
+import { Glitch, TypeWriter } from "../UI";
 
 const MessageRenderer: React.FC<{ message: TerminalMessage }> = ({
   message,
 }) => {
   // Rendering based on message type and properties
   switch (message.type) {
-    case 'error':
+    case "error":
       return <ErrorMessage message={message} />;
-    case 'success':
+    case "success":
       return <SuccessMessage message={message} />;
-    case 'info':
+    case "info":
       return <InfoMessage message={message} />;
-    case 'warning':
+    case "warning":
       return <WarningMessage message={message} />;
     default:
       return <DefaultMessage message={message} />;

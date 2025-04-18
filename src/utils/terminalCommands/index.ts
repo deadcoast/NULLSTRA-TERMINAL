@@ -1,13 +1,13 @@
 // src/utils/terminalCommands/index.ts
 // Main export file for the terminal commands system
-import initialFileSystemData from './fileSystemData';
-import { registerFileSystemCommands } from './fileSystems';
-import { registerNetworkCommands } from './networkCommands';
-import { registerSecurityCommands } from './security';
-import { registerSystemCommands } from './system';
-import { CommandRegistry } from './types';
-import { registerUICommands } from './uiCommands';
-import { registerUtilityCommands } from './utilityCommands';
+import initialFileSystemData from "./fileSystemData";
+import { registerFileSystemCommands } from "./fileSystems";
+import { registerNetworkCommands } from "./networkCommands";
+import { registerSecurityCommands } from "./security";
+import { registerSystemCommands } from "./system";
+import { CommandRegistry } from "./types";
+import { registerUICommands } from "./uiCommands";
+import { registerUtilityCommands } from "./utilityCommands";
 
 // Initialize the command registry
 const commandRegistry: CommandRegistry = {};
@@ -26,8 +26,8 @@ export const initializeCommands = () => {
 };
 
 // Export types and utilities
-export * from './helpers';
-export * from './types';
+export * from "./helpers";
+export * from "./types";
 
 // Export the default registry
 export default initializeCommands();

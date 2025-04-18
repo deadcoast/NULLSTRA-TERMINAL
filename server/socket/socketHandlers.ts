@@ -1,16 +1,28 @@
-import dotenv from 'dotenv';
-import jwt from 'jsonwebtoken';
-import { Server, Socket } from 'socket.io';
-import { executeCommand, getCommandHistory } from '../services/commandService';
+import dotenv from "dotenv";
+import jwt from "jsonwebtoken";
+import { Server, Socket } from "socket.io";
+import { executeCommand, getCommandHistory } from "../services/commandService";
 
 // Load environment variables
 dotenv.config();
 
 // JWT secret key
-const JWT_SECRET = process.env.JWT_SECRET || 'default_jwt_secret_key';
+const JWT_SECRET = process.env.JWT_SECRET || "default_jwt_secret_key";
 
 // Whether authentication is required
-const AUTH_ENABLED = process.env.AUTH_ENABLED === 'true';
+const AUTH_ENABLED = process.env.AUTH_ENABLED === "true";
+
+// Add a simple logger
+const logger = {
+  info: (message: string) => {
+    // eslint-disable-next-line no-console
+    console.log(message);
+  },
+  error: (message: string, error?: unknown) => {
+    // eslint-disable-next-line no-console
+    console.error(message, error);
+  },
+};
 
 /**
  * Interface for Socket.io client data
@@ -30,8 +42,8 @@ const clients: Map<string, SocketClient> = new Map();
  */
 export const setupSocketHandlers = (io: Server): void => {
   // Connection event handler
-  io.on('connection', (socket: Socket) => {
-    console.log(`Socket connected: ${socket.id}`);
+  io.on("connection", (socket: Socket) => {
+    logger.info(`Socket connected: ${socket.id}`);
 
     // Store client connection
     clients.set(socket.id, {
@@ -40,16 +52,19 @@ export const setupSocketHandlers = (io: Server): void => {
     });
 
     // Authenticate event handler
-    socket.on('authenticate', (token: string) => {
+    socket.on("authenticate", (token: string) => {
       try {
         // Skip authentication if not enabled
         if (!AUTH_ENABLED) {
-          clients.set(socket.id, {
-            ...clients.get(socket.id)!,
-            authenticated: true,
-          });
+          const client = clients.get(socket.id);
+          if (client) {
+            clients.set(socket.id, {
+              ...client,
+              authenticated: true,
+            });
+          }
 
-          socket.emit('authenticated', { success: true });
+          socket.emit("authenticated", { success: true });
           return;
         }
 
@@ -67,18 +82,18 @@ export const setupSocketHandlers = (io: Server): void => {
           authenticated: true,
         });
 
-        socket.emit('authenticated', {
+        socket.emit("authenticated", {
           success: true,
           userId: decoded.userId,
           sessionId: decoded.sessionId,
         });
 
-        console.log(
-          `Socket authenticated: ${socket.id} (User: ${decoded.userId})`
+        logger.info(
+          `Socket authenticated: ${socket.id} (User: ${decoded.userId})`,
         );
       } catch (error) {
-        console.error('Socket authentication error:', error);
-        socket.emit('authenticated', {
+        logger.error("Socket authentication error:", error);
+        socket.emit("authenticated", {
           success: false,
           error: (error as Error).message,
         });
@@ -87,7 +102,7 @@ export const setupSocketHandlers = (io: Server): void => {
 
     // Execute command event handler
     socket.on(
-      'execute_command',
+      "execute_command",
       async ({
         command,
         args,
@@ -101,16 +116,16 @@ export const setupSocketHandlers = (io: Server): void => {
 
         // Ensure client is authenticated if required
         if (AUTH_ENABLED && (!client || !client.authenticated)) {
-          socket.emit('command_result', {
+          socket.emit("command_result", {
             success: false,
-            error: 'Authentication required',
+            error: "Authentication required",
           });
           return;
         }
 
         try {
           // Emit command_start event to indicate processing
-          socket.emit('command_start', {
+          socket.emit("command_start", {
             command,
             timestamp: new Date().toISOString(),
           });
@@ -128,48 +143,48 @@ export const setupSocketHandlers = (io: Server): void => {
               const item = result[i];
               // Add small delay between messages for realistic streaming
               await new Promise((resolve) =>
-                setTimeout(resolve, 100 * (i + 1))
+                setTimeout(resolve, 100 * (i + 1)),
               );
-              socket.emit('command_output', item);
+              socket.emit("command_output", item);
             }
 
             // Send final completion message
-            socket.emit('command_result', {
+            socket.emit("command_result", {
               success: true,
               completed: true,
               timestamp: new Date().toISOString(),
             });
           } else {
             // Send single result
-            socket.emit('command_output', result);
-            socket.emit('command_result', {
+            socket.emit("command_output", result);
+            socket.emit("command_result", {
               success: true,
               completed: true,
               timestamp: new Date().toISOString(),
             });
           }
         } catch (error) {
-          console.error('Command execution error:', error);
-          socket.emit('command_result', {
+          logger.error("Command execution error:", error);
+          socket.emit("command_result", {
             success: false,
             error: (error as Error).message,
             timestamp: new Date().toISOString(),
           });
         }
-      }
+      },
     );
 
     // Get command history event handler
     socket.on(
-      'get_command_history',
+      "get_command_history",
       async ({ sessionId }: { sessionId?: string }) => {
         const client = clients.get(socket.id);
 
         // Ensure client is authenticated if required
         if (AUTH_ENABLED && (!client || !client.authenticated)) {
-          socket.emit('command_history_result', {
+          socket.emit("command_history_result", {
             success: false,
-            error: 'Authentication required',
+            error: "Authentication required",
           });
           return;
         }
@@ -179,9 +194,9 @@ export const setupSocketHandlers = (io: Server): void => {
           const cmdSessionId = sessionId || client?.sessionId;
 
           if (!cmdSessionId) {
-            socket.emit('command_history_result', {
+            socket.emit("command_history_result", {
               success: false,
-              error: 'Session ID required',
+              error: "Session ID required",
             });
             return;
           }
@@ -189,23 +204,23 @@ export const setupSocketHandlers = (io: Server): void => {
           // Get command history
           const history = await getCommandHistory(cmdSessionId);
 
-          socket.emit('command_history_result', {
+          socket.emit("command_history_result", {
             success: true,
             history,
           });
         } catch (error) {
-          console.error('Get command history error:', error);
-          socket.emit('command_history_result', {
+          logger.error("Get command history error:", error);
+          socket.emit("command_history_result", {
             success: false,
             error: (error as Error).message,
           });
         }
-      }
+      },
     );
 
     // Disconnect event handler
-    socket.on('disconnect', () => {
-      console.log(`Socket disconnected: ${socket.id}`);
+    socket.on("disconnect", () => {
+      logger.info(`Socket disconnected: ${socket.id}`);
       clients.delete(socket.id);
     });
   });

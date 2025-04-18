@@ -6,8 +6,8 @@
 5. Add customizable styles for table borders and text to enhance visual appeal.  
 6. Optimize the `getColumnWidths` function for performance with large datasets.   
 */
-import React from 'react';
-import { Glitch } from '../UI';
+import React from "react";
+import { Glitch } from "../UI";
 
 interface TableData {
   headers: string[];
@@ -30,17 +30,17 @@ const TableRenderer: React.FC<TableRendererProps> = ({
 
   // Create the table border characters
   const tableChars = {
-    topLeft: '┌',
-    topRight: '┐',
-    bottomLeft: '└',
-    bottomRight: '┘',
-    horizontal: '─',
-    vertical: '│',
-    leftT: '├',
-    rightT: '┤',
-    topT: '┬',
-    bottomT: '┴',
-    cross: '┼',
+    topLeft: "┌",
+    topRight: "┐",
+    bottomLeft: "└",
+    bottomRight: "┘",
+    horizontal: "─",
+    vertical: "│",
+    leftT: "├",
+    rightT: "┤",
+    topT: "┬",
+    bottomT: "┴",
+    cross: "┼",
   };
 
   // Generate the top border
@@ -49,7 +49,7 @@ const TableRenderer: React.FC<TableRendererProps> = ({
     tableChars.topLeft,
     tableChars.topRight,
     tableChars.topT,
-    tableChars.horizontal
+    tableChars.horizontal,
   );
 
   // Generate the header separator
@@ -58,7 +58,7 @@ const TableRenderer: React.FC<TableRendererProps> = ({
     tableChars.leftT,
     tableChars.rightT,
     tableChars.cross,
-    tableChars.horizontal
+    tableChars.horizontal,
   );
 
   // Generate the bottom border
@@ -67,7 +67,7 @@ const TableRenderer: React.FC<TableRendererProps> = ({
     tableChars.bottomLeft,
     tableChars.bottomRight,
     tableChars.bottomT,
-    tableChars.horizontal
+    tableChars.horizontal,
   );
 
   return (
@@ -89,12 +89,12 @@ const TableRenderer: React.FC<TableRendererProps> = ({
 
       {/* Table Headers */}
       <div className="text-terminal-yellow">
-        {tableChars.vertical}{' '}
+        {tableChars.vertical}{" "}
         {data.headers
           .map((header, index) => {
             return header.padEnd(columnWidths[index] - 2);
           })
-          .join(` ${tableChars.vertical} `)}{' '}
+          .join(` ${tableChars.vertical} `)}{" "}
         {tableChars.vertical}
       </div>
 
@@ -107,16 +107,16 @@ const TableRenderer: React.FC<TableRendererProps> = ({
           key={rowIndex}
           className={
             rowIndex % 2 === 0
-              ? 'text-terminal-white'
-              : 'text-terminal-white opacity-80'
+              ? "text-terminal-white"
+              : "text-terminal-white opacity-80"
           }
         >
-          {tableChars.vertical}{' '}
+          {tableChars.vertical}{" "}
           {row
             .map((cell, cellIndex) => {
               return cell.padEnd(columnWidths[cellIndex] - 2);
             })
-            .join(` ${tableChars.vertical} `)}{' '}
+            .join(` ${tableChars.vertical} `)}{" "}
           {tableChars.vertical}
         </div>
       ))}
@@ -155,7 +155,7 @@ const generateBorder = (
   leftChar: string,
   rightChar: string,
   joinChar: string,
-  horizontalChar: string
+  horizontalChar: string,
 ): string => {
   // Generate segments for each column
   const segments = widths.map((width) => horizontalChar.repeat(width));

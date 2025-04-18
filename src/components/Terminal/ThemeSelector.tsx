@@ -5,8 +5,8 @@
 
 3. Optimize the ColorPreview component by memoizing it to prevent unnecessary re-renders when the theme does not change.
  */
-import React, { useState } from 'react';
-import { TerminalTheme, useTheme } from '../../context';
+import React, { useState } from "react";
+import { TerminalTheme, useTheme } from "../../context";
 
 interface ThemeSelectorProps {
   minimal?: boolean;
@@ -26,7 +26,7 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ minimal = false }) => {
   };
 
   // Simple color square preview
-  const ColorPreview = ({ colors }: { colors: TerminalTheme['colors'] }) => (
+  const ColorPreview = ({ colors }: { colors: TerminalTheme["colors"] }) => (
     <div className="flex gap-1">
       <div
         className="w-3 h-3 rounded-sm"
@@ -52,30 +52,37 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ minimal = false }) => {
     return (
       <div className="theme-selector relative">
         <button
-          className="theme-toggle-btn px-2 py-1 text-xs border border-terminal-green text-terminal-green bg-terminal-black hover:bg-terminal-green hover:text-terminal-black transition-colors rounded"
+          className="theme-toggle-btn bg-terminal-black border border-terminal-green text-terminal-green px-2 py-1 text-xs rounded hover:bg-terminal-green hover:text-terminal-black transition-colors"
           onClick={toggleOpen}
         >
-          Theme: {theme.name}
+          Theme: {theme.name || "Default"}
         </button>
 
-        {isOpen && (
+        {isOpen && availableThemes && availableThemes.length > 0 && (
           <div className="absolute right-0 top-full mt-1 bg-terminal-black border border-terminal-green rounded p-2 w-48 z-10">
             <div className="font-bold text-terminal-cyan mb-2 text-xs">
               Select Theme
             </div>
             <ul className="space-y-1">
               {availableThemes.map((t) => (
-                <li
+                <button
                   key={t.id}
                   className={`
-                    flex items-center justify-between p-1 text-xs rounded cursor-pointer
-                    ${t.id === theme.id ? 'bg-terminal-green text-terminal-black' : 'hover:bg-terminal-black hover:bg-opacity-30'}
+                    flex items-center justify-between p-1 text-xs rounded cursor-pointer w-full text-left
+                    ${t.id === theme.id ? "bg-terminal-green text-terminal-black" : "hover:bg-terminal-black hover:bg-opacity-30"}
                   `}
                   onClick={() => handleThemeSelect(t)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      handleThemeSelect(t);
+                      e.preventDefault();
+                    }
+                  }}
+                  aria-pressed={t.id === theme.id}
                 >
                   <span>{t.name}</span>
                   <ColorPreview colors={t.colors} />
-                </li>
+                </button>
               ))}
             </ul>
           </div>
@@ -96,18 +103,25 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ minimal = false }) => {
 
       <div className="p-3 grid grid-cols-2 gap-3">
         {availableThemes.map((t) => (
-          <div
+          <button
             key={t.id}
             className={`
-              theme-preview p-2 border rounded cursor-pointer transition-transform transform hover:scale-105
+              theme-preview p-2 border rounded cursor-pointer transition-transform transform hover:scale-105 text-left w-full
               ${
                 t.id === theme.id
-                  ? 'border-terminal-green shadow-sm shadow-terminal-green'
-                  : 'border-terminal-gray'
+                  ? "border-terminal-green shadow-sm shadow-terminal-green"
+                  : "border-terminal-gray"
               }
             `}
             style={{ backgroundColor: t.colors.background }}
             onClick={() => handleThemeSelect(t)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                handleThemeSelect(t);
+                e.preventDefault();
+              }
+            }}
+            aria-pressed={t.id === theme.id}
           >
             <div
               className="theme-name font-bold mb-1"
@@ -117,7 +131,7 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ minimal = false }) => {
             </div>
 
             <div className="flex flex-wrap gap-1 mb-2">
-              {['magenta', 'cyan', 'green', 'yellow', 'red', 'blue'].map(
+              {["magenta", "cyan", "green", "yellow", "red", "blue"].map(
                 (color) => (
                   <div
                     key={color}
@@ -126,7 +140,7 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ minimal = false }) => {
                       backgroundColor: t.colors[color as keyof typeof t.colors],
                     }}
                   ></div>
-                )
+                ),
               )}
             </div>
 
@@ -137,13 +151,13 @@ const ThemeSelector: React.FC<ThemeSelectorProps> = ({ minimal = false }) => {
               <div style={{ color: t.colors.green }}>user@terminal:~$</div>
               <div style={{ color: t.colors.cyan }}>sample text</div>
             </div>
-          </div>
+          </button>
         ))}
       </div>
 
       <div className="p-3 border-t border-terminal-green flex justify-end">
         <div className="text-xs text-terminal-white">
-          Current:{' '}
+          Current:{" "}
           <span className="text-terminal-green font-bold">{theme.name}</span>
         </div>
       </div>

@@ -7,11 +7,11 @@ import {
   glitchText,
   simulateConnectionIssue,
   typeText,
-} from './effectsHelper';
+} from "./effectsHelper";
 import {
   // executeCommand, // Removed as it's not exported from terminalCommands/index
   type TerminalMessage,
-} from './terminalCommands/index'; // Corrected path
+} from "./terminalCommands/index"; // Corrected path
 
 export {
   formatIpAddress,

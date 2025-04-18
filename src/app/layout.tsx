@@ -2,19 +2,19 @@
  * 2. **Implement error boundaries**: Wrap the `children` with an error boundary to gracefully handle any rendering errors in the child components.
  * 3. **Use a layout context**: Create a context provider to manage global state or theme settings, allowing child components to access shared data easily.
  */
-import { Metadata } from 'next';
-import localFont from 'next/font/local';
-import '../globals.css';
+import { Metadata } from "next";
+import localFont from "next/font/local";
+import "../globals.css";
 
 const fraktionMono = localFont({
-  src: '../fonts/PPFraktionMono-Regular.woff2',
-  display: 'swap',
-  variable: '--font-terminal',
+  src: "../fonts/PPFraktionMono-Regular.woff2",
+  display: "swap",
+  variable: "--font-terminal",
 });
 
 export const metadata: Metadata = {
-  title: 'Futuristic Terminal UI',
-  description: 'Interactive terminal UI with cyberpunk aesthetics',
+  title: "Futuristic Terminal UI",
+  description: "Interactive terminal UI with cyberpunk aesthetics",
 };
 
 export default function RootLayout({

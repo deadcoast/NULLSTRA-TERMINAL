@@ -1,4 +1,4 @@
-import CommandPrompt from '../../CommandPrompt';
+import CommandPrompt from "../../CommandPrompt";
 
 /**
  * Renders a command input prompt that handles user input, command execution,
@@ -17,8 +17,8 @@ import CommandPrompt from '../../CommandPrompt';
  */
 
 // Import necessary libraries and components
-import '@testing-library/jest-dom';
-import { fireEvent, render } from '@testing-library/react';
+import "@testing-library/jest-dom";
+import { fireEvent, render } from "@testing-library/react";
 
 // Import necessary libraries and components
 // Mock the handleSubmit function
@@ -32,8 +32,8 @@ import { fireEvent, render } from '@testing-library/react';
 // });
 
 // Mock React hooks used in the component
-jest.mock('react', () => {
-  const actual = jest.requireActual('react');
+jest.mock("react", () => {
+  const actual = jest.requireActual("react");
   return {
     ...actual,
     useRef: jest.fn(),
@@ -42,10 +42,10 @@ jest.mock('react', () => {
   };
 });
 
-describe('CommandPrompt() CommandPrompt method', () => {
+describe("CommandPrompt() CommandPrompt method", () => {
   // Happy Path Tests
-  describe('Happy Paths', () => {
-    it('should render the component with default props', () => {
+  describe("Happy Paths", () => {
+    it("should render the component with default props", () => {
       // Test to ensure the component renders correctly with default props
       const { getByText, getByRole } = render(
         <CommandPrompt
@@ -54,16 +54,16 @@ describe('CommandPrompt() CommandPrompt method', () => {
           history={[]}
           historyIndex={-1}
           onNavigateHistory={jest.fn()}
-        />
+        />,
       );
 
-      expect(getByText('USER')).toBeInTheDocument();
-      expect(getByText('/')).toBeInTheDocument();
-      expect(getByText('/home/user')).toBeInTheDocument();
-      expect(getByRole('textbox')).toBeInTheDocument();
+      expect(getByText("USER")).toBeInTheDocument();
+      expect(getByText("/")).toBeInTheDocument();
+      expect(getByText("/home/user")).toBeInTheDocument();
+      expect(getByRole("textbox")).toBeInTheDocument();
     });
 
-    it('should call onSubmit with the correct command when Enter is pressed', () => {
+    it("should call onSubmit with the correct command when Enter is pressed", () => {
       // Test to ensure onSubmit is called with the correct command
       const mockOnSubmit = jest.fn();
       const { getByRole } = render(
@@ -73,20 +73,20 @@ describe('CommandPrompt() CommandPrompt method', () => {
           history={[]}
           historyIndex={-1}
           onNavigateHistory={jest.fn()}
-        />
+        />,
       );
 
-      const input = getByRole('textbox');
-      fireEvent.change(input, { target: { value: 'ls' } });
-      fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
+      const input = getByRole("textbox");
+      fireEvent.change(input, { target: { value: "ls" } });
+      fireEvent.keyDown(input, { key: "Enter", code: "Enter" });
 
-      expect(mockOnSubmit).toHaveBeenCalledWith('ls');
+      expect(mockOnSubmit).toHaveBeenCalledWith("ls");
     });
   });
 
   // Edge Case Tests
-  describe('Edge Cases', () => {
-    it('should not call onSubmit if the input is empty', () => {
+  describe("Edge Cases", () => {
+    it("should not call onSubmit if the input is empty", () => {
       // Test to ensure onSubmit is not called when input is empty
       const mockOnSubmit = jest.fn();
       const { getByRole } = render(
@@ -96,34 +96,34 @@ describe('CommandPrompt() CommandPrompt method', () => {
           history={[]}
           historyIndex={-1}
           onNavigateHistory={jest.fn()}
-        />
+        />,
       );
 
-      const input = getByRole('textbox');
-      fireEvent.keyDown(input, { key: 'Enter', code: 'Enter' });
+      const input = getByRole("textbox");
+      fireEvent.keyDown(input, { key: "Enter", code: "Enter" });
 
       expect(mockOnSubmit).not.toHaveBeenCalled();
     });
 
-    it('should navigate history correctly with ArrowUp and ArrowDown keys', () => {
+    it("should navigate history correctly with ArrowUp and ArrowDown keys", () => {
       // Test to ensure history navigation works with ArrowUp and ArrowDown keys
       const mockOnNavigateHistory = jest.fn();
       const { getByRole } = render(
         <CommandPrompt
           path="/home/user"
           onSubmit={jest.fn()}
-          history={['command1', 'command2']}
+          history={["command1", "command2"]}
           historyIndex={0}
           onNavigateHistory={mockOnNavigateHistory}
-        />
+        />,
       );
 
-      const input = getByRole('textbox');
-      fireEvent.keyDown(input, { key: 'ArrowUp', code: 'ArrowUp' });
-      expect(mockOnNavigateHistory).toHaveBeenCalledWith('up');
+      const input = getByRole("textbox");
+      fireEvent.keyDown(input, { key: "ArrowUp", code: "ArrowUp" });
+      expect(mockOnNavigateHistory).toHaveBeenCalledWith("up");
 
-      fireEvent.keyDown(input, { key: 'ArrowDown', code: 'ArrowDown' });
-      expect(mockOnNavigateHistory).toHaveBeenCalledWith('down');
+      fireEvent.keyDown(input, { key: "ArrowDown", code: "ArrowDown" });
+      expect(mockOnNavigateHistory).toHaveBeenCalledWith("down");
     });
   });
 });

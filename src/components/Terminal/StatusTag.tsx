@@ -5,19 +5,19 @@
 
 3. Consider using a CSS transition for the `updated` class to enhance the visual effect of the update animation.
  */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 
 interface StatusTagProps {
   children: React.ReactNode;
   className?: string;
-  type?: 'success' | 'error' | 'warning' | 'info';
+  type?: "success" | "error" | "warning" | "info";
   autoUpdateInterval?: number; // Automatically show update effect at interval (ms)
 }
 
 const StatusTag: React.FC<StatusTagProps> = ({
   children,
-  className = '',
-  type = 'info',
+  className = "",
+  type = "info",
   autoUpdateInterval = 0,
 }) => {
   const [updated, setUpdated] = useState(false);
@@ -46,21 +46,21 @@ const StatusTag: React.FC<StatusTagProps> = ({
   // Generate color classes based on type
   const getTypeClasses = () => {
     switch (type) {
-      case 'success':
-        return 'bg-terminal-green text-terminal-black';
-      case 'error':
-        return 'bg-terminal-red text-terminal-white';
-      case 'warning':
-        return 'bg-terminal-yellow text-terminal-black';
-      case 'info':
+      case "success":
+        return "bg-terminal-green text-terminal-black";
+      case "error":
+        return "bg-terminal-red text-terminal-white";
+      case "warning":
+        return "bg-terminal-yellow text-terminal-black";
+      case "info":
       default:
-        return 'bg-terminal-cyan text-terminal-black';
+        return "bg-terminal-cyan text-terminal-black";
     }
   };
 
   return (
     <span
-      className={`status-tag ${updated ? 'updated' : ''} ${getTypeClasses()} ${className}`}
+      className={`status-tag ${updated ? "updated" : ""} ${getTypeClasses()} ${className}`}
     >
       {children}
     </span>

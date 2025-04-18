@@ -1,11 +1,11 @@
-import express from 'express';
-import http from 'http';
-import { Server } from 'socket.io';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import { setupCommandRoutes } from './routes/commandRoutes';
-import { setupSocketHandlers } from './socket/socketHandlers';
-import { setupRedisConnection } from './db/redis';
+import cors from "cors";
+import dotenv from "dotenv";
+import express from "express";
+import http from "http";
+import { Server } from "socket.io";
+import { setupRedisConnection } from "./db/redis";
+import { setupCommandRoutes } from "./routes/commandRoutes";
+import { setupSocketHandlers } from "./socket/socketHandlers";
 
 // Load environment variables
 dotenv.config();
@@ -24,8 +24,8 @@ const server = http.createServer(app);
 // Initialize Socket.io
 const io = new Server(server, {
   cors: {
-    origin: process.env.CLIENT_URL || 'http://localhost:3000',
-    methods: ['GET', 'POST'],
+    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    methods: ["GET", "POST"],
   },
 });
 
@@ -36,14 +36,26 @@ setupCommandRoutes(app);
 setupSocketHandlers(io);
 
 // Connect to Redis if configured
-const redisEnabled = process.env.REDIS_ENABLED === 'true';
+const redisEnabled = process.env.REDIS_ENABLED === "true";
 if (redisEnabled) {
   setupRedisConnection();
 }
 
+// Add a simple logger class at the top of the file
+const logger = {
+  info: (message: string) => {
+    // eslint-disable-next-line no-console
+    console.log(message);
+  },
+  error: (message: string, error?: unknown) => {
+    // eslint-disable-next-line no-console
+    console.error(message, error);
+  },
+};
+
 // Start server
 server.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`🔌 Socket.io initialized`);
-  console.log(`🔄 Redis ${redisEnabled ? 'connected' : 'disabled'}`);
+  logger.info(`🚀 Server running on port ${PORT}`);
+  logger.info(`🔌 Socket.io initialized`);
+  logger.info(`🔄 Redis ${redisEnabled ? "connected" : "disabled"}`);
 });

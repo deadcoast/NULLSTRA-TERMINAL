@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { TerminalManager } from './components';
+import React, { useState } from "react";
+import { TerminalManager } from "./components";
 
 const App: React.FC = () => {
-  const [showTerminal, setShowTerminal] = useState(true);
+  const [showTerminal, _setShowTerminal] = useState(true);
 
   return (
     <div className="min-h-screen bg-black">
@@ -10,9 +10,9 @@ const App: React.FC = () => {
         <TerminalManager
           initialSessions={[
             {
-              id: 'main-terminal',
-              name: 'Main Terminal',
-              ipAddress: '931.461.60231.14.vt920',
+              id: "main-terminal",
+              name: "Main Terminal",
+              ipAddress: "931.461.60231.14.vt920",
             },
           ]}
           maxSessions={4}

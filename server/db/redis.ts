@@ -1,12 +1,24 @@
-import dotenv from 'dotenv';
-import { createClient, RedisClientType } from 'redis';
+import dotenv from "dotenv";
+import { createClient, RedisClientType } from "redis";
 
 // Load environment variables
 dotenv.config();
 
 // Redis connection configuration
-const REDIS_URL = process.env.REDIS_URL || 'redis://localhost:6379';
-const REDIS_ENABLED = process.env.REDIS_ENABLED === 'true';
+const REDIS_URL = process.env.REDIS_URL || "redis://localhost:6379";
+const REDIS_ENABLED = process.env.REDIS_ENABLED === "true";
+
+// Add a simple logger
+const logger = {
+  info: (message: string) => {
+    // eslint-disable-next-line no-console
+    console.log(message);
+  },
+  error: (message: string, error?: unknown) => {
+    // eslint-disable-next-line no-console
+    console.error(message, error);
+  },
+};
 
 // Redis client instance
 let redisClient: RedisClientType | null = null;
@@ -18,7 +30,7 @@ export const setupRedisConnection =
   async (): Promise<RedisClientType | null> => {
     // Skip if Redis is not enabled
     if (!REDIS_ENABLED) {
-      console.log('Redis is disabled. Skipping connection.');
+      logger.info("Redis is disabled. Skipping connection.");
       return null;
     }
 
@@ -27,13 +39,13 @@ export const setupRedisConnection =
       redisClient = createClient({ url: REDIS_URL });
 
       // Register error event handler
-      redisClient.on('error', (err: Error) => {
-        console.error('Redis connection error:', err);
+      redisClient.on("error", (err: Error) => {
+        logger.error("Redis connection error:", err);
       });
 
       // Register connect event handler
-      redisClient.on('connect', () => {
-        console.log('Connected to Redis');
+      redisClient.on("connect", () => {
+        logger.info("Connected to Redis");
       });
 
       // Connect to Redis
@@ -41,7 +53,7 @@ export const setupRedisConnection =
 
       return redisClient;
     } catch (error) {
-      console.error('Failed to connect to Redis:', error);
+      logger.error("Failed to connect to Redis:", error);
       return null;
     }
   };
@@ -60,6 +72,6 @@ export const closeRedisConnection = async (): Promise<void> => {
   if (redisClient) {
     await redisClient.quit();
     redisClient = null;
-    console.log('Redis connection closed');
+    logger.info("Redis connection closed");
   }
 };

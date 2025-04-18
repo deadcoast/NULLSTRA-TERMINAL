@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef } from "react";
 
 interface CRTEffectProps {
   intensity?: number; // 0-1
@@ -21,7 +21,7 @@ const CRTEffect: React.FC<CRTEffectProps> = ({
       return;
     }
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) {
       return;
     }
@@ -32,7 +32,7 @@ const CRTEffect: React.FC<CRTEffectProps> = ({
       canvas.height = window.innerHeight;
     };
 
-    window.addEventListener('resize', resize);
+    window.addEventListener("resize", resize);
     resize();
 
     // Animation variables
@@ -43,7 +43,7 @@ const CRTEffect: React.FC<CRTEffectProps> = ({
     const createNoise = (
       ctx: CanvasRenderingContext2D,
       canvas: HTMLCanvasElement,
-      intensity: number
+      intensity: number,
     ) => {
       const imageData = ctx.createImageData(canvas.width, canvas.height);
       const { data } = imageData;
@@ -80,7 +80,7 @@ const CRTEffect: React.FC<CRTEffectProps> = ({
       const scanLineHeight = 4;
       const scanLines = Math.ceil(canvas.height / scanLineHeight);
 
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+      ctx.fillStyle = "rgba(0, 0, 0, 0.2)";
 
       for (let i = 0; i < scanLines; i += 2) {
         ctx.fillRect(0, i * scanLineHeight, canvas.width, scanLineHeight);
@@ -93,10 +93,10 @@ const CRTEffect: React.FC<CRTEffectProps> = ({
         0,
         canvas.width / 2,
         canvas.height / 2,
-        Math.max(canvas.width, canvas.height) / 1.5
+        Math.max(canvas.width, canvas.height) / 1.5,
       );
 
-      gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
+      gradient.addColorStop(0, "rgba(0, 0, 0, 0)");
       gradient.addColorStop(1, `rgba(0, 0, 0, ${0.6 * intensity})`);
 
       ctx.fillStyle = gradient;
@@ -109,7 +109,7 @@ const CRTEffect: React.FC<CRTEffectProps> = ({
 
         const centerX = canvas.width / 2;
         const centerY = canvas.height / 2;
-        const maxRadius = Math.sqrt(centerX * centerX + centerY * centerY);
+        const _maxRadius = Math.sqrt(centerX * centerX + centerY * centerY);
 
         for (let y = 0; y < canvas.height; y++) {
           for (let x = 0; x < canvas.width; x++) {
@@ -170,7 +170,7 @@ const CRTEffect: React.FC<CRTEffectProps> = ({
 
     // Cleanup
     return () => {
-      window.removeEventListener('resize', resize);
+      window.removeEventListener("resize", resize);
       cancelAnimationFrame(frameId);
     };
   }, [intensity, flicker, curvature, isProcessing]);
@@ -179,7 +179,7 @@ const CRTEffect: React.FC<CRTEffectProps> = ({
     <canvas
       ref={canvasRef}
       className="absolute inset-0 pointer-events-none z-50"
-      style={{ mixBlendMode: 'overlay' }}
+      style={{ mixBlendMode: "overlay" }}
     />
   );
 };

@@ -1,56 +1,56 @@
-'use client';
+"use client";
 /**
  * 1. Implement error handling to manage exceptions and improve robustness.  
 2. Use TypeScript interfaces or types to define data structures for better type safety.  
 3. Optimize performance by minimizing unnecessary computations or using memoization.  
  */
 
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useTheme } from '../../context';
-import { useSocket } from '../../hooks';
-import { CommandResult } from '../../hooks/useSocket';
-import { formatIpAddress, formatTimestamp } from '../../utils/effectsHelper';
-import { TerminalMessage } from '../../utils/terminalCommands/types';
-import { CRTEffect } from '../UI';
-import FileViewer from './FileViewer';
-import StatusPanel from './StatusPanel';
-import './terminal.css';
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useTheme } from "../../context";
+import { useSocket } from "../../hooks";
+import { CommandResult } from "../../hooks/useSocket";
+import { formatIpAddress, formatTimestamp } from "../../utils/effectsHelper";
+import { TerminalMessage } from "../../utils/terminalCommands/types";
+import { CRTEffect } from "../UI";
+import FileViewer from "./FileViewer";
+import StatusPanel from "./StatusPanel";
+import "./terminal.css";
 
-import TerminalHeader from './TerminalHeader';
-import TerminalOutput from './TerminalOutput';
-import TerminalPrompt from './TerminalPrompt';
-import TerminalStatusLine from './TerminalStatusLine';
-import TerminalWindow from './TerminalWindow';
-import ThemeSelector from './ThemeSelector';
+import TerminalHeader from "./TerminalHeader";
+import TerminalOutput from "./TerminalOutput";
+import TerminalPrompt from "./TerminalPrompt";
+import TerminalStatusLine from "./TerminalStatusLine";
+import TerminalWindow from "./TerminalWindow";
+import ThemeSelector from "./ThemeSelector";
 
 const BOX_CHARS = {
   // Single Line
-  TL: '┌',
-  TR: '┐',
-  BL: '└',
-  BR: '┘',
-  HZ: '─',
-  VT: '│',
-  LT: '├',
-  RT: '┤',
-  TT: '┬',
-  BT: '┴',
+  TL: "┌",
+  TR: "┐",
+  BL: "└",
+  BR: "┘",
+  HZ: "─",
+  VT: "│",
+  LT: "├",
+  RT: "┤",
+  TT: "┬",
+  BT: "┴",
   // Double Line (Used in Button/Line Numbers)
-  DVT: '║', // Double Vertical
-  DTL: '╔',
-  DTR: '╗',
-  DBL: '╚',
-  DBR: '╝',
+  DVT: "║", // Double Vertical
+  DTL: "╔",
+  DTR: "╗",
+  DBL: "╚",
+  DBR: "╝",
   // Mixed Single/Double (Used in Button/Line Numbers)
-  LTD: '╠', // VT-Double HZ Left Tee ( │ + ═ ) -> Your example uses this: │╠─
-  RTD: '╣', // VT-Double HZ Right Tee ( │ + ═ ) -> Not in example, but inverse of LTD
-  DHLT: '╦', // Double HZ-VT Top Tee ( ═ + │ ) -> Your example uses this: ─╦─
-  DHBT: '╩', // Double HZ-VT Bottom Tee ( ═ + │ ) -> Not in example
+  LTD: "╠", // VT-Double HZ Left Tee ( │ + ═ ) -> Your example uses this: │╠─
+  RTD: "╣", // VT-Double HZ Right Tee ( │ + ═ ) -> Not in example, but inverse of LTD
+  DHLT: "╦", // Double HZ-VT Top Tee ( ═ + │ ) -> Your example uses this: ─╦─
+  DHBT: "╩", // Double HZ-VT Bottom Tee ( ═ + │ ) -> Not in example
   // Mixed Double/Single (Not explicitly in example, but possible)
-  DLT: '╟', // Double VT-HZ Left Tee ( ║ + ─ )
-  DRT: '╢', // Double VT-HZ Right Tee ( ║ + ─ )
-  TTD: '╤', // Top Tee Double Vertical
-  BTD: '╧', // Bottom Tee Double Vertical
+  DLT: "╟", // Double VT-HZ Left Tee ( ║ + ─ )
+  DRT: "╢", // Double VT-HZ Right Tee ( ║ + ─ )
+  TTD: "╤", // Top Tee Double Vertical
+  BTD: "╧", // Bottom Tee Double Vertical
 };
 
 /**
@@ -65,7 +65,7 @@ function generateTopBar(
   titleWidth: number,
   contentWidth: number,
   title: string,
-  content: string
+  content: string,
 ): string[] {
   const top =
     BOX_CHARS.TL +
@@ -99,7 +99,7 @@ function generateTopBar(
 function generateButtonSection(
   buttonInnerWidth: number,
   totalWidth: number,
-  title: string
+  title: string,
 ): string[] {
   const titlePadding = Math.floor((buttonInnerWidth - title.length) / 2);
   const extraPadding = buttonInnerWidth - title.length - 2 * titlePadding; // Handles odd widths
@@ -111,27 +111,27 @@ function generateButtonSection(
     BOX_CHARS.DHLT +
     BOX_CHARS.HZ.repeat(buttonInnerWidth) +
     BOX_CHARS.DTR;
-  const top = topContent.padEnd(totalWidth - 1, ' ') + BOX_CHARS.VT;
+  const top = topContent.padEnd(totalWidth - 1, " ") + BOX_CHARS.VT;
 
   // Line 2: │ ║   NULLSTRA   ║ ... │
   const middleContent =
     BOX_CHARS.VT +
-    ' ' +
+    " " +
     BOX_CHARS.DVT +
-    ' '.repeat(titlePadding) +
+    " ".repeat(titlePadding) +
     title +
-    ' '.repeat(titlePadding + extraPadding) +
+    " ".repeat(titlePadding + extraPadding) +
     BOX_CHARS.DVT;
-  const middle = middleContent.padEnd(totalWidth - 1, ' ') + BOX_CHARS.VT;
+  const middle = middleContent.padEnd(totalWidth - 1, " ") + BOX_CHARS.VT;
 
   // Line 3: │ ╠──────────────╝ ... │
   const bottomContent =
     BOX_CHARS.VT +
-    ' ' +
+    " " +
     BOX_CHARS.LTD +
     BOX_CHARS.HZ.repeat(buttonInnerWidth) +
     BOX_CHARS.DBR;
-  const bottom = bottomContent.padEnd(totalWidth - 1, ' ') + BOX_CHARS.VT;
+  const bottom = bottomContent.padEnd(totalWidth - 1, " ") + BOX_CHARS.VT;
 
   return [top, middle, bottom];
 }
@@ -148,13 +148,13 @@ function generateContentLine(
   lineNumber: number,
   content: string,
   totalWidth: number,
-  lineNumberWidth: number = 1
+  lineNumberWidth: number = 1,
 ): string {
-  const numStr = lineNumber.toString().padStart(lineNumberWidth, ' '); // Pad number if needed
-  const left = BOX_CHARS.VT + numStr + BOX_CHARS.LTD + BOX_CHARS.HZ + ' '; // Example: │1╠─
-  const right = ' ' + BOX_CHARS.VT; // Example:  │
+  const numStr = lineNumber.toString().padStart(lineNumberWidth, " "); // Pad number if needed
+  const left = BOX_CHARS.VT + numStr + BOX_CHARS.LTD + BOX_CHARS.HZ + " "; // Example: │1╠─
+  const right = " " + BOX_CHARS.VT; // Example:  │
   const availableWidth = totalWidth - left.length - right.length;
-  const paddedContent = content.padEnd(availableWidth, ' ');
+  const paddedContent = content.padEnd(availableWidth, " ");
 
   return left + paddedContent + right;
 }
@@ -167,7 +167,7 @@ function generateContentLine(
  */
 function generateLineNumberEnd(
   totalWidth: number,
-  lineNumberWidth: number = 1
+  lineNumberWidth: number = 1,
 ): string {
   // Needs to align with the vertical line before the number and the ╝ character
   // Example: ├─╝
@@ -175,7 +175,7 @@ function generateLineNumberEnd(
     BOX_CHARS.LT + BOX_CHARS.HZ.repeat(lineNumberWidth) + BOX_CHARS.DBR; // Assuming ╝ aligns under ╠
   const right = BOX_CHARS.VT;
   const padding = totalWidth - left.length - right.length;
-  return left + ' '.repeat(padding) + right;
+  return left + " ".repeat(padding) + right;
 }
 
 /**
@@ -214,7 +214,7 @@ function generateTerminalFrame({
   buttonInnerWidth,
   initialContent,
   lineNumberWidth = 1,
-  leadingSpaces = '  ', // Match your original code's indentation
+  leadingSpaces = "  ", // Match your original code's indentation
 }: {
   totalWidth: number;
   topBarTitle: string;
@@ -234,7 +234,7 @@ function generateTerminalFrame({
     topBarTitleWidth,
     topBarContentWidth,
     topBarTitle,
-    topBarContent
+    topBarContent,
   );
   lines.push(...topBarLines.map((line) => leadingSpaces + line));
 
@@ -242,7 +242,7 @@ function generateTerminalFrame({
   const buttonLines = generateButtonSection(
     buttonInnerWidth,
     totalWidth,
-    buttonTitle
+    buttonTitle,
   );
   lines.push(...buttonLines.map((line) => leadingSpaces + line));
 
@@ -252,7 +252,7 @@ function generateTerminalFrame({
       index + 1,
       content,
       totalWidth,
-      lineNumberWidth
+      lineNumberWidth,
     );
     lines.push(leadingSpaces + line);
   });
@@ -271,21 +271,21 @@ function generateTerminalFrame({
 // --- Configuration for the Frame ---
 const terminalConfig = {
   totalWidth: 75, // Adjust to your desired total width (char count)
-  topBarTitle: 'CLEye',
+  topBarTitle: "CLEye",
   topBarTitleWidth: 7, // Width for ' CLEye ' section
-  topBarContent: '> ALWAYS_WATCHING',
-  buttonTitle: 'NULLSTRA',
+  topBarContent: "> ALWAYS_WATCHING",
+  buttonTitle: "NULLSTRA",
   buttonInnerWidth: 14, // Width for ' NULLSTRA ' section inside ║
   initialContent: [
-    '{',
+    "{",
     ' "name": "USER_43127",',
     ' "IP": "192.168.1.100",',
     ' "path": "C:/chrome/chrome.exe",',
     ' "enabled_tracking": true',
-    '}',
+    "}",
   ],
   lineNumberWidth: 1, // Use 1 for single-digit line numbers
-  leadingSpaces: ' ', // Keep the indentation
+  leadingSpaces: " ", // Keep the indentation
 };
 
 // --- Define Props Interface ---
@@ -303,34 +303,34 @@ export interface TerminalProps {
 
 // --- Terminal Component ---
 const Terminal: React.FC<TerminalProps> = ({
-  ipAddress = '127.0.0.1',
+  ipAddress = "127.0.0.1",
   showHeader = true,
   showStatus = true,
   initialMessages = [],
-  title = 'Terminal',
-  onMinimize,
-  onMaximize,
-  onClose,
+  title = "Terminal",
+  onMinimize: _onMinimize,
+  onMaximize: _onMaximize,
+  onClose: _onClose,
   className,
 }) => {
   // Theme context
   const { theme } = useTheme();
-  const outputRef = useRef<HTMLDivElement>(null);
-  const promptRef = useRef<HTMLInputElement>(null);
+  const _outputRef = useRef<HTMLDivElement>(null);
+  const _promptRef = useRef<HTMLInputElement>(null);
   const terminalOutputRef = useRef<HTMLDivElement>(null);
   const terminalInputRef = useRef<HTMLInputElement>(null);
 
   // Terminal state
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [outputMessages, setOutputMessages] = useState<CommandResult[]>(
-    initialMessages as CommandResult[]
+    initialMessages as CommandResult[],
   );
   const [themeDialogOpen, setThemeDialogOpen] = useState(false);
 
   // Generate session ID based on IP address
-  const sessionId = `session-${ipAddress.replace(/\./g, '-')}`;
+  const sessionId = `session-${ipAddress.replace(/\./g, "-")}`;
 
   // Socket.io hook
   const {
@@ -346,17 +346,17 @@ const Terminal: React.FC<TerminalProps> = ({
   // State for file viewer
   const [fileViewer, setFileViewer] = useState({
     isOpen: false,
-    filename: '',
-    content: '',
-    fileType: 'text',
+    filename: "",
+    content: "",
+    fileType: "text",
   });
 
   // State for file viewer dialog
-  const [fileViewerOpen, setFileViewerOpen] = useState(false);
-  const [currentFile, setCurrentFile] = useState({
-    name: '',
-    content: '',
-    type: 'text',
+  const [_fileViewerOpen, _setFileViewerOpen] = useState(false);
+  const [_currentFile, _setCurrentFile] = useState({
+    name: "",
+    content: "",
+    type: "text",
   });
 
   // Update output messages when command results change
@@ -372,7 +372,7 @@ const Terminal: React.FC<TerminalProps> = ({
       const errorMsg: CommandResult = {
         content: `Error: ${error}`,
         timestamp: new Date().toISOString(),
-        type: 'error',
+        type: "error",
       };
       setOutputMessages((prev) => [...prev, errorMsg]);
     }
@@ -403,24 +403,31 @@ const Terminal: React.FC<TerminalProps> = ({
     terminalInputRef.current?.focus();
   };
 
+  // Handle keyboard events for accessibility
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      focusInput();
+    }
+  };
+
   const handleCommandSubmit = (command: string) => {
     if (!command.trim()) {
       return;
     }
 
     // Special command handling
-    if (command.trim() === 'clear') {
+    if (command.trim() === "clear") {
       handleClear();
       return;
     }
 
-    if (command.trim() === 'theme') {
+    if (command.trim() === "theme") {
       setThemeDialogOpen(true);
       return;
     }
 
     // Parse command and arguments
-    const parts = command.trim().split(' ');
+    const parts = command.trim().split(" ");
     const cmd = parts[0];
     const args = parts.slice(1);
 
@@ -429,7 +436,7 @@ const Terminal: React.FC<TerminalProps> = ({
     setHistoryIndex(-1);
 
     // Clear input
-    setInputValue('');
+    setInputValue("");
 
     // Execute command
     executeCommand(cmd, args, sessionId);
@@ -441,24 +448,24 @@ const Terminal: React.FC<TerminalProps> = ({
   };
 
   // Handle key navigation (up/down for history)
-  const handleKeyNavigation = (direction: 'up' | 'down') => {
+  const handleKeyNavigation = (direction: "up" | "down") => {
     if (commandHistory.length === 0) {
       return;
     }
 
-    if (direction === 'up') {
+    if (direction === "up") {
       // Navigate up in history
       const newIndex =
         historyIndex < commandHistory.length - 1
           ? historyIndex + 1
           : historyIndex;
       setHistoryIndex(newIndex);
-      setInputValue(commandHistory[newIndex] || '');
+      setInputValue(commandHistory[newIndex] || "");
     } else {
       // Navigate down in history
       const newIndex = historyIndex > 0 ? historyIndex - 1 : -1;
       setHistoryIndex(newIndex);
-      setInputValue(newIndex === -1 ? '' : commandHistory[newIndex]);
+      setInputValue(newIndex === -1 ? "" : commandHistory[newIndex]);
     }
   };
 
@@ -469,10 +476,10 @@ const Terminal: React.FC<TerminalProps> = ({
   }, [clearResults]);
 
   // Open file viewer
-  const handleOpenFile = (
+  const _handleOpenFile = (
     filename: string,
     content: string,
-    fileType = 'text'
+    fileType = "text",
   ) => {
     setFileViewer({
       isOpen: true,
@@ -486,27 +493,49 @@ const Terminal: React.FC<TerminalProps> = ({
   const initialFrameLines = generateTerminalFrame(terminalConfig);
 
   // Include the initial frame in messages for display
-  const allDisplayMessages = React.useMemo(() => {
+  const _allDisplayMessages = React.useMemo(() => {
     const frameMessages = initialFrameLines.map((line) => ({
       content: line,
       timestamp: new Date().toISOString(),
-      type: 'info' as const,
+      type: "info" as const,
     }));
 
     // Add a spacer
     const spacerMessage = {
-      content: '',
+      content: "",
       timestamp: new Date().toISOString(),
-      type: 'info' as const,
+      type: "info" as const,
     };
 
     return [...frameMessages, spacerMessage, ...outputMessages];
   }, [initialFrameLines, outputMessages]);
 
+  // Add a useEffect to format timestamps on client side only
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      // Client-side only code
+      const formattedMessages = outputMessages.map(msg => ({
+        ...msg,
+        clientFormatted: true
+      }));
+      
+      if (formattedMessages.length !== outputMessages.length) {
+        setOutputMessages(formattedMessages);
+      }
+    }
+  }, [outputMessages]);
+
   return (
-    <div
-      className={`terminal-container ${className || ''}`}
+    <button
+      className={`terminal-container ${className || ""} bg-transparent border-0 p-0 w-full text-left`}
       onClick={focusInput}
+      onKeyDown={(e) => {
+        handleKeyDown(e);
+        if (e.key === "Enter" || e.key === " ") {
+          focusInput();
+        }
+      }}
+      aria-label="Terminal interface"
     >
       <div
         className="h-screen overflow-hidden flex flex-col"
@@ -523,7 +552,11 @@ const Terminal: React.FC<TerminalProps> = ({
           {showHeader && <TerminalHeader title={title} ipAddress={ipAddress} />}
 
           {/* Main terminal area */}
-          <div className="flex-grow overflow-hidden relative p-2">
+          <div
+            className="flex-grow overflow-hidden relative p-2"
+            role="region"
+            aria-label="Terminal output area"
+          >
             {/* Add the CRT effect */}
             <CRTEffect
               intensity={theme.effects?.crtIntensity || 0.5}
@@ -535,9 +568,27 @@ const Terminal: React.FC<TerminalProps> = ({
 
             {/* Terminal output area */}
             <TerminalOutput
-              messages={outputMessages}
+              messages={
+                outputMessages.length > 0
+                  ? outputMessages
+                  : [
+                      {
+                        content: `Welcome to the Terminal UI. ${isConnected ? "Connected to server." : "WARNING: Not connected to server. Some features may be unavailable."}`,
+                        timestamp: new Date().toISOString(),
+                        type: isConnected ? "info" : "warning",
+                        clientFormatted: true
+                      },
+                      {
+                        content: "Type 'help' for a list of available commands.",
+                        timestamp: new Date().toISOString(),
+                        type: "info",
+                        clientFormatted: true
+                      },
+                    ]
+              }
               onExecuteCommand={handleCommandSubmit}
               ref={terminalOutputRef}
+              suppressHydrationWarning
             />
 
             {/* Command input */}
@@ -579,18 +630,19 @@ const Terminal: React.FC<TerminalProps> = ({
 
         {/* Theme selector */}
         {themeDialogOpen && (
-          <div>
+          <div role="dialog" aria-label="Theme selection">
             <ThemeSelector minimal={false} />
             <button
               className="mt-2 px-3 py-1 border border-terminal-green text-terminal-green rounded"
               onClick={() => setThemeDialogOpen(false)}
+              aria-label="Close theme selector"
             >
               Close
             </button>
           </div>
         )}
       </div>
-    </div>
+    </button>
   );
 };
 

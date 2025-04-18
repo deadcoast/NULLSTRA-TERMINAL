@@ -17,8 +17,8 @@
  * 2. Use `useMemo` for the `colors` and `width` calculations to optimize performance by preventing unnecessary recalculations on re-renders.
  * 3. Implement a cleanup function in the `useEffect` to reset the `dots` state when the component unmounts or when the progress changes to avoid potential memory leaks.
  */
-import React, { useEffect, useState } from 'react';
-import { Glitch } from '../UI';
+import React, { useEffect, useState } from "react";
+import { Glitch } from "../UI";
 
 interface ProgressIndicatorProps {
   progress?: number; // 0-100, if undefined it's indeterminate
@@ -32,14 +32,14 @@ interface ProgressIndicatorProps {
 
 const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
   progress,
-  status = 'Processing...',
+  status = "Processing...",
   showPercentage = true,
   glitchEffect = false,
   isComplete = false,
   isError = false,
-  label = '',
+  label = "",
 }) => {
-  const [dots, setDots] = useState('');
+  const [dots, setDots] = useState("");
 
   // Animated dots for indeterminate progress
   useEffect(() => {
@@ -50,9 +50,9 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
     const interval = setInterval(() => {
       setDots((prev) => {
         if (prev.length >= 3) {
-          return '';
+          return "";
         }
-        return prev + '.';
+        return prev + ".";
       });
     }, 300);
 
@@ -63,24 +63,24 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
   const getColors = () => {
     if (isError) {
       return {
-        border: 'border-terminal-red',
-        fill: 'bg-terminal-red',
-        text: 'text-terminal-red',
+        border: "border-terminal-red",
+        fill: "bg-terminal-red",
+        text: "text-terminal-red",
       };
     }
 
     if (isComplete) {
       return {
-        border: 'border-terminal-green',
-        fill: 'bg-terminal-green',
-        text: 'text-terminal-green',
+        border: "border-terminal-green",
+        fill: "bg-terminal-green",
+        text: "text-terminal-green",
       };
     }
 
     return {
-      border: 'border-terminal-cyan',
-      fill: 'bg-terminal-cyan',
-      text: 'text-terminal-cyan',
+      border: "border-terminal-cyan",
+      fill: "bg-terminal-cyan",
+      text: "text-terminal-cyan",
     };
   };
 
@@ -90,7 +90,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
   const calculateWidth = () => {
     if (progress === undefined) {
       // Animated progress for indeterminate state
-      return 'animate-progress-indeterminate';
+      return "animate-progress-indeterminate";
     }
     return `${Math.min(Math.max(progress, 0), 100)}%`;
   };
@@ -98,10 +98,10 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
   // Get status message
   const getStatusMessage = () => {
     if (isError) {
-      return 'Error!';
+      return "Error!";
     }
     if (isComplete) {
-      return 'Complete';
+      return "Complete";
     }
 
     if (progress !== undefined && showPercentage) {
@@ -119,7 +119,7 @@ const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
           className={`w-full h-2 ${colors.border} border rounded-full overflow-hidden flex-grow mr-2`}
         >
           <div
-            className={`h-full ${colors.fill} transition-width duration-300 ${progress === undefined ? 'animate-progress-indeterminate' : ''}`}
+            className={`h-full ${colors.fill} transition-width duration-300 ${progress === undefined ? "animate-progress-indeterminate" : ""}`}
             style={{ width: calculateWidth() }}
           />
         </div>

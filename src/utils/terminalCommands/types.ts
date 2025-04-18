@@ -5,7 +5,7 @@
  * Represents a message in the terminal output
  */
 export interface TerminalMessage {
-  type: 'error' | 'warning' | 'success' | 'info' | 'command';
+  type: "error" | "warning" | "success" | "info" | "command";
   content: string;
   prefix?: string;
   timestamp?: string;
@@ -31,7 +31,7 @@ export interface TerminalMessage {
  * Represents the structure of a file or directory in the virtual file system
  */
 export interface FileSystemItem {
-  type: 'file' | 'directory';
+  type: "file" | "directory";
   name: string;
   content?: string;
   metadata?: {
@@ -56,7 +56,7 @@ export interface FileSystem {
  */
 export type CommandExecutor = (
   args: string[],
-  context: CommandContext
+  context: CommandContext,
 ) =>
   | TerminalMessage
   | TerminalMessage[]

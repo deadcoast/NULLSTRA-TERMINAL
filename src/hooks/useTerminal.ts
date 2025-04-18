@@ -1,22 +1,22 @@
-import { useCallback, useState } from 'react';
-import { glitchText, simulateConnectionIssue } from '../utils';
-import initialFileSystemData from '../utils/terminalCommands/fileSystemData';
+import { useCallback, useState } from "react";
+import { glitchText, simulateConnectionIssue } from "../utils";
+import initialFileSystemData from "../utils/terminalCommands/fileSystemData";
 import {
   formatTimestamp,
   getFileSystemItem,
-} from '../utils/terminalCommands/helpers';
+} from "../utils/terminalCommands/helpers";
 import commandRegistry, {
   CommandContext,
   FileSystem,
   FileSystemItem,
   TerminalMessage,
-} from '../utils/terminalCommands/index';
+} from "../utils/terminalCommands/index";
 
 // Define initial context state - Simplified
 const initialContextValues = {
-  currentPath: '',
+  currentPath: "",
   fileSystem: initialFileSystemData,
-  environmentVariables: { PATH: '/Legislation:/Commerce:/Diagnostics' },
+  environmentVariables: { PATH: "/Legislation:/Commerce:/Diagnostics" },
   lastExitCode: 0,
 };
 
@@ -24,31 +24,31 @@ export interface UseTerminalReturnType {
   messages: TerminalMessage[];
   addMessage: (message: TerminalMessage) => void;
   currentPath: string;
-  executeCommand: (command: string) => Promise<any>;
+  executeCommand: (command: string) => Promise<unknown>;
   commandHistory: string[];
   historyIndex: number;
-  navigateHistory: (direction: 'up' | 'down') => void;
+  navigateHistory: (direction: "up" | "down") => void;
   isProcessing: boolean;
   setIsProcessing: (isProcessing: boolean) => void;
   availableFiles: FileSystem;
 }
 
 const useTerminal = (
-  initialMessages: TerminalMessage[] = []
+  initialMessages: TerminalMessage[] = [],
 ): UseTerminalReturnType => {
   const [messages, setMessages] = useState<TerminalMessage[]>(initialMessages);
   // Use useState for context elements that change
   const [currentPath, setCurrentPath] = useState<string>(
-    initialContextValues.currentPath
+    initialContextValues.currentPath,
   );
-  const [fileSystem, setFileSystem] = useState<FileSystem>(
-    initialContextValues.fileSystem
+  const [fileSystem, _setFileSystem] = useState<FileSystem>(
+    initialContextValues.fileSystem,
   );
-  const [environmentVariables, setEnvironmentVariables] = useState<
+  const [environmentVariables, _setEnvironmentVariables] = useState<
     Record<string, string>
   >(initialContextValues.environmentVariables);
   const [lastExitCode, setLastExitCode] = useState<number>(
-    initialContextValues.lastExitCode
+    initialContextValues.lastExitCode,
   );
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
@@ -70,7 +70,7 @@ const useTerminal = (
           // Default to animated for certain message types
           return {
             ...msg,
-            animated: ['error', 'warning', 'success'].includes(msg.type),
+            animated: ["error", "warning", "success"].includes(msg.type),
           };
         }
         return msg;
@@ -80,7 +80,7 @@ const useTerminal = (
         setMessages((prev) => [...prev, ...processedMessages]);
       }
     },
-    []
+    [],
   );
 
   // Update the path - passed down in context
@@ -94,7 +94,7 @@ const useTerminal = (
   // Apply glitch effect to error messages
   const processErrorMessage = useCallback(
     (message: TerminalMessage): TerminalMessage => {
-      if (message.type === 'error') {
+      if (message.type === "error") {
         return {
           ...message,
           content: glitchText(message.content),
@@ -102,7 +102,7 @@ const useTerminal = (
       }
       return message;
     },
-    []
+    [],
   );
 
   // Execute a command
@@ -122,9 +122,9 @@ const useTerminal = (
 
       // Add the command itself to the output
       addMessage({
-        type: 'command',
+        type: "command",
         content: trimmedCommand,
-        prefix: `USER@${currentPath || '/'}`,
+        prefix: `USER@${currentPath || "/"}`,
         timestamp: getTimestamp(),
       });
 
@@ -138,8 +138,8 @@ const useTerminal = (
         commandRegistry[commandName] ||
         commandRegistry[
           Object.keys(commandRegistry).find((key) =>
-            commandRegistry[key].aliases?.includes(commandName)
-          ) || ''
+            commandRegistry[key].aliases?.includes(commandName),
+          ) || ""
         ];
 
       try {
@@ -166,9 +166,9 @@ const useTerminal = (
             result = await Promise.resolve(command.executor(args, context)); // Await potential promises
             setLastExitCode(0); // Assume success unless error
           } catch (error) {
-            console.error('Command execution error:', error);
+            console.error("Command execution error:", error);
             result = {
-              type: 'error',
+              type: "error",
               content: `Execution failed: ${error instanceof Error ? error.message : String(error)}`,
               timestamp: getTimestamp(),
               animated: true,
@@ -177,7 +177,7 @@ const useTerminal = (
           }
         } else {
           result = {
-            type: 'error',
+            type: "error",
             content: `Command not found: ${commandName}`,
             timestamp: getTimestamp(),
             animated: true,
@@ -212,13 +212,13 @@ const useTerminal = (
       updatePath,
       getTimestamp,
       processErrorMessage,
-    ]
+    ],
   );
 
   // Navigate command history
   const navigateHistory = useCallback(
-    (direction: 'up' | 'down') => {
-      if (direction === 'up') {
+    (direction: "up" | "down") => {
+      if (direction === "up") {
         // Move back in history
         if (historyIndex < commandHistory.length - 1) {
           setHistoryIndex(historyIndex + 1);
@@ -227,19 +227,19 @@ const useTerminal = (
         setHistoryIndex(historyIndex - 1);
       }
     },
-    [historyIndex, commandHistory]
+    [historyIndex, commandHistory],
   );
 
   // Add a function to extract available files from the file system
   const extractFileList = (
     fileSystem: FileSystem,
-    currentPath: string
+    currentPath: string,
   ): string[] => {
     // Get current directory contents
     const currentDir = getFileSystemItem(fileSystem, currentPath);
     if (
       !currentDir ||
-      currentDir.type !== 'directory' ||
+      currentDir.type !== "directory" ||
       !currentDir.children
     ) {
       return [];
@@ -248,7 +248,7 @@ const useTerminal = (
     // Convert directory content to a list of file names, marking directories with a trailing /
     return Object.entries(currentDir.children).map(([name, item]) => {
       const fileItem = item as FileSystemItem;
-      return fileItem.type === 'directory' ? `${name}/` : name;
+      return fileItem.type === "directory" ? `${name}/` : name;
     });
   };
 
@@ -265,15 +265,15 @@ const useTerminal = (
     availableFiles: Object.fromEntries(
       extractFileList(fileSystem, currentPath).map((filename) => {
         // Convert file list to FileSystem structure
-        const isDir = filename.endsWith('/');
+        const isDir = filename.endsWith("/");
         const name = isDir ? filename.slice(0, -1) : filename;
         const item: FileSystemItem = {
-          type: isDir ? 'directory' : 'file',
+          type: isDir ? "directory" : "file",
           name,
           children: isDir ? {} : undefined,
         };
         return [filename, item];
-      })
+      }),
     ),
   };
 };

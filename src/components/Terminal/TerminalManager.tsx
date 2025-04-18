@@ -1,18 +1,20 @@
+"use client";
 /**
  * 1. Implement session persistence using local storage to retain sessions across page reloads.
 2. Add a notification system to inform users when the maximum session limit is reached.
 3. Allow users to customize the IP address generation logic for more control over session configurations.
  */
-import React, { useState } from 'react';
-import { ThemeProvider } from '../../context';
-import Terminal from './Terminal';
-import ThemeSelector from './ThemeSelector';
+import React, { useEffect, useState } from "react";
+import { ThemeProvider } from "../../context";
+import { CommandResult } from "../../hooks/useSocket";
+import Terminal from "./Terminal";
+import ThemeSelector from "./ThemeSelector";
 
 interface TerminalSession {
   id: string;
   name: string;
   ipAddress: string;
-  initialMessages?: any[];
+  initialMessages?: CommandResult[];
 }
 
 interface TerminalManagerProps {
@@ -31,15 +33,28 @@ const TerminalManager: React.FC<TerminalManagerProps> = ({
       : [
           {
             id: `term-${Date.now()}`,
-            name: 'Main Terminal',
+            name: "Main Terminal",
             ipAddress: `192.168.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
+            initialMessages: [
+              {
+                type: "info",
+                content: "Welcome to the Terminal! Connection to server may be pending...",
+                timestamp: new Date().toISOString(),
+              },
+            ],
           },
         ];
 
   const [sessions, setSessions] = useState<TerminalSession[]>(defaultSessions);
   const [activeSessionId, setActiveSessionId] = useState<string>(
-    defaultSessions[0].id
+    defaultSessions[0].id,
   );
+
+  // Log initial rendering for debugging
+  useEffect(() => {
+    // eslint-disable-next-line no-console
+    console.log("TerminalManager mounted with sessions:", sessions);
+  }, [sessions]);
 
   // Create a new terminal session
   const createSession = () => {
@@ -75,11 +90,11 @@ const TerminalManager: React.FC<TerminalManagerProps> = ({
   };
 
   // Rename a terminal session
-  const renameSession = (id: string, newName: string) => {
+  const _renameSession = (id: string, newName: string) => {
     setSessions(
       sessions.map((session) =>
-        session.id === id ? { ...session, name: newName } : session
-      )
+        session.id === id ? { ...session, name: newName } : session,
+      ),
     );
   };
 
@@ -100,14 +115,23 @@ const TerminalManager: React.FC<TerminalManagerProps> = ({
                   terminal-tab cursor-pointer py-1 px-3 mr-1 flex items-center
                   ${
                     session.id === activeSessionId
-                      ? 'bg-lime text-night font-bold'
-                      : 'bg-night border border-lime text-lime'
+                      ? "bg-lime text-night font-bold"
+                      : "bg-night border border-lime text-lime"
                   }
                 `}
                 onClick={() => setActiveSessionId(session.id)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    setActiveSessionId(session.id);
+                    e.preventDefault();
+                  }
+                }}
+                role="tab"
+                tabIndex={0}
+                aria-selected={session.id === activeSessionId}
               >
                 <span className="mr-2">
-                  {session.id === activeSessionId ? '⚡' : '•'}
+                  {session.id === activeSessionId ? "⚡" : "•"}
                 </span>
                 <span>{session.name}</span>
                 {sessions.length > 1 && (

@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useState } from "react";
 
 const useCommandHistory = () => {
   const [history, setHistory] = useState<string[]>([]);
@@ -12,8 +12,8 @@ const useCommandHistory = () => {
 
   // Navigate through history
   const navigateHistory = useCallback(
-    (direction: 'up' | 'down') => {
-      if (direction === 'up') {
+    (direction: "up" | "down") => {
+      if (direction === "up") {
         // Move back in history
         if (historyIndex < history.length - 1) {
           setHistoryIndex((prev) => prev + 1);
@@ -22,7 +22,7 @@ const useCommandHistory = () => {
         setHistoryIndex((prev) => prev - 1);
       }
     },
-    [historyIndex, history.length]
+    [historyIndex, history.length],
   );
 
   // Get current command from history
@@ -30,7 +30,7 @@ const useCommandHistory = () => {
     if (historyIndex >= 0 && historyIndex < history.length) {
       return history[historyIndex];
     }
-    return '';
+    return "";
   }, [history, historyIndex]);
 
   return {

@@ -1,5 +1,5 @@
-declare module 'socket.io' {
-  import { Server as HttpServer } from 'http';
+declare module "socket.io" {
+  import { Server as HttpServer } from "http";
 
   export interface ServerOptions {
     path?: string;
@@ -7,7 +7,7 @@ declare module 'socket.io' {
     pingInterval?: number;
     pingTimeout?: number;
     transports?: string[];
-    adapter?: any;
+    adapter?: unknown;
     cors?: {
       origin?: string | string[] | boolean;
       methods?: string[];
@@ -18,24 +18,53 @@ declare module 'socket.io' {
     };
   }
 
+  export interface SocketEventMap {
+    connection: (socket: Socket) => void;
+    [event: string]: (...args: unknown[]) => void;
+  }
+
+  export interface SocketClientEventMap {
+    authenticate: (token: string) => void;
+    execute_command: (data: {
+      command: string;
+      args: string[];
+      sessionId?: string;
+    }) => void;
+    get_command_history: (data: { sessionId?: string }) => void;
+    disconnect: () => void;
+    [event: string]: (...args: unknown[]) => void;
+  }
+
   export class Server {
     constructor(httpServer?: HttpServer, options?: ServerOptions);
-    on(event: string, listener: Function): this;
-    emit(event: string, ...args: any[]): boolean;
+    on<Ev extends keyof SocketEventMap>(
+      event: Ev,
+      listener: SocketEventMap[Ev],
+    ): this;
+    on(event: string, listener: (...args: unknown[]) => void): this;
+    emit(event: string, ...args: unknown[]): boolean;
     close(callback?: (err?: Error) => void): void;
     of(nsp: string): Namespace;
   }
 
   export class Namespace {
-    on(event: string, listener: Function): this;
-    emit(event: string, ...args: any[]): boolean;
+    on<Ev extends keyof SocketEventMap>(
+      event: Ev,
+      listener: SocketEventMap[Ev],
+    ): this;
+    on(event: string, listener: (...args: unknown[]) => void): this;
+    emit(event: string, ...args: unknown[]): boolean;
   }
 
   export class Socket {
     id: string;
-    handshake: any;
-    on(event: string, listener: Function): this;
-    emit(event: string, ...args: any[]): boolean;
+    handshake: Record<string, unknown>;
+    on<Ev extends keyof SocketClientEventMap>(
+      event: Ev,
+      listener: SocketClientEventMap[Ev],
+    ): this;
+    on(event: string, listener: (...args: unknown[]) => void): this;
+    emit(event: string, ...args: unknown[]): boolean;
     join(room: string): void;
     leave(room: string): void;
     disconnect(close?: boolean): void;
@@ -44,7 +73,7 @@ declare module 'socket.io' {
   export default Server;
 }
 
-declare module 'dotenv' {
+declare module "dotenv" {
   export interface DotenvConfigOptions {
     path?: string;
     encoding?: string;

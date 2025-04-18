@@ -1,21 +1,16 @@
 // src/utils/terminalCommands/helpers.ts
 // Helper functions for terminal commands
 
-import {
-  FileSystem,
-  FileSystemItem,
-  TerminalMessage,
-  CommandContext,
-} from './types';
+import { FileSystem, FileSystemItem, TerminalMessage } from "./types";
 
 /**
  * Parse a command string into command name and arguments
  */
 export const parseCommand = (
-  commandString: string
+  commandString: string,
 ): { command: string; args: string[] } => {
   const parts = commandString.trim().split(/\s+/);
-  const command = parts[0] || '';
+  const command = parts[0] || "";
   const args = parts.slice(1);
 
   return { command, args };
@@ -26,21 +21,21 @@ export const parseCommand = (
  */
 export const resolvePath = (
   currentPath: string,
-  targetPath: string
+  targetPath: string,
 ): string => {
   // Handle absolute paths
-  if (targetPath.startsWith('/')) {
+  if (targetPath.startsWith("/")) {
     return normalizePath(targetPath);
   }
 
   // Handle . and ..
-  const current = currentPath.split('/').filter(Boolean);
-  const target = targetPath.split('/').filter(Boolean);
+  const current = currentPath.split("/").filter(Boolean);
+  const target = targetPath.split("/").filter(Boolean);
 
   for (const part of target) {
-    if (part === '.') {
+    if (part === ".") {
       // Current directory, do nothing
-    } else if (part === '..') {
+    } else if (part === "..") {
       // Go up one directory
       if (current.length > 0) {
         current.pop();
@@ -51,20 +46,20 @@ export const resolvePath = (
     }
   }
 
-  return '/' + current.join('/');
+  return "/" + current.join("/");
 };
 
 /**
  * Normalize a path by removing redundant slashes and resolving . and ..
  */
 export const normalizePath = (path: string): string => {
-  const parts = path.split('/').filter(Boolean);
+  const parts = path.split("/").filter(Boolean);
   const result: string[] = [];
 
   for (const part of parts) {
-    if (part === '.') {
+    if (part === ".") {
       // Skip current directory references
-    } else if (part === '..') {
+    } else if (part === "..") {
       // Go up one directory if possible
       if (result.length > 0) {
         result.pop();
@@ -75,7 +70,7 @@ export const normalizePath = (path: string): string => {
     }
   }
 
-  return '/' + result.join('/');
+  return "/" + result.join("/");
 };
 
 /**
@@ -83,22 +78,22 @@ export const normalizePath = (path: string): string => {
  */
 export const getFileSystemItem = (
   fileSystem: FileSystem,
-  path: string
+  path: string,
 ): FileSystemItem | null => {
   const normalizedPath = normalizePath(path);
-  const parts = normalizedPath.split('/').filter(Boolean);
+  const parts = normalizedPath.split("/").filter(Boolean);
 
   // Root directory
   if (parts.length === 0) {
-    return fileSystem[''] || null;
+    return fileSystem[""] || null;
   }
 
-  let current = fileSystem[''];
+  let current = fileSystem[""];
 
   for (const part of parts) {
     if (
       !current ||
-      current.type !== 'directory' ||
+      current.type !== "directory" ||
       !current.children ||
       !current.children[part]
     ) {
@@ -122,10 +117,10 @@ export const formatTimestamp = (): string => {
  */
 export const createSuccessMessage = (
   content: string,
-  options: Partial<TerminalMessage> = {}
+  options: Partial<TerminalMessage> = {},
 ): TerminalMessage => {
   return {
-    type: 'success',
+    type: "success",
     content,
     timestamp: formatTimestamp(),
     ...options,
@@ -137,10 +132,10 @@ export const createSuccessMessage = (
  */
 export const createErrorMessage = (
   content: string,
-  options: Partial<TerminalMessage> = {}
+  options: Partial<TerminalMessage> = {},
 ): TerminalMessage => {
   return {
-    type: 'error',
+    type: "error",
     content,
     timestamp: formatTimestamp(),
     ...options,
@@ -152,10 +147,10 @@ export const createErrorMessage = (
  */
 export const createInfoMessage = (
   content: string,
-  options: Partial<TerminalMessage> = {}
+  options: Partial<TerminalMessage> = {},
 ): TerminalMessage => {
   return {
-    type: 'info',
+    type: "info",
     content,
     timestamp: formatTimestamp(),
     ...options,
@@ -167,10 +162,10 @@ export const createInfoMessage = (
  */
 export const createWarningMessage = (
   content: string,
-  options: Partial<TerminalMessage> = {}
+  options: Partial<TerminalMessage> = {},
 ): TerminalMessage => {
   return {
-    type: 'warning',
+    type: "warning",
     content,
     timestamp: formatTimestamp(),
     ...options,
@@ -183,12 +178,12 @@ export const createWarningMessage = (
 export const createFileListingMessage = (
   path: string,
   files: string[],
-  options: Partial<TerminalMessage> = {}
+  options: Partial<TerminalMessage> = {},
 ): TerminalMessage => {
   return {
-    type: 'info',
-    content: `The folder ${path || 'root'} contains the following files:`,
-    prefix: 'TERMINAL',
+    type: "info",
+    content: `The folder ${path || "root"} contains the following files:`,
+    prefix: "TERMINAL",
     timestamp: formatTimestamp(),
     files,
     ...options,

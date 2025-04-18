@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useState } from 'react';
-import { CommandRegistry } from '../utils/terminalCommands/types';
+import { useCallback, useEffect, useState } from "react";
+import { CommandRegistry } from "../utils/terminalCommands/types";
 
 interface UseCommandCompletionParams {
   commandRegistry: CommandRegistry;
-  currentPath: string;
+  _currentPath: string;
   currentInput: string;
   availableFiles?: string[];
 }
@@ -13,7 +13,7 @@ interface UseCommandCompletionResult {
   activeSuggestion: number;
   completedValue: string;
   showSuggestions: boolean;
-  navigateSuggestions: (direction: 'up' | 'down') => void;
+  navigateSuggestions: (direction: "up" | "down") => void;
   selectSuggestion: (index?: number) => void;
   resetSuggestions: () => void;
   handleTabCompletion: () => void;
@@ -21,13 +21,13 @@ interface UseCommandCompletionResult {
 
 const useCommandCompletion = ({
   commandRegistry,
-  currentPath,
+  _currentPath,
   currentInput,
   availableFiles = [],
 }: UseCommandCompletionParams): UseCommandCompletionResult => {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [activeSuggestion, setActiveSuggestion] = useState<number>(-1);
-  const [completedValue, setCompletedValue] = useState<string>('');
+  const [completedValue, setCompletedValue] = useState<string>("");
   const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
 
   // Generate suggestions based on input
@@ -62,7 +62,7 @@ const useCommandCompletion = ({
       }
     }
     // If we're entering arguments for commands like cd, ls, cat, suggest files/directories
-    else if (['cd', 'ls', 'cat', 'view'].includes(firstWord)) {
+    else if (["cd", "ls", "cat", "view"].includes(firstWord)) {
       // Get the partial path the user is typing
       const currentArg = parts[parts.length - 1];
 
@@ -90,12 +90,12 @@ const useCommandCompletion = ({
 
   // Navigate through suggestions
   const navigateSuggestions = useCallback(
-    (direction: 'up' | 'down') => {
+    (direction: "up" | "down") => {
       if (!showSuggestions || suggestions.length === 0) {
         return;
       }
 
-      if (direction === 'down') {
+      if (direction === "down") {
         const newIndex =
           activeSuggestion < suggestions.length - 1 ? activeSuggestion + 1 : 0;
         setActiveSuggestion(newIndex);
@@ -105,7 +105,7 @@ const useCommandCompletion = ({
         setActiveSuggestion(newIndex);
       }
     },
-    [activeSuggestion, suggestions, showSuggestions]
+    [activeSuggestion, suggestions, showSuggestions],
   );
 
   // Select a suggestion
@@ -125,13 +125,13 @@ const useCommandCompletion = ({
         } else {
           // If selecting a file/path, replace just the last part
           parts[parts.length - 1] = suggestions[selectedIndex];
-          setCompletedValue(parts.join(' '));
+          setCompletedValue(parts.join(" "));
         }
 
         setShowSuggestions(false);
       }
     },
-    [activeSuggestion, currentInput, suggestions, showSuggestions]
+    [activeSuggestion, currentInput, suggestions, showSuggestions],
   );
 
   // Reset suggestions
@@ -157,7 +157,7 @@ const useCommandCompletion = ({
       } else {
         // If completing a file/path, replace just the last part
         parts[parts.length - 1] = suggestions[0];
-        setCompletedValue(parts.join(' '));
+        setCompletedValue(parts.join(" "));
       }
     }
     // If there are multiple suggestions and none is active, try to complete common prefix
@@ -173,7 +173,7 @@ const useCommandCompletion = ({
         } else {
           // If completing a file/path, replace just the last part
           parts[parts.length - 1] = commonPrefix;
-          setCompletedValue(parts.join(' '));
+          setCompletedValue(parts.join(" "));
         }
       } else {
         // If no common prefix, just show suggestions
@@ -201,7 +201,7 @@ const useCommandCompletion = ({
 // Helper function to find the common prefix among an array of strings
 const findCommonPrefix = (strings: string[]): string => {
   if (strings.length === 0) {
-    return '';
+    return "";
   }
 
   if (strings.length === 1) {

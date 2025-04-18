@@ -2,15 +2,15 @@
 export const generateNoise = (
   width: number,
   height: number,
-  opacity: number = 0.1
+  opacity: number = 0.1,
 ): string => {
-  const canvas = document.createElement('canvas');
+  const canvas = document.createElement("canvas");
   canvas.width = width;
   canvas.height = height;
 
-  const ctx = canvas.getContext('2d');
+  const ctx = canvas.getContext("2d");
   if (!ctx) {
-    return '';
+    return "";
   }
 
   const imageData = ctx.createImageData(width, height);
@@ -32,18 +32,18 @@ export const generateNoise = (
 // Helper function to apply glitch effect to text
 export const glitchText = (text: string): string => {
   // Characters to randomly replace with
-  const glitchChars = '!@#$%^&*()_+-=[]{}|;:,.<>?/\\';
+  const glitchChars = "!@#$%^&*()_+-=[]{}|;:,.<>?/\\";
 
   // Apply glitch to random positions
   return text
-    .split('')
+    .split("")
     .map((char) => {
       if (Math.random() < 0.05) {
         return glitchChars[Math.floor(Math.random() * glitchChars.length)];
       }
       return char;
     })
-    .join('');
+    .join("");
 };
 
 // Helper to simulate connection issues
@@ -53,7 +53,7 @@ export const simulateConnectionIssue = (): Promise<void> => {
       () => {
         resolve();
       },
-      Math.random() * 1000 + 500
+      Math.random() * 1000 + 500,
     );
   });
 };
@@ -61,13 +61,13 @@ export const simulateConnectionIssue = (): Promise<void> => {
 // Generate random error message
 export const generateRandomError = (): string => {
   const errors = [
-    '[FAIL] Remote node unresponsive.',
-    '[WARN] Link failure detected at node 4A-7D.',
-    '[FAIL] Decryption failed.',
-    '[WARN] Power fluctuation detected.',
-    '[WARN] High fragmentation detected.',
-    '[FAIL] Module 7E-1D misalignment detected.',
-    '[WARN] Unrecognized transmission detected on secured channel.',
+    "[FAIL] Remote node unresponsive.",
+    "[WARN] Link failure detected at node 4A-7D.",
+    "[FAIL] Decryption failed.",
+    "[WARN] Power fluctuation detected.",
+    "[WARN] High fragmentation detected.",
+    "[FAIL] Module 7E-1D misalignment detected.",
+    "[WARN] Unrecognized transmission detected on secured channel.",
   ];
 
   return errors[Math.floor(Math.random() * errors.length)];
@@ -76,7 +76,7 @@ export const generateRandomError = (): string => {
 // Format timestamp for terminal display
 export const formatTimestamp = (): string => {
   const now = new Date();
-  return `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+  return `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}:${String(now.getSeconds()).padStart(2, "0")}`;
 };
 
 // Format IP address
@@ -88,7 +88,7 @@ export const formatIpAddress = (ip: string): string => {
 export const typeText = async (
   text: string,
   callback: (chunk: string) => void,
-  speed: number = 30
+  speed: number = 30,
 ): Promise<void> => {
   let currentIndex = 0;
 

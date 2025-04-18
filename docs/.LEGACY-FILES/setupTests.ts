@@ -1,5 +1,5 @@
 // Import testing-library utilities
-import '@testing-library/jest-dom';
+import "@testing-library/jest-dom";
 
 // Extend Jest matchers to include testing-library matchers
 declare global {

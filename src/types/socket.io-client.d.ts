@@ -1,30 +1,45 @@
-declare module 'socket.io-client' {
-  const io: (url: string, options?: any) => any;
+declare module "socket.io-client" {
+  const io: (url: string, options?: Record<string, unknown>) => Socket;
   export interface Socket {
-    on(event: string, callback: (...args: any[]) => void): void;
-    emit(event: string, ...args: any[]): void;
+    on(event: string, callback: (...args: unknown[]) => void): void;
+    emit(event: string, ...args: unknown[]): void;
     disconnect(): void;
   }
   export default io;
 }
 
-declare module 'axios' {
-  export interface AxiosResponse<T = any> {
+declare module "axios" {
+  export interface AxiosResponse<T = unknown> {
     data: T;
     status: number;
     statusText: string;
-    headers: any;
-    config: any;
-    request?: any;
+    headers: Record<string, string>;
+    config: Record<string, unknown>;
+    request?: unknown;
   }
 
-  export interface AxiosPromise<T = any> extends Promise<AxiosResponse<T>> {}
+  export interface AxiosPromise<T = unknown>
+    extends Promise<AxiosResponse<T>> {}
 
   export interface AxiosInstance {
-    get<T = any>(url: string, config?: any): AxiosPromise<T>;
-    post<T = any>(url: string, data?: any, config?: any): AxiosPromise<T>;
-    put<T = any>(url: string, data?: any, config?: any): AxiosPromise<T>;
-    delete<T = any>(url: string, config?: any): AxiosPromise<T>;
+    get<T = unknown>(
+      url: string,
+      config?: Record<string, unknown>,
+    ): AxiosPromise<T>;
+    post<T = unknown>(
+      url: string,
+      data?: unknown,
+      config?: Record<string, unknown>,
+    ): AxiosPromise<T>;
+    put<T = unknown>(
+      url: string,
+      data?: unknown,
+      config?: Record<string, unknown>,
+    ): AxiosPromise<T>;
+    delete<T = unknown>(
+      url: string,
+      config?: Record<string, unknown>,
+    ): AxiosPromise<T>;
   }
 
   const axios: AxiosInstance;

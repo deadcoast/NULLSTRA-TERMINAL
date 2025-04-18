@@ -5,19 +5,19 @@ import {
   createErrorMessage,
   createInfoMessage,
   createSuccessMessage,
-} from './helpers';
-import { Command, CommandRegistry } from './types';
+} from "./helpers";
+import { Command, CommandRegistry } from "./types";
 
 /**
  * whoami command - Display current user
  */
 const whoamiCommand: Command = {
-  name: 'whoami',
-  description: 'Display current user',
-  usage: 'whoami',
-  examples: ['whoami'],
-  executor: (args, context) => {
-    return createInfoMessage('Current user: NULLSTRA_OPERATOR');
+  name: "whoami",
+  description: "Print the current user",
+  usage: "whoami",
+  examples: ["whoami"],
+  executor: (_args, _context) => {
+    return createInfoMessage("SystemAdmin");
   },
 };
 
@@ -25,26 +25,26 @@ const whoamiCommand: Command = {
  * history command - Display command history
  */
 const historyCommand: Command = {
-  name: 'history',
-  description: 'Display command history',
-  usage: 'history [n]',
-  examples: ['history', 'history 10'],
-  executor: (args, context) => {
-    const { commandHistory = [] } = context;
+  name: "history",
+  description: "Display command history",
+  usage: "history [n]",
+  examples: ["history", "history 10"],
+  executor: (args, _context) => {
+    const { commandHistory = [] } = _context;
     const count =
       args.length > 0 ? parseInt(args[0], 10) : commandHistory.length;
 
     if (isNaN(count) || count <= 0) {
-      return createErrorMessage('Invalid count. Usage: history [n]');
+      return createErrorMessage("Invalid count. Usage: history [n]");
     }
 
     const historyToShow = commandHistory.slice(0, count);
 
     if (historyToShow.length === 0) {
-      return createInfoMessage('No command history available.');
+      return createInfoMessage("No command history available.");
     }
 
-    const messages = [createInfoMessage('Command history:')];
+    const messages = [createInfoMessage("Command history:")];
 
     historyToShow.forEach((cmd, index) => {
       messages.push(createInfoMessage(`${index + 1}  ${cmd}`));
@@ -58,20 +58,20 @@ const historyCommand: Command = {
  * alias command - Create command aliases
  */
 const aliasCommand: Command = {
-  name: 'alias',
-  description: 'Create or list command aliases',
-  usage: 'alias [name[=value]]',
-  examples: ['alias', 'alias ls="ls -la"', 'alias ll="ls -l"'],
-  executor: (args, context) => {
-    const { aliases = {} } = context;
+  name: "alias",
+  description: "Define or display aliases",
+  usage: "alias [name[=value]]",
+  examples: ["alias", "alias ls='ls -la'", "alias ll='ls -l'"],
+  executor: (args, _context) => {
+    const { aliases = {} } = _context;
 
     // List all aliases if no arguments provided
     if (args.length === 0) {
       if (Object.keys(aliases).length === 0) {
-        return createInfoMessage('No aliases defined.');
+        return createInfoMessage("No aliases defined.");
       }
 
-      const messages = [createInfoMessage('Defined aliases:')];
+      const messages = [createInfoMessage("Defined aliases:")];
 
       Object.entries(aliases).forEach(([name, value]) => {
         messages.push(createInfoMessage(`${name}='${value}'`));
@@ -81,21 +81,21 @@ const aliasCommand: Command = {
     }
 
     // Create a new alias
-    const aliasArg = args.join(' ');
+    const aliasArg = args.join(" ");
     const aliasMatch = aliasArg.match(/^(\w+)=(.+)$/);
 
     if (!aliasMatch) {
       return createErrorMessage(
-        'Invalid alias syntax. Usage: alias name="command"'
+        'Invalid alias syntax. Usage: alias name="command"',
       );
     }
 
     const [, name, value] = aliasMatch;
 
     // Update aliases
-    context.aliases = {
+    _context.aliases = {
       ...aliases,
-      [name]: value.replace(/^"|"$/g, '').replace(/^'|'$/g, ''),
+      [name]: value.replace(/^"|"$/g, "").replace(/^'|'$/g, ""),
     };
 
     return createSuccessMessage(`Alias created: ${name}`);
@@ -106,15 +106,15 @@ const aliasCommand: Command = {
  * unalias command - Remove command aliases
  */
 const unaliasCommand: Command = {
-  name: 'unalias',
-  description: 'Remove command aliases',
-  usage: 'unalias name',
-  examples: ['unalias ll', 'unalias myalias'],
-  executor: (args, context) => {
-    const { aliases = {} } = context;
+  name: "unalias",
+  description: "Remove aliases",
+  usage: "unalias name",
+  examples: ["unalias ll", "unalias ls"],
+  executor: (args, _context) => {
+    const { aliases = {} } = _context;
 
     if (args.length === 0) {
-      return createErrorMessage('No alias specified. Usage: unalias name');
+      return createErrorMessage("No alias specified. Usage: unalias name");
     }
 
     const name = args[0];
@@ -126,28 +126,30 @@ const unaliasCommand: Command = {
     // Remove the alias
     const newAliases = { ...aliases };
     delete newAliases[name];
-    context.aliases = newAliases;
+    _context.aliases = newAliases;
 
     return createSuccessMessage(`Alias removed: ${name}`);
   },
 };
 
 /**
- * find command - Find files or directories
+ * find command - Find files
  */
 const findCommand: Command = {
-  name: 'find',
-  description: 'Search for files in a directory hierarchy',
-  usage: 'find [path] [expression]',
-  examples: ['find', 'find /Legislation -name "Security"', 'find . -type f'],
+  name: "find",
+  description: "Search for files in a directory hierarchy",
+  usage: "find [path] [expression]",
+  examples: ["find", 'find /Legislation -name "Security"', "find . -type f"],
   executor: (args, context) => {
-    const { currentPath, fileSystem } = context;
+    const { currentPath } = context;
+    // fileSystem is defined but unused - commented out to avoid linter warnings
+    // const { fileSystem } = context;
 
     // Default to current path if none specified
     const path =
-      args.length > 0 && !args[0].startsWith('-')
+      args.length > 0 && !args[0].startsWith("-")
         ? args[0]
-        : currentPath || '/';
+        : currentPath || "/";
 
     // Simple find implementation - for demo purposes only
     return [
@@ -174,14 +176,14 @@ const findCommand: Command = {
  * grep command - Search for patterns in files
  */
 const grepCommand: Command = {
-  name: 'grep',
-  description: 'Search for patterns in files',
-  usage: 'grep pattern [file...]',
+  name: "grep",
+  description: "Search for patterns in files",
+  usage: "grep pattern [file...]",
   examples: ['grep "error" log.txt', 'grep -i "warning" /var/log/*'],
-  executor: (args, context) => {
+  executor: (args, _context) => {
     if (args.length === 0) {
       return createErrorMessage(
-        'No pattern specified. Usage: grep pattern [file...]'
+        "No pattern specified. Usage: grep pattern [file...]",
       );
     }
 
@@ -190,29 +192,29 @@ const grepCommand: Command = {
 
     if (files.length === 0) {
       return createErrorMessage(
-        'No files specified. Usage: grep pattern [file...]'
+        "No files specified. Usage: grep pattern [file...]",
       );
     }
 
     // Simple grep implementation - for demo purposes
     return [
       createInfoMessage(
-        `Searching for "${pattern}" in ${files.join(', ')}...`,
+        `Searching for "${pattern}" in ${files.join(", ")}...`,
         {
           animated: true,
-        }
+        },
       ),
       createInfoMessage(
         `${files[0]}:42: match found: "This is an ${pattern} in the file"`,
         {
           animated: true,
-        }
+        },
       ),
       createInfoMessage(
         `${files[0]}:78: match found: "Another ${pattern} appears here"`,
         {
           animated: true,
-        }
+        },
       ),
       createSuccessMessage(`Grep complete. 2 matches found.`, {
         animated: true,
@@ -225,13 +227,13 @@ const grepCommand: Command = {
  * chmod command - Change file permissions
  */
 const chmodCommand: Command = {
-  name: 'chmod',
-  description: 'Change file access permissions',
-  usage: 'chmod mode file',
-  examples: ['chmod 755 script.sh', 'chmod +x executable.bin'],
-  executor: (args, context) => {
+  name: "chmod",
+  description: "Change file access permissions",
+  usage: "chmod mode file",
+  examples: ["chmod 755 script.sh", "chmod +x executable.bin"],
+  executor: (args, _context) => {
     if (args.length < 2) {
-      return createErrorMessage('Invalid usage. Usage: chmod mode file');
+      return createErrorMessage("Invalid usage. Usage: chmod mode file");
     }
 
     const mode = args[0];
@@ -246,37 +248,37 @@ const chmodCommand: Command = {
  * df command - Display disk space usage
  */
 const dfCommand: Command = {
-  name: 'df',
-  description: 'Display free disk space',
-  usage: 'df [options]',
-  examples: ['df', 'df -h'],
-  executor: (args, context) => {
-    const humanReadable = args.includes('-h');
+  name: "df",
+  description: "Display free disk space",
+  usage: "df [options]",
+  examples: ["df", "df -h"],
+  executor: (args, _context) => {
+    const humanReadable = args.includes("-h");
 
     if (humanReadable) {
       return [
-        createInfoMessage('Filesystem      Size  Used Avail Use% Mounted on'),
-        createInfoMessage('/dev/sda1       120T   78T   42T  65% /'),
-        createInfoMessage('/dev/sdb1        50T   15T   35T  30% /data'),
-        createInfoMessage('quantum-storage  10P  2.3P  7.7P  23% /quantum'),
-        createSuccessMessage('df complete.'),
+        createInfoMessage("Filesystem      Size  Used Avail Use% Mounted on"),
+        createInfoMessage("/dev/sda1       120T   78T   42T  65% /"),
+        createInfoMessage("/dev/sdb1        50T   15T   35T  30% /data"),
+        createInfoMessage("quantum-storage  10P  2.3P  7.7P  23% /quantum"),
+        createSuccessMessage("df complete."),
       ];
     }
 
     return [
       createInfoMessage(
-        'Filesystem      1K-blocks       Used    Available Use% Mounted on'
+        "Filesystem      1K-blocks       Used    Available Use% Mounted on",
       ),
       createInfoMessage(
-        '/dev/sda1       125829120000 81788928000 44040192000  65% /'
+        "/dev/sda1       125829120000 81788928000 44040192000  65% /",
       ),
       createInfoMessage(
-        '/dev/sdb1       52428800000 15728640000 36700160000  30% /data'
+        "/dev/sdb1       52428800000 15728640000 36700160000  30% /data",
       ),
       createInfoMessage(
-        'quantum-storage 10995116277760 2528776742912 8466339534848  23% /quantum'
+        "quantum-storage 10995116277760 2528776742912 8466339534848  23% /quantum",
       ),
-      createSuccessMessage('df complete.'),
+      createSuccessMessage("df complete."),
     ];
   },
 };

@@ -5,7 +5,7 @@
 
 3. Include customizable styles or themes to allow users to personalize the appearance of the terminal header.
  */
-import React from 'react';
+import React from "react";
 
 interface TerminalHeaderProps {
   title: string;
@@ -28,22 +28,22 @@ const TerminalHeader: React.FC<TerminalHeaderProps> = ({
 }) => {
   return (
     <div
-      className={`terminal-header flex justify-between items-center ${useGradient ? 'terminal-header-gradient' : ''}`}
+      className={`terminal-header flex justify-between items-center ${useGradient ? "terminal-header-gradient" : ""}`}
     >
       <div className="text-center w-full">
         <div className="border-b border-shocking-pink border-opacity-50 mb-2 pb-1">
-          {'*'.repeat(60)}
+          {"*".repeat(60)}
         </div>
         <h1
-          className={`text-lg font-bold ${useGradient ? 'text-night' : 'text-shocking-pink'}`}
+          className={`text-lg font-bold ${useGradient ? "text-night" : "text-shocking-pink"}`}
         >
-          {title}{' '}
+          {title}{" "}
           {ipAddress && (
             <span className="text-sm font-normal">({ipAddress})</span>
           )}
         </h1>
         <div className="border-t border-shocking-pink border-opacity-50 mt-2 pt-1">
-          {'*'.repeat(60)}
+          {"*".repeat(60)}
         </div>
       </div>
 

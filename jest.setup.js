@@ -1,13 +1,13 @@
 // Import testing-library utilities
-import '@testing-library/jest-dom';
+import "@testing-library/jest-dom";
 
 // Mock Next.js router
-jest.mock('next/router', () => ({
+jest.mock("next/router", () => ({
   useRouter: () => ({
-    route: '/',
-    pathname: '',
+    route: "/",
+    pathname: "",
     query: {},
-    asPath: '',
+    asPath: "",
     push: jest.fn(),
     replace: jest.fn(),
     reload: jest.fn(),
@@ -43,7 +43,7 @@ global.IntersectionObserver = class IntersectionObserver {
 };
 
 // Mock window.matchMedia
-Object.defineProperty(window, 'matchMedia', {
+Object.defineProperty(window, "matchMedia", {
   writable: true,
   value: jest.fn().mockImplementation((query) => ({
     matches: false,

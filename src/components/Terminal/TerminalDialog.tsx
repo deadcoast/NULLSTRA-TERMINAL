@@ -4,7 +4,7 @@
 2. Implement accessibility features, such as ARIA roles and keyboard navigation, to enhance usability.
 3. Include a backdrop or overlay to focus user attention on the dialog and improve visual hierarchy. 
  */
-import React, { ReactNode } from 'react';
+import React, { ReactNode } from "react";
 
 interface TerminalDialogProps {
   title: string;
@@ -18,7 +18,7 @@ const TerminalDialog: React.FC<TerminalDialogProps> = ({
   title,
   children,
   onClose,
-  className = '',
+  className = "",
   showCloseButton = true,
 }) => {
   return (

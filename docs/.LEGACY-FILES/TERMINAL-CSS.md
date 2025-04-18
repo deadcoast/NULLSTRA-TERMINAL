@@ -6,7 +6,7 @@
 @tailwind utilities;
 
 /* Import Space Mono font */
-@import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap");
 /* CSS Variables from terminal.css */
 :root {
   --terminal-black: #000000;
@@ -32,7 +32,7 @@
   overflow: hidden;
   background-color: #000;
   /* May be overridden by later rules or variables */
-  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  font-family: "JetBrains Mono", "Consolas", monospace;
   /* Font may be overridden */
   color: #00ff00;
   /* May be overridden by later rules or variables */
@@ -282,7 +282,7 @@ body {
 
 /* Scanline Effect (from .terminal.css / align-centre.css) */
 .terminal-container::before {
-  content: ' ';
+  content: " ";
   display: block;
   position: absolute;
   /* Changed to absolute relative to container */
@@ -290,7 +290,8 @@ body {
   left: 0;
   bottom: 0;
   right: 0;
-  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
+  background:
+    linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%),
     linear-gradient(
       90deg,
       rgba(255, 0, 0, 0.04),
@@ -306,7 +307,7 @@ body {
 
 /* Flicker Effect (from align-centre.css) */
 .terminal-container::after {
-  content: ' ';
+  content: " ";
   display: block;
   position: absolute;
   /* Changed to absolute relative to container */
@@ -372,7 +373,7 @@ body {
 }
 
 .terminal-input input:focus + .caret-pseudo::after {
-  content: '_';
+  content: "_";
   /* Use underscore or block character */
   display: inline-block;
   background-color: #4ade80;
@@ -509,7 +510,7 @@ body {
 }
 
 .status-indicator::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
@@ -553,7 +554,7 @@ body {
 }
 
 .network-active::before {
-  content: '';
+  content: "";
   position: absolute;
   width: 6px;
   height: 6px;
@@ -597,7 +598,7 @@ body {
 }
 
 .status-indicator::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
@@ -763,7 +764,7 @@ body {
   height: 100vh;
   background-color: var(--terminal-black);
   overflow: hidden;
-  font-family: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+  font-family: "JetBrains Mono", "Fira Code", "Courier New", monospace;
   color: var(--terminal-green);
   font-size: 14px;
   line-height: 1.2;

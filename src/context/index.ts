@@ -4,4 +4,4 @@ export {
   terminalThemes,
   useTheme,
   type TerminalTheme,
-} from './ThemeContext';
+} from "./ThemeContext";

@@ -6,11 +6,11 @@
 
 3. **Customizable Cursor Styles**: Allow users to customize cursor styles further by providing additional options or themes, enhancing visual appeal and user preference.
  */
-import React, { forwardRef, useEffect, useRef, useState } from 'react';
-import { useCommandCompletion } from '../../hooks';
-import { CommandRegistry } from '../../utils/terminalCommands/types';
-import { Glitch } from '../UI';
-import SuggestionList from './SuggestionList';
+import React, { forwardRef, useEffect, useRef, useState } from "react";
+import { useCommandCompletion } from "../../hooks";
+import { CommandRegistry } from "../../utils/terminalCommands/types";
+import { Glitch } from "../UI";
+import SuggestionList from "./SuggestionList";
 
 interface TerminalPromptProps {
   // Original interface
@@ -18,7 +18,7 @@ interface TerminalPromptProps {
   onExecuteCommand?: (command: string) => void;
   commandHistory?: string[];
   historyIndex?: number;
-  onNavigateHistory?: (direction: 'up' | 'down') => void;
+  onNavigateHistory?: (direction: "up" | "down") => void;
   isProcessing?: boolean;
   commandRegistry?: CommandRegistry;
   availableFiles?: string[];
@@ -28,16 +28,16 @@ interface TerminalPromptProps {
   onChange?: (value: string) => void;
   onSubmit?: (command: string) => void;
   onClear?: () => void;
-  onKeyNavigation?: (direction: 'up' | 'down') => void;
+  onKeyNavigation?: (direction: "up" | "down") => void;
   disabled?: boolean;
-  cursorStyle?: 'blink' | 'steady' | 'fade';
+  cursorStyle?: "blink" | "steady" | "fade";
 }
 
 const TerminalPrompt = forwardRef<HTMLInputElement, TerminalPromptProps>(
   (
     {
       // Original props
-      currentPath = '/',
+      currentPath = "/",
       onExecuteCommand,
       commandHistory = [],
       historyIndex = -1,
@@ -53,12 +53,12 @@ const TerminalPrompt = forwardRef<HTMLInputElement, TerminalPromptProps>(
       onClear,
       onKeyNavigation,
       disabled = false,
-      cursorStyle = 'blink',
+      cursorStyle = "blink",
     },
-    ref
+    ref,
   ) => {
     // State for controlled or uncontrolled input
-    const [input, setInput] = useState(value || '');
+    const [input, setInput] = useState(value || "");
     const defaultInputRef = useRef<HTMLInputElement>(null);
     const inputRef =
       (ref as React.RefObject<HTMLInputElement>) || defaultInputRef;
@@ -83,7 +83,7 @@ const TerminalPrompt = forwardRef<HTMLInputElement, TerminalPromptProps>(
       handleTabCompletion,
     } = useCommandCompletion({
       commandRegistry,
-      currentPath,
+      _currentPath: currentPath,
       currentInput: input,
       availableFiles,
     });
@@ -114,9 +114,9 @@ const TerminalPrompt = forwardRef<HTMLInputElement, TerminalPromptProps>(
         }
       };
 
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
       return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
+        document.removeEventListener("mousedown", handleClickOutside);
       };
     }, [resetSuggestions]);
 
@@ -128,11 +128,13 @@ const TerminalPrompt = forwardRef<HTMLInputElement, TerminalPromptProps>(
     };
 
     const handleInputSubmit = (
-      event: React.KeyboardEvent<HTMLInputElement>
+      event: React.KeyboardEvent<HTMLInputElement>,
     ) => {
+      let command;
+
       switch (event.key) {
-        case 'Enter':
-          const command = input.trim();
+        case "Enter":
+          command = input.trim();
           if (command) {
             // Call the appropriate submit handler
             if (onSubmit) {
@@ -143,7 +145,7 @@ const TerminalPrompt = forwardRef<HTMLInputElement, TerminalPromptProps>(
 
             // Clear input only if not controlled
             if (value === undefined) {
-              setInput('');
+              setInput("");
             }
 
             resetSuggestions();
@@ -151,23 +153,23 @@ const TerminalPrompt = forwardRef<HTMLInputElement, TerminalPromptProps>(
           event.preventDefault();
           break;
 
-        case 'Tab':
+        case "Tab":
           // Handle tab completion
           handleTabCompletion();
           event.preventDefault();
           break;
 
-        case 'ArrowUp':
+        case "ArrowUp":
           // Check if suggestions are showing
           if (showSuggestions) {
-            navigateSuggestions('up');
+            navigateSuggestions("up");
             event.preventDefault();
           } else {
             // Call the appropriate history navigation handler
             if (onKeyNavigation) {
-              onKeyNavigation('up');
+              onKeyNavigation("up");
             } else if (onNavigateHistory) {
-              onNavigateHistory('up');
+              onNavigateHistory("up");
 
               // If we have a command at the current history index, set it as input
               if (historyIndex >= 0 && historyIndex < commandHistory.length) {
@@ -177,9 +179,9 @@ const TerminalPrompt = forwardRef<HTMLInputElement, TerminalPromptProps>(
                 }
               } else if (historyIndex === -1) {
                 // Reset input when navigating to the start
-                setInput('');
+                setInput("");
                 if (onChange) {
-                  onChange('');
+                  onChange("");
                 }
               }
             }
@@ -188,17 +190,17 @@ const TerminalPrompt = forwardRef<HTMLInputElement, TerminalPromptProps>(
           }
           break;
 
-        case 'ArrowDown':
+        case "ArrowDown":
           // Check if suggestions are showing
           if (showSuggestions) {
-            navigateSuggestions('down');
+            navigateSuggestions("down");
             event.preventDefault();
           } else {
             // Call the appropriate history navigation handler
             if (onKeyNavigation) {
-              onKeyNavigation('down');
+              onKeyNavigation("down");
             } else if (onNavigateHistory) {
-              onNavigateHistory('down');
+              onNavigateHistory("down");
 
               // If we have a command at the current history index, set it as input
               if (historyIndex >= 0 && historyIndex < commandHistory.length) {
@@ -208,9 +210,9 @@ const TerminalPrompt = forwardRef<HTMLInputElement, TerminalPromptProps>(
                 }
               } else if (historyIndex === -1) {
                 // Reset input when navigating to the start
-                setInput('');
+                setInput("");
                 if (onChange) {
-                  onChange('');
+                  onChange("");
                 }
               }
             }
@@ -219,12 +221,12 @@ const TerminalPrompt = forwardRef<HTMLInputElement, TerminalPromptProps>(
           }
           break;
 
-        case 'Escape':
+        case "Escape":
           // Close suggestions
           resetSuggestions();
           break;
 
-        case 'KeyL':
+        case "KeyL":
           // Clear terminal with Ctrl+L
           if (event.ctrlKey && onClear) {
             onClear();
@@ -252,25 +254,25 @@ const TerminalPrompt = forwardRef<HTMLInputElement, TerminalPromptProps>(
     // Apply cursor style
     const getCursorClass = () => {
       switch (cursorStyle) {
-        case 'blink':
-          return 'animate-cursor-blink';
-        case 'fade':
-          return 'animate-cursor-fade';
-        case 'steady':
-          return '';
+        case "blink":
+          return "animate-cursor-blink";
+        case "fade":
+          return "animate-cursor-fade";
+        case "steady":
+          return "";
         default:
-          return 'animate-cursor-blink';
+          return "animate-cursor-blink";
       }
     };
 
     return (
       <div
         ref={containerRef}
-        className={`terminal-input relative flex items-center px-2 py-1 border-t border-shocking-pink ${isDisabled ? 'opacity-50' : ''}`}
+        className={`terminal-input relative flex items-center px-2 py-1 border-t border-shocking-pink ${isDisabled ? "opacity-50" : ""}`}
       >
         <Glitch intensity="low" active={isProcessing || disabled}>
           <span className="text-shocking-pink font-bold">
-            {currentPath ? `[USER@${currentPath}]$ ` : '$ '}
+            {currentPath ? `[USER@${currentPath}]$ ` : "$ "}
           </span>
         </Glitch>
         <input
@@ -298,9 +300,9 @@ const TerminalPrompt = forwardRef<HTMLInputElement, TerminalPromptProps>(
         )}
       </div>
     );
-  }
+  },
 );
 
-TerminalPrompt.displayName = 'TerminalPrompt';
+TerminalPrompt.displayName = "TerminalPrompt";
 
 export default TerminalPrompt;

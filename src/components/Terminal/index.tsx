@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import CommandPrompt from './CommandPrompt';
-import StatusLine from './StatusLine';
-import StatusPanel from './StatusPanel';
-import StatusTag from './StatusTag';
-import Terminal from './Terminal';
-import TerminalButton from './TerminalButton';
-import TerminalDialog from './TerminalDialog';
-import TerminalFileList from './TerminalFileList';
-import TerminalHeader from './TerminalHeader';
-import TerminalOutput from './TerminalOutput';
-import TerminalOutputLine from './TerminalOutputLine';
-import TerminalPrompt from './TerminalPrompt';
-import TerminalStatusLine from './TerminalStatusLine';
-import TerminalWindow from './TerminalWindow';
+import CommandPrompt from "./CommandPrompt";
+import StatusLine from "./StatusLine";
+import StatusPanel from "./StatusPanel";
+import StatusTag from "./StatusTag";
+import Terminal from "./Terminal";
+import TerminalButton from "./TerminalButton";
+import TerminalDialog from "./TerminalDialog";
+import TerminalFileList from "./TerminalFileList";
+import TerminalHeader from "./TerminalHeader";
+import TerminalOutput from "./TerminalOutput";
+import TerminalOutputLine from "./TerminalOutputLine";
+import TerminalPrompt from "./TerminalPrompt";
+import TerminalStatusLine from "./TerminalStatusLine";
+import TerminalWindow from "./TerminalWindow";
 
 // Export the main Terminal component as default
 export default Terminal;
@@ -35,5 +35,5 @@ export {
   TerminalWindow,
 };
 
-export * from './StatusPanel';
-export * from './StatusTag';
+export * from "./StatusPanel";
+export * from "./StatusTag";
